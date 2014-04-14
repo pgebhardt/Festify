@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) CBCentralManager* centralManager;
 @property (nonatomic, strong) CBPeripheralManager* peripheralManager;
-@property (nonatomic, strong) CBPeripheral* discoveredPeripheral;
+@property (nonatomic, strong) NSMutableArray* discoveredPeripherals;
 
 @end
 
@@ -32,8 +32,12 @@
 -(id)init {
     if (self = [super init]) {
         // create bluetooth manager and set self as their delegate
-        self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
-        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
+        dispatch_queue_t centralManagerQueue = dispatch_queue_create("com.patrikgebhardt.festify.centralManager", DISPATCH_QUEUE_SERIAL);
+        dispatch_queue_t peripheralManagerQueue = dispatch_queue_create("com.patrikgebhardt.festify.centralManager", DISPATCH_QUEUE_SERIAL);
+        self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:centralManagerQueue];
+        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:peripheralManagerQueue];
+        
+        self.discoveredPeripherals = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -67,15 +71,6 @@
     
 }
 
-- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error {
-    if (error) {
-        NSLog(@"error starting advertising: %@", error);
-        return;
-    }
-    
-    NSLog(@"peripheral manager did start advertising: %d", peripheral.isAdvertising);
-}
-
 #pragma mark - CBCentralManagerDelegate
 
 -(void)centralManagerDidUpdateState:(CBCentralManager *)central {
@@ -85,14 +80,24 @@
 -(void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
     // connect to peripheral to retrieve list of services and
     // prevent CoreBluetooth from deallocating peripheral
-    self.discoveredPeripheral = peripheral;
-    self.discoveredPeripheral.delegate = self;
-    [self.centralManager connectPeripheral:self.discoveredPeripheral options:nil];
+    [self.discoveredPeripherals addObject:peripheral];
+    peripheral.delegate = self;
+    [self.centralManager connectPeripheral:peripheral options:nil];
 }
 
 -(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     // discover our service
     [peripheral discoverServices:@[[CBUUID UUIDWithString:self.appId]]];
+}
+
+-(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+    // remove peripheral from list
+    [self.discoveredPeripherals removeObject:peripheral];
+}
+
+-(void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+    // remove peripheral from list
+    [self.discoveredPeripherals removeObject:peripheral];
 }
 
 #pragma mark - CBPeripheralDelegate
@@ -109,6 +114,9 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     NSLog(@"Characteristic: %@", [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]);
+    
+    // disconnect from peripheral
+    [self.centralManager cancelPeripheralConnection:peripheral];
 }
 
 @end
