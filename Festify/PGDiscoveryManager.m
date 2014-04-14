@@ -45,24 +45,28 @@
 
 -(void)startAdvertisingPlaylist:(SPTPartialPlaylist*)playlist withSession:(SPTSession *)session {
     // init peripheral service
-    CBMutableCharacteristic* characteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:self.appId] properties:CBCharacteristicPropertyRead value:[[playlist.uri absoluteString] dataUsingEncoding:NSUTF8StringEncoding] permissions:CBAttributePermissionsReadable];
-    CBMutableService* service = [[CBMutableService alloc] initWithType:[CBUUID UUIDWithString:self.appId] primary:YES];
+    CBMutableCharacteristic* characteristic = [[CBMutableCharacteristic alloc] initWithType:self.serviceUUID properties:CBCharacteristicPropertyRead value:[[playlist.uri absoluteString] dataUsingEncoding:NSUTF8StringEncoding] permissions:CBAttributePermissionsReadable];
+    CBMutableService* service = [[CBMutableService alloc] initWithType:self.serviceUUID primary:YES];
     service.characteristics = @[characteristic];
     [self.peripheralManager addService:service];
     
     // advertise service
-    [self.peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey: @[[CBUUID UUIDWithString:self.appId]],
+    [self.peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey: @[self.serviceUUID],
                                                CBAdvertisementDataLocalNameKey: session.canonicalUsername}];
 }
 
--(void)stopAdvertising {
+-(void)stopAdvertisingPlaylists {
     [self.peripheralManager stopAdvertising];
 }
 
--(void)discoverPlaylists {
+-(void)startDiscoveringPlaylists {
     // scan for festify services
-    [self.centralManager scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:self.appId]]
+    [self.centralManager scanForPeripheralsWithServices:@[self.serviceUUID]
                                                 options:@{CBCentralManagerScanOptionAllowDuplicatesKey: @NO}];
+}
+
+-(void)stopDiscoveringPlaylists {
+    [self.centralManager stopScan];
 }
 
 #pragma mark - CBPeripheralManagerDelegate
@@ -87,7 +91,7 @@
 
 -(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     // discover our service
-    [peripheral discoverServices:@[[CBUUID UUIDWithString:self.appId]]];
+    [peripheral discoverServices:@[self.serviceUUID]];
 }
 
 -(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
@@ -104,7 +108,7 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     // discover the playlist characteristic
-    [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:self.appId]] forService:peripheral.services[0]];
+    [peripheral discoverCharacteristics:@[self.serviceUUID] forService:peripheral.services[0]];
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
@@ -113,10 +117,13 @@
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    NSLog(@"Characteristic: %@", [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]);
-    
-    // disconnect from peripheral
-    [self.centralManager cancelPeripheralConnection:peripheral];
+    // get playlist URI
+    NSURL* playlistURI = [NSURL URLWithString:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]];
+                          
+    // inform delegate about new playlist
+    if (self.delegate) {
+        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:playlistURI];
+    }
 }
 
 @end

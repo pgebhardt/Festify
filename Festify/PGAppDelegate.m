@@ -21,16 +21,22 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
 @implementation PGAppDelegate
 
 -(void)enableAudioPlaybackWithSession:(SPTSession*)session {
-    // pass spotify session to root view controller
+    // pass spotify session to all view controller
     UITabBarController* tabBarController = (UITabBarController*)self.window.rootViewController;
-    UINavigationController* navigationController = (UINavigationController*)tabBarController.viewControllers[0];
-    PGPlaylistSelectionViewController* viewController = (PGPlaylistSelectionViewController*)navigationController.viewControllers[0];
-    [viewController handleNewSession:session];
+    
+    for (id viewController in tabBarController.viewControllers) {
+        UINavigationController* navigationController = (UINavigationController*)viewController;
+        UIViewController* rootViewController = (UIViewController*)navigationController.viewControllers[0];
+        
+        if ([rootViewController respondsToSelector:@selector(setSession:)]) {
+            [rootViewController performSelector:@selector(setSession:) withObject:session];
+        }
+    }
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // update discovery manager app id
-    [PGDiscoveryManager sharedInstance].appId = @"313752b1-f55b-4769-9387-61ce9fd7a840";
+    [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:@"313752b1-f55b-4769-9387-61ce9fd7a840"];
     
     // get spotify session from user defaults
     id spotifySessionPlistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:kSpotifySessionKey];

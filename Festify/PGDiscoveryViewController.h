@@ -1,5 +1,5 @@
 //
-//  PGPlaylistSelectionViewController.h
+//  PGDiscoveryViewController.h
 //  Festify
 //
 //  Created by Patrik Gebhardt on 14/04/14.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
 
-@interface PGPlaylistSelectionViewController : UITableViewController
+@interface PGDiscoveryViewController : UITableViewController
 
 @property (nonatomic, strong) SPTSession* session;
 

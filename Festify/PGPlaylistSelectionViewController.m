@@ -11,7 +11,6 @@
 
 @interface PGPlaylistSelectionViewController ()
 
-@property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SPTPlaylistList* playlists;
 
 @end
@@ -26,8 +25,10 @@
     [self.refreshControl addTarget:self action:@selector(retrievePlaylists) forControlEvents:UIControlEventValueChanged];
 }
 
--(void)handleNewSession:(SPTSession *)session {
-    self.session = session;
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // retrieve playlists
     [self retrievePlaylists];
 }
 
@@ -49,7 +50,6 @@
                 
                 // hide refresh control
                 if (self.refreshControl.isRefreshing) {
-                    [[PGDiscoveryManager sharedInstance] discoverPlaylists];
                     [self.refreshControl endRefreshing];
                 }
             });

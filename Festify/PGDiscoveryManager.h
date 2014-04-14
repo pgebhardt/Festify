@@ -14,7 +14,7 @@
 
 @protocol PGDiscoveryManagerDelegate<NSObject>
 
--(void)discoveryManager:(PGDiscoveryManager*)discoveryManager didDiscoverUsers:(NSArray*)users andPlaylists:(NSArray*)playlists;
+-(void)discoveryManager:(PGDiscoveryManager*)discoveryManager didDiscoverPlaylistWithURI:(NSURL*)uri;
 
 @end
 
@@ -23,10 +23,11 @@
 +(PGDiscoveryManager*)sharedInstance;
 
 -(void)startAdvertisingPlaylist:(SPTPartialPlaylist*)playlist withSession:(SPTSession*)session;
--(void)stopAdvertising;
--(void)discoverPlaylists;
+-(void)stopAdvertisingPlaylists;
+-(void)startDiscoveringPlaylists;
+-(void)stopDiscoveringPlaylists;
 
 @property (nonatomic, weak) id<PGDiscoveryManagerDelegate> delegate;
-@property (nonatomic, strong) NSString* appId;
+@property (nonatomic, strong) CBUUID* serviceUUID;
 
 @end
