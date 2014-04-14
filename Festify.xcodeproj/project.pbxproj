@@ -19,6 +19,7 @@
 		5F423A7C18FC115200C3ED75 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6418FC115200C3ED75 /* UIKit.framework */; };
 		5F423A8418FC115200C3ED75 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8218FC115200C3ED75 /* InfoPlist.strings */; };
 		5F423A8618FC115200C3ED75 /* FestifyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A8518FC115200C3ED75 /* FestifyTests.m */; };
+		5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		5F423A8118FC115200C3ED75 /* FestifyTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FestifyTests-Info.plist"; sourceTree = "<group>"; };
 		5F423A8318FC115200C3ED75 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5F423A8518FC115200C3ED75 /* FestifyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FestifyTests.m; sourceTree = "<group>"; };
+		5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,9 +109,10 @@
 		5F423A6618FC115200C3ED75 /* Festify */ = {
 			isa = PBXGroup;
 			children = (
+				5F423A7218FC115200C3ED75 /* Images.xcassets */,
 				5F423A6F18FC115200C3ED75 /* PGAppDelegate.h */,
 				5F423A7018FC115200C3ED75 /* PGAppDelegate.m */,
-				5F423A7218FC115200C3ED75 /* Images.xcassets */,
+				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 			);
 			path = Festify;
@@ -192,6 +195,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Patrik Gebhardt";
 				TargetAttributes = {
+					5F423A5C18FC115200C3ED75 = {
+						DevelopmentTeam = V8TY8K4K9P;
+					};
 					5F423A7718FC115200C3ED75 = {
 						TestTargetID = 5F423A5C18FC115200C3ED75;
 					};
@@ -222,6 +228,7 @@
 			files = (
 				5F423A6B18FC115200C3ED75 /* InfoPlist.strings in Resources */,
 				5F423A7318FC115200C3ED75 /* Images.xcassets in Resources */,
+				5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +365,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
@@ -371,6 +379,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
