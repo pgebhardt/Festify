@@ -22,6 +22,8 @@
 		5F423A8418FC115200C3ED75 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8218FC115200C3ED75 /* InfoPlist.strings */; };
 		5F423A8618FC115200C3ED75 /* FestifyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A8518FC115200C3ED75 /* FestifyTests.m */; };
 		5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */; };
+		5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* PGDiscoveryManager.m */; };
+		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
 		5FA4181918FC4A1100A838FD /* PGPlaylistSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FA4181818FC4A1100A838FD /* PGPlaylistSelectionViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +57,9 @@
 		5F423A8318FC115200C3ED75 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5F423A8518FC115200C3ED75 /* FestifyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FestifyTests.m; sourceTree = "<group>"; };
 		5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
+		5F5A162118FC535100E408DC /* PGDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGDiscoveryManager.h; sourceTree = "<group>"; };
+		5F5A162218FC535100E408DC /* PGDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGDiscoveryManager.m; sourceTree = "<group>"; };
+		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		5FA4181718FC4A1100A838FD /* PGPlaylistSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlaylistSelectionViewController.h; sourceTree = "<group>"; };
 		5FA4181818FC4A1100A838FD /* PGPlaylistSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlaylistSelectionViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -64,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */,
 				5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */,
 				5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */,
 				5F423A6518FC115200C3ED75 /* UIKit.framework in Frameworks */,
@@ -107,6 +113,7 @@
 		5F423A5F18FC115200C3ED75 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */,
 				5F1F9BD618FC31B70030A64B /* AVFoundation.framework */,
 				5F1F9BD418FC31B10030A64B /* Spotify.framework */,
 				5F423A6018FC115200C3ED75 /* Foundation.framework */,
@@ -123,6 +130,8 @@
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
 				5F423A6F18FC115200C3ED75 /* PGAppDelegate.h */,
 				5F423A7018FC115200C3ED75 /* PGAppDelegate.m */,
+				5F5A162118FC535100E408DC /* PGDiscoveryManager.h */,
+				5F5A162218FC535100E408DC /* PGDiscoveryManager.m */,
 				5FA4181718FC4A1100A838FD /* PGPlaylistSelectionViewController.h */,
 				5FA4181818FC4A1100A838FD /* PGPlaylistSelectionViewController.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
@@ -210,6 +219,11 @@
 				TargetAttributes = {
 					5F423A5C18FC115200C3ED75 = {
 						DevelopmentTeam = V8TY8K4K9P;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					5F423A7718FC115200C3ED75 = {
 						TestTargetID = 5F423A5C18FC115200C3ED75;
@@ -261,6 +275,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5FA4181918FC4A1100A838FD /* PGPlaylistSelectionViewController.m in Sources */,
+				5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */,
 				5F423A6D18FC115200C3ED75 /* main.m in Sources */,
 				5F423A7118FC115200C3ED75 /* PGAppDelegate.m in Sources */,
 			);

@@ -7,8 +7,9 @@
 //
 
 #import "PGAppDelegate.h"
-#import <Spotify/Spotify.h>
 #import "PGPlaylistSelectionViewController.h"
+#import "PGDiscoveryManager.h"
+#import <Spotify/Spotify.h>
 
 // Spotify authentication credentials
 static NSString* const kSpotifyClientId = @"spotify-ios-sdk-beta";
@@ -28,6 +29,9 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // update discovery manager app id
+    [PGDiscoveryManager sharedInstance].appId = @"313752b1-f55b-4769-9387-61ce9fd7a840";
+    
     // get spotify session from user defaults
     id spotifySessionPlistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:kSpotifySessionKey];
     SPTSession* spotifySession = [[SPTSession alloc] initWithPropertyListRepresentation:spotifySessionPlistRepresentation];
@@ -49,7 +53,7 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
             [[UIApplication sharedApplication] openURL:loginURL];
         });
     }
-    
+
     return YES;
 }
 

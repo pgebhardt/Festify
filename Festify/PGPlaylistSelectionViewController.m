@@ -7,6 +7,7 @@
 //
 
 #import "PGPlaylistSelectionViewController.h"
+#import "PGDiscoveryManager.h"
 
 @interface PGPlaylistSelectionViewController ()
 
@@ -39,12 +40,16 @@
         else {
             self.playlists = object;
             
+            // start advertising
+            [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[0] withSession:self.session];
+
             // update ui
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
                 
                 // hide refresh control
                 if (self.refreshControl.isRefreshing) {
+                    [[PGDiscoveryManager sharedInstance] discoverPlaylists];
                     [self.refreshControl endRefreshing];
                 }
             });
