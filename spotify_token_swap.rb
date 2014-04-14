@@ -35,6 +35,7 @@ kClientSecret = "ba95c775e4b39b8d60b27bcfced57ba473c10046"
 kClientCallbackURL = "spotify-ios-sdk-beta://callback"
 
 set :port, 1234 # The port to bind to.
+set :bind, '0.0.0.0'
 
 post '/swap' do
 

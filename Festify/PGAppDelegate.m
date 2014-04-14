@@ -8,6 +8,7 @@
 
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
+#import "PGPlaylistSelectionViewController.h"
 
 // Spotify authentication credentials
 static NSString* const kSpotifyClientId = @"spotify-ios-sdk-beta";
@@ -18,6 +19,14 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
 
 @implementation PGAppDelegate
 
+-(void)enableAudioPlaybackWithSession:(SPTSession*)session {
+    // pass spotify session to root view controller
+    UITabBarController* tabBarController = (UITabBarController*)self.window.rootViewController;
+    UINavigationController* navigationController = (UINavigationController*)tabBarController.viewControllers[0];
+    PGPlaylistSelectionViewController* viewController = (PGPlaylistSelectionViewController*)navigationController.viewControllers[0];
+    [viewController handleNewSession:session];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // get spotify session from user defaults
     id spotifySessionPlistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:kSpotifySessionKey];
@@ -26,6 +35,7 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
     // check if spotify session is valid, or authenticate with oauth
     if (spotifySession.credential.length > 0) {
         NSLog(@"Logged in from plist as user: %@", spotifySession.canonicalUsername);
+        [self enableAudioPlaybackWithSession:spotifySession];
     }
     else {
         // get login url
@@ -48,7 +58,7 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
     // so completion happens here
     if ([[SPTAuth defaultInstance] canHandleURL:url withDeclaredRedirectURL:[NSURL URLWithString:kSpotifyCallbackURL]]) {
         [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url
-                                            tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://localhost:1234/swap"]
+                                            tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://patrik-macbook:1234/swap"]
                                                                  callback:^(NSError *error, SPTSession *session) {
             if (error != nil) {
                 NSLog(@"*** Authentication error: %@", error);
@@ -57,7 +67,8 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
             
             // save current session to user defaults for future use
             [[NSUserDefaults standardUserDefaults] setValue:[session propertyListRepresentation] forKey:kSpotifySessionKey];
-            
+            [self enableAudioPlaybackWithSession:session];
+                                                                     
             NSLog(@"Logged in from web as user: %@", session.canonicalUsername);
         }];
         
