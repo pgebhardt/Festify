@@ -16,6 +16,7 @@
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;
 - (IBAction)fastForward:(id)sender;
+- (IBAction)festify:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *albumLabel;

@@ -24,16 +24,13 @@
     [super viewDidLoad];
 	[self addObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack" options:0 context:nil];
 
+    // init default advertisement playlist
+    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
+        [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:[[object items] objectAtIndex:0] withSession:self.session];
+    }];
+    
     // enable iAd
     self.canDisplayBannerAds = YES;
-}
-
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    if ([[PGDiscoveryManager sharedInstance] isDiscoveringPlaylists]) {
-        [self.trackPlayer playTrackProvider:self.trackProvider];
-    }
 }
 
 -(void)handleNewSession:(SPTSession *)session {
@@ -81,6 +78,14 @@
 
 -(IBAction)fastForward:(id)sender {
 	[self.trackPlayer skipToNextTrack];
+}
+
+- (IBAction)festify:(id)sender {
+    // start discovering playlists
+    [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
+    
+    // play track provider
+    [self.trackPlayer playTrackProvider:self.trackProvider];
 }
 
 #pragma mark - Logic

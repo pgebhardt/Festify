@@ -113,6 +113,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Zmt-zk-YEv">
+                        <barButtonItem key="leftBarButtonItem" title="Festify" id="K9n-gG-09W">
+                            <connections>
+                                <action selector="festify:" destination="EVF-cW-P26" id="Sw2-Bo-ES0"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="Cog" id="beU-Bk-B5p">
                             <connections>
                                 <segue destination="xvL-cP-knz" kind="push" identifier="showSettings" id="J3L-Ku-HNr"/>
@@ -140,35 +145,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection headerTitle="Festify" id="TQk-Om-Mn1">
-                                <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="VHr-mX-A9D">
-                                        <rect key="frame" x="0.0" y="119" width="320" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VHr-mX-A9D" id="WIF-tf-9Lw">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="SLz-SJ-h7w">
-                                                    <rect key="frame" x="251" y="6" width="51" height="31"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </switch>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Enabled" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9lj-Co-CmH">
-                                                    <rect key="frame" x="20" y="11" width="63" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
                             <tableViewSection headerTitle="Advertisement" id="8qo-Db-wgQ">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="44" id="diY-lI-5bj">
-                                        <rect key="frame" x="0.0" y="211" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="119" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="diY-lI-5bj" id="mc9-PI-824">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -185,7 +165,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="216" id="fOU-mR-Ogq">
-                                        <rect key="frame" x="0.0" y="255" width="320" height="216"/>
+                                        <rect key="frame" x="0.0" y="163" width="320" height="216"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fOU-mR-Ogq" id="nYy-L8-6su">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="215"/>
@@ -203,7 +183,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="AqW-tl-qBJ">
-                                        <rect key="frame" x="0.0" y="471" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="379" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AqW-tl-qBJ" id="gCo-iB-OB9">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -227,7 +207,7 @@
                             <tableViewSection headerTitle="Spotify" id="Kvq-Ie-G8W">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="kCU-ka-cP6">
-                                        <rect key="frame" x="0.0" y="563" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="471" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kCU-ka-cP6" id="vxJ-cD-OQ2">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -253,7 +233,6 @@
                     <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK"/>
                     <connections>
                         <outlet property="advertisementSwitch" destination="xIN-HM-U3i" id="DJw-6I-A5S"/>
-                        <outlet property="festifySwitch" destination="SLz-SJ-h7w" id="twV-WQ-BGW"/>
                         <outlet property="playlistLabel" destination="zgt-lO-I3h" id="HvE-j0-ftn"/>
                         <outlet property="playlistPicker" destination="QGl-Sd-GML" id="I1u-cu-2IS"/>
                     </connections>

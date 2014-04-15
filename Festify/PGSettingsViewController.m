@@ -25,7 +25,6 @@
     [self hidePlaylistPicker];
     
     // connect switches to event handler
-    [self.festifySwitch addTarget:self action:@selector(toggleFestifyState) forControlEvents:UIControlEventValueChanged];
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState) forControlEvents:UIControlEventValueChanged];
 }
 
@@ -33,7 +32,6 @@
     [super viewWillAppear:animated];
 
     // set switches to correct states
-    [self.festifySwitch setOn:[[PGDiscoveryManager sharedInstance] isDiscoveringPlaylists]];
     [self.advertisementSwitch setOn:[[PGDiscoveryManager sharedInstance] isAdvertisingsPlaylist]];
     
     [self retrievePlaylists];
@@ -71,15 +69,6 @@
 
 #pragma mark - Switch Actions
 
--(void)toggleFestifyState {
-    if (self.festifySwitch.isOn) {
-        [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
-    }
-    else {
-        [[PGDiscoveryManager sharedInstance] stopDiscoveringPlaylists];
-    }
-}
-
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {
         [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylistWithSession:self.session];
@@ -113,7 +102,7 @@
 #pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1 && indexPath.row == 0) {
+    if (indexPath.section == 0 && indexPath.row == 0) {
         if (!self.playlistPickerIsShowing) {
             [self showPlaylistPicker];
         }
@@ -126,7 +115,7 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1 && indexPath.row == 1 && !self.playlistPickerIsShowing) {
+    if (indexPath.section == 0 && indexPath.row == 1 && !self.playlistPickerIsShowing) {
         return 0.0f;
     }
     
