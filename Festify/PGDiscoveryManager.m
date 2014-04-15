@@ -82,6 +82,7 @@
 
 -(void)stopAdvertisingPlaylist {
     [self.peripheralManager stopAdvertising];
+    [self.peripheralManager removeAllServices];
 }
 
 -(BOOL)isAdvertisingsPlaylist {
@@ -154,7 +155,10 @@
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     // get playlist URI
     NSURL* playlistURI = [NSURL URLWithString:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]];
-                          
+
+    // disconnect device
+    [self.centralManager cancelPeripheralConnection:peripheral];
+    
     // inform delegate about new playlist
     if (self.delegate) {
         [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:playlistURI fromIdentifier:peripheral.identifier];

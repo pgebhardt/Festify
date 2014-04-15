@@ -37,7 +37,7 @@
 }
 
 -(NSURL *)uri {
-    return nil;
+    return @"";
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
