@@ -22,7 +22,8 @@
 
 +(PGDiscoveryManager*)sharedInstance;
 
--(void)startAdvertisingPlaylist:(SPTPartialPlaylist*)playlist withSession:(SPTSession*)session;
+-(void)setAdvertisingPlaylist:(SPTPartialPlaylist*)playlist withSession:(SPTSession*)session;
+-(void)startAdvertisingPlaylistWithSession:(SPTSession*)session;
 -(void)stopAdvertisingPlaylist;
 -(BOOL)isAdvertisingsPlaylist;
 
@@ -32,5 +33,6 @@
 
 @property (nonatomic, weak) id<PGDiscoveryManagerDelegate> delegate;
 @property (nonatomic, strong) CBUUID* serviceUUID;
+@property (nonatomic, strong, readonly) SPTPartialPlaylist* advertisingPlaylist;
 
 @end

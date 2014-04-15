@@ -44,9 +44,23 @@
         else {
             self.playlists = object;
             
+            // set first playlist as default advertisement playlist
+            if ([PGDiscoveryManager sharedInstance].advertisingPlaylist == nil) {
+                [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[0] withSession:self.session];
+            }
+            
             // update ui
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playlistPicker reloadAllComponents];
+                
+                // selected currently advertised playlist
+                if ([PGDiscoveryManager sharedInstance].advertisingPlaylist != nil) {
+                    for (int i = 0; i < self.playlists.items.count; ++i) {
+                        if ([[self.playlists.items[i] uri].absoluteString isEqualToString:[PGDiscoveryManager sharedInstance].advertisingPlaylist.uri.absoluteString]) {
+                            [self.playlistPicker selectRow:i inComponent:0 animated:NO];
+                        }
+                    }
+                }
             });
         }
     }];
@@ -65,7 +79,7 @@
 
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {
-        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[[self.playlistPicker selectedRowInComponent:0]] withSession:self.session];
+        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylistWithSession:self.session];
     }
     else {
         [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
@@ -89,11 +103,7 @@
 }
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    // advertise newly picked playlist
-    if ([[PGDiscoveryManager sharedInstance] isAdvertisingsPlaylist]) {
-        [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
-        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[row] withSession:self.session];
-    }
+    [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[row] withSession:self.session];
 }
 
 #pragma mark - UITableViewDelegate

@@ -17,7 +17,9 @@
 
 @end
 
-@implementation PGDiscoveryManager
+@implementation PGDiscoveryManager {
+    SPTPartialPlaylist* _advertisingPlaylist;
+}
 
 // create a singleton instance of discovery manager
 +(PGDiscoveryManager*)sharedInstance {
@@ -45,11 +47,29 @@
     return self;
 }
 
--(void)startAdvertisingPlaylist:(SPTPartialPlaylist*)playlist withSession:(SPTSession *)session {
+-(void)setAdvertisingPlaylist:(SPTPartialPlaylist *)playlist withSession:(SPTSession*)session {
+    _advertisingPlaylist = playlist;
+    
+    // restart bluetooth service
+    if (self.peripheralManager.isAdvertising) {
+        [self stopAdvertisingPlaylist];
+        [self startAdvertisingPlaylistWithSession:session];
+    }
+}
+
+-(SPTPartialPlaylist*)advertisingPlaylist {
+    return _advertisingPlaylist;
+}
+
+-(void)startAdvertisingPlaylistWithSession:(SPTSession *)session {
+    if (!self.advertisingPlaylist) {
+        return;
+    }
+    
     // init peripheral service to advertise playlist uri
     CBMutableCharacteristic* characteristic = [[CBMutableCharacteristic alloc] initWithType:self.serviceUUID
                                                                                  properties:CBCharacteristicPropertyRead
-                                                                                      value:[[playlist.uri absoluteString] dataUsingEncoding:NSUTF8StringEncoding]
+                                                                                      value:[[self.advertisingPlaylist.uri absoluteString] dataUsingEncoding:NSUTF8StringEncoding]
                                                                                 permissions:CBAttributePermissionsReadable];
     CBMutableService* service = [[CBMutableService alloc] initWithType:self.serviceUUID primary:YES];
     service.characteristics = @[characteristic];
