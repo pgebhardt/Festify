@@ -13,6 +13,7 @@
 @property (nonatomic, strong) CBCentralManager* centralManager;
 @property (nonatomic, strong) CBPeripheralManager* peripheralManager;
 @property (nonatomic, strong) NSMutableArray* discoveredPeripherals;
+@property (nonatomic, assign) BOOL discoveringPlaylists;
 
 @end
 
@@ -36,6 +37,7 @@
         dispatch_queue_t peripheralManagerQueue = dispatch_queue_create("com.patrikgebhardt.festify.peripheralManager", DISPATCH_QUEUE_SERIAL);
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:centralManagerQueue];
         self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:peripheralManagerQueue];
+        self.discoveringPlaylists = NO;
         
         self.discoveredPeripherals = [[NSMutableArray alloc] init];
     }
@@ -55,18 +57,28 @@
                                                CBAdvertisementDataLocalNameKey: session.canonicalUsername}];
 }
 
--(void)stopAdvertisingPlaylists {
+-(void)stopAdvertisingPlaylist {
     [self.peripheralManager stopAdvertising];
+}
+
+-(BOOL)isAdvertisingsPlaylist {
+    return self.peripheralManager.isAdvertising;
 }
 
 -(void)startDiscoveringPlaylists {
     // scan for festify services
     [self.centralManager scanForPeripheralsWithServices:@[self.serviceUUID]
                                                 options:@{CBCentralManagerScanOptionAllowDuplicatesKey: @NO}];
+    self.discoveringPlaylists = YES;
 }
 
 -(void)stopDiscoveringPlaylists {
     [self.centralManager stopScan];
+    self.discoveringPlaylists = NO;
+}
+
+-(BOOL)isDiscoveringPlaylists {
+    return self.discoveringPlaylists;
 }
 
 #pragma mark - CBPeripheralManagerDelegate

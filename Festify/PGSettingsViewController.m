@@ -17,6 +17,14 @@
 
 @implementation PGSettingsViewController
 
+-(void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // connect switches to event handler
+    [self.festifySwitch addTarget:self action:@selector(toggleFestifyState) forControlEvents:UIControlEventValueChanged];
+    [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState) forControlEvents:UIControlEventValueChanged];
+}
+
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
@@ -43,6 +51,26 @@
     }];
 }
 
+#pragma mark - Switch Actions
+
+-(void)toggleFestifyState {
+    if ([[PGDiscoveryManager sharedInstance] isDiscoveringPlaylists]) {
+        [[PGDiscoveryManager sharedInstance] stopDiscoveringPlaylists];
+    }
+    else {
+        [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
+    }
+}
+
+-(void)toggleAdvertisementState {
+    if ([[PGDiscoveryManager sharedInstance] isAdvertisingsPlaylist]) {
+        [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
+    }
+    else {
+        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[[self.playlistPicker selectedRowInComponent:0]] withSession:self.session];
+    }
+}
+
 #pragma mark - UIPickerViewDataSource
 
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
@@ -61,8 +89,14 @@
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     // advertise newly picked playlist
-    [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylists];
+    [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
     [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[row] withSession:self.session];
+}
+
+#pragma mark - UITableViewDelegate
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 @end

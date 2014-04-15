@@ -139,6 +139,8 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK"/>
                     <connections>
+                        <outlet property="advertisementSwitch" destination="xIN-HM-U3i" id="DJw-6I-A5S"/>
+                        <outlet property="festifySwitch" destination="SLz-SJ-h7w" id="twV-WQ-BGW"/>
                         <outlet property="playlistPicker" destination="QGl-Sd-GML" id="I1u-cu-2IS"/>
                     </connections>
                 </tableViewController>
