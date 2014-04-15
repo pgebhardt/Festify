@@ -54,6 +54,12 @@
     if (self.peripheralManager.isAdvertising) {
         [self stopAdvertisingPlaylist];
         [self startAdvertisingPlaylistWithSession:session];
+        
+        // TODO
+        // fake playlist discovery
+        if (self.delegate) {
+            [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:playlist.uri];
+        }
     }
 }
 

@@ -8,11 +8,13 @@
 
 #import "PGDiscoveryViewController.h"
 #import "PGDiscoveryManager.h"
+#import "PGFestifyTrackProvider.h"
 #import <iAd/iAd.h>
 
 @interface PGDiscoveryViewController () <PGDiscoveryManagerDelegate>
 
 @property (atomic, strong) NSMutableDictionary* playlists;
+@property (nonatomic, strong) PGFestifyTrackProvider* trackProvider;
 
 @end
 
@@ -23,9 +25,11 @@
 
     // init properties
     self.playlists = [[NSMutableDictionary alloc] init];
+    self.trackProvider = [[PGFestifyTrackProvider alloc] initWithSession:self.session];
+    [PGDiscoveryManager sharedInstance].delegate = self.trackProvider;
 
     // set self as discovery manager delegate
-    [PGDiscoveryManager sharedInstance].delegate = self;
+    // [PGDiscoveryManager sharedInstance].delegate = self;
     
     // enable iAd
     self.canDisplayBannerAds = YES;
