@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) NSMutableDictionary* playlists;
+@property (nonatomic, strong) NSMutableArray* tracks;
 
 @end
 
@@ -21,6 +22,7 @@
     if (self = [super init]) {
         self.session = session;
         self.playlists = [NSMutableDictionary dictionary];
+        self.tracks = [NSMutableArray array];
     }
     
     return self;
@@ -28,25 +30,30 @@
 
 -(void)clearAllTracks {
     [self.playlists removeAllObjects];
+    [self.tracks removeAllObjects];
 }
 
 #pragma mark - SPTTrackProvider
 
 -(NSArray *)tracks {
-    return self.playlists.allValues;
+    return _tracks;
 }
 
 -(NSURL *)uri {
-    return @"";
+    return [NSURL URLWithString:@""];
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
 
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri fromIdentifier:(NSUUID *)identifier {
+-(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri fromIdentifier:(NSString*)identifier {
     // retrieve tracks from playlist and add them to tracks array
     [SPTPlaylistSnapshot playlistWithURI:uri session:self.session callback:^(NSError *error, id object) {
         if (!error) {
-            self.playlists[[identifier UUIDString]] = [[object tracks] copy];
+            self.playlists[identifier] = [[object tracks] copy];
+            [self.tracks removeAllObjects];
+            for (NSArray* tracks in self.playlists.allValues) {
+                [self.tracks addObjectsFromArray:tracks];
+            }
         }
     }];
 }
