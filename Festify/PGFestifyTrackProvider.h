@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <Spotify/Spotify.h>
-#import "PGDiscoveryManager.h"
 
-@interface PGFestifyTrackProvider : NSObject<SPTTrackProvider, PGDiscoveryManagerDelegate>
+@interface PGFestifyTrackProvider : NSObject<SPTTrackProvider>
 
 -(id)initWithSession:(SPTSession*)session;
+-(void)addPlaylist:(SPTPlaylistSnapshot*)playlist forIdentifier:(NSString*)identifier;
 -(void)clearAllTracks;
 
 @end

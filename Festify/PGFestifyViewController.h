@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
+#import "PGDiscoveryManager.h"
 
-@interface PGFestifyViewController : UIViewController<SPTTrackPlayerDelegate>
+@interface PGFestifyViewController : UIViewController<SPTTrackPlayerDelegate, PGDiscoveryManagerDelegate>
 
 -(void)handleNewSession:(SPTSession*)session;
 

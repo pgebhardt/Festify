@@ -34,6 +34,18 @@
     [self.tracks removeAllObjects];
 }
 
+-(void)addPlaylist:(SPTPlaylistSnapshot *)playlist forIdentifier:(NSString *)identifier {
+    self.playlists[identifier] = [playlist.tracks copy];
+    
+    [self.tracks removeAllObjects];
+    for (NSArray* tracks in self.playlists.allValues) {
+        [self.tracks addObjectsFromArray:tracks];
+    }
+    
+    // shuffle tracks array
+    [self.tracks shuffle];
+}
+
 #pragma mark - SPTTrackProvider
 
 -(NSArray *)tracks {
@@ -42,24 +54,6 @@
 
 -(NSURL *)uri {
     return [NSURL URLWithString:@""];
-}
-
-#pragma mark - PGDiscoveryManagerDelegate
-
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri fromIdentifier:(NSString*)identifier {
-    // retrieve tracks from playlist and add them to tracks array
-    [SPTPlaylistSnapshot playlistWithURI:uri session:self.session callback:^(NSError *error, id object) {
-        if (!error) {
-            self.playlists[identifier] = [[object tracks] copy];
-            [self.tracks removeAllObjects];
-            for (NSArray* tracks in self.playlists.allValues) {
-                [self.tracks addObjectsFromArray:tracks];
-            }
-            
-            // shuffle tracks array
-            [self.tracks shuffle];
-        }
-    }];
 }
 
 @end

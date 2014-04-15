@@ -24,10 +24,8 @@
     [super viewDidLoad];
 	[self addObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack" options:0 context:nil];
 
-    // init default advertisement playlist
-    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
-        [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:[[object items] objectAtIndex:0] withSession:self.session];
-    }];
+    // set as discovery manager delegate
+    [PGDiscoveryManager sharedInstance].delegate = self;
     
     // enable iAd
     self.canDisplayBannerAds = YES;
@@ -35,16 +33,13 @@
 
 -(void)handleNewSession:(SPTSession *)session {
     self.session = session;
-    
+    self.trackProvider = [[PGFestifyTrackProvider alloc] initWithSession:session];
+
     // create new track player if not already existing
     if (!self.trackPlayer) {
         self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:@"Patrik Gebhardt" appName:@"Festify"];
         self.trackPlayer.delegate = self;
     }
-    
-    // init track provider and attach to discovery manager
-    self.trackProvider = [[PGFestifyTrackProvider alloc] initWithSession:session];
-    [PGDiscoveryManager sharedInstance].delegate = self.trackProvider;
     
     // enable playback
     [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
@@ -57,7 +52,8 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"trackPlayer.indexOfCurrentTrack"]) {
         [self updateUI];
-    } else {
+    }
+    else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
@@ -71,7 +67,8 @@
 -(IBAction)playPause:(id)sender {
 	if (self.trackPlayer.paused) {
 		[self.trackPlayer resumePlayback];
-	} else {
+	}
+    else {
 		[self.trackPlayer pausePlayback];
 	}
 }
@@ -81,11 +78,16 @@
 }
 
 - (IBAction)festify:(id)sender {
+    // reset track player
+    if (self.trackPlayer.currentProvider != nil) {
+        [self.trackPlayer pausePlayback];
+    }
+    
+    // clear content of track provider
+    [self.trackProvider clearAllTracks];
+
     // start discovering playlists
     [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
-    
-    // play track provider
-    [self.trackPlayer playTrackProvider:self.trackProvider];
 }
 
 #pragma mark - Logic
@@ -156,6 +158,22 @@
     if ([segue.identifier isEqualToString:@"showSettings"]) {
         [segue.destinationViewController setSession:self.session];
     }
+}
+
+#pragma mark - PGDiscoveryManagerDelegate
+
+-(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri fromIdentifier:(NSString *)identifier {
+    // request complete playlist and add it to track provider
+    [SPTRequest requestItemAtURI:uri withSession:self.session callback:^(NSError *error, id object) {
+        if (!error) {
+            [self.trackProvider addPlaylist:object forIdentifier:identifier];
+            
+            // start playback, if not already running
+            if (self.trackPlayer.currentProvider == nil || self.trackPlayer.paused) {
+                [self.trackPlayer playTrackProvider:self.trackProvider];
+            }
+        }
+    }];
 }
 
 #pragma mark - Track Player Delegates
