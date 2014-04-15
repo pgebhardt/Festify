@@ -8,6 +8,7 @@
 
 #import "PGDiscoveryViewController.h"
 #import "PGDiscoveryManager.h"
+#import <iAd/iAd.h>
 
 @interface PGDiscoveryViewController () <PGDiscoveryManagerDelegate>
 
@@ -20,10 +21,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    // init properties
     self.playlists = [[NSMutableDictionary alloc] init];
 
     // set self as discovery manager delegate
     [PGDiscoveryManager sharedInstance].delegate = self;
+    
+    // enable iAd
+    self.canDisplayBannerAds = YES;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

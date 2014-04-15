@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5F089B5F18FD169B002476CB /* PGSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* PGSettingsViewController.m */; };
+		5F089B6118FD2B5F002476CB /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089B6018FD2B5F002476CB /* iAd.framework */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
 		5F423A6118FC115200C3ED75 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6018FC115200C3ED75 /* Foundation.framework */; };
@@ -41,6 +42,7 @@
 /* Begin PBXFileReference section */
 		5F089B5D18FD169B002476CB /* PGSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGSettingsViewController.h; sourceTree = "<group>"; };
 		5F089B5E18FD169B002476CB /* PGSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGSettingsViewController.m; sourceTree = "<group>"; };
+		5F089B6018FD2B5F002476CB /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		5F1F9BD418FC31B10030A64B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5F423A5D18FC115200C3ED75 /* Festify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Festify.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F089B6118FD2B5F002476CB /* iAd.framework in Frameworks */,
 				5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */,
 				5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */,
 				5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */,
@@ -116,6 +119,7 @@
 		5F423A5F18FC115200C3ED75 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5F089B6018FD2B5F002476CB /* iAd.framework */,
 				5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */,
 				5F1F9BD618FC31B70030A64B /* AVFoundation.framework */,
 				5F1F9BD418FC31B10030A64B /* Spotify.framework */,
