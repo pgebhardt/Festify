@@ -11,8 +11,7 @@
 @interface PGFestifyTrackProvider ()
 
 @property (nonatomic, strong) SPTSession* session;
-@property (nonatomic, strong) NSMutableArray* tracksArray;
-@property (nonatomic, strong) NSMutableArray* playlistURIs;
+@property (nonatomic, strong) NSMutableDictionary* playlists;
 
 @end
 
@@ -21,22 +20,20 @@
 -(id)initWithSession:(SPTSession*)session {
     if (self = [super init]) {
         self.session = session;
-        self.tracksArray = [NSMutableArray array];
-        self.playlistURIs = [NSMutableArray array];
+        self.playlists = [NSMutableDictionary dictionary];
     }
     
     return self;
 }
 
 -(void)clearAllTracks {
-    [self.tracksArray removeAllObjects];
-    [self.playlistURIs removeAllObjects];
+    [self.playlists removeAllObjects];
 }
 
 #pragma mark - SPTTrackProvider
 
 -(NSArray *)tracks {
-    return self.tracksArray;
+    return self.playlists.allValues;
 }
 
 -(NSURL *)uri {
@@ -45,16 +42,11 @@
 
 #pragma mark - PGDiscoveryManagerDelegate
 
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri {
+-(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri fromIdentifier:(NSUUID *)identifier {
     // retrieve tracks from playlist and add them to tracks array
     [SPTPlaylistSnapshot playlistWithURI:uri session:self.session callback:^(NSError *error, id object) {
         if (!error) {
-            // check if playlist is not already included
-            NSPredicate* predicate = [NSPredicate predicateWithFormat:@"SELF IN %@", self.playlistURIs];
-            if (![predicate evaluateWithObject:uri]) {
-                [self.tracksArray addObjectsFromArray:[object tracks]];
-                [self.playlistURIs addObject:uri];
-            }
+            self.playlists[[identifier UUIDString]] = [[object tracks] copy];
         }
     }];
 }
