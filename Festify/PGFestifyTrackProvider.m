@@ -7,6 +7,7 @@
 //
 
 #import "PGFestifyTrackProvider.h"
+#import "NSMutableArray+Shuffling.h"
 
 @interface PGFestifyTrackProvider ()
 
@@ -54,6 +55,9 @@
             for (NSArray* tracks in self.playlists.allValues) {
                 [self.tracks addObjectsFromArray:tracks];
             }
+            
+            // shuffle tracks array
+            [self.tracks shuffle];
         }
     }];
 }
