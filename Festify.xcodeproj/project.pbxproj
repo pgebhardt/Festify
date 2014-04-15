@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F089B5F18FD169B002476CB /* PGSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* PGSettingsViewController.m */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
 		5F423A6118FC115200C3ED75 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6018FC115200C3ED75 /* Foundation.framework */; };
@@ -24,7 +25,6 @@
 		5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */; };
 		5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* PGDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
-		5FA4181918FC4A1100A838FD /* PGPlaylistSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FA4181818FC4A1100A838FD /* PGPlaylistSelectionViewController.m */; };
 		5FD0CC7A18FC6BDE00B2DADB /* PGDiscoveryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FD0CC7918FC6BDE00B2DADB /* PGDiscoveryViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +39,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5F089B5D18FD169B002476CB /* PGSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGSettingsViewController.h; sourceTree = "<group>"; };
+		5F089B5E18FD169B002476CB /* PGSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGSettingsViewController.m; sourceTree = "<group>"; };
 		5F1F9BD418FC31B10030A64B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5F423A5D18FC115200C3ED75 /* Festify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Festify.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,8 +63,6 @@
 		5F5A162118FC535100E408DC /* PGDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGDiscoveryManager.h; sourceTree = "<group>"; };
 		5F5A162218FC535100E408DC /* PGDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
-		5FA4181718FC4A1100A838FD /* PGPlaylistSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlaylistSelectionViewController.h; sourceTree = "<group>"; };
-		5FA4181818FC4A1100A838FD /* PGPlaylistSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlaylistSelectionViewController.m; sourceTree = "<group>"; };
 		5FD0CC7818FC6BDE00B2DADB /* PGDiscoveryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGDiscoveryViewController.h; sourceTree = "<group>"; };
 		5FD0CC7918FC6BDE00B2DADB /* PGDiscoveryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGDiscoveryViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -137,8 +137,8 @@
 				5F5A162218FC535100E408DC /* PGDiscoveryManager.m */,
 				5FD0CC7818FC6BDE00B2DADB /* PGDiscoveryViewController.h */,
 				5FD0CC7918FC6BDE00B2DADB /* PGDiscoveryViewController.m */,
-				5FA4181718FC4A1100A838FD /* PGPlaylistSelectionViewController.h */,
-				5FA4181818FC4A1100A838FD /* PGPlaylistSelectionViewController.m */,
+				5F089B5D18FD169B002476CB /* PGSettingsViewController.h */,
+				5F089B5E18FD169B002476CB /* PGSettingsViewController.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 			);
@@ -279,7 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5FA4181918FC4A1100A838FD /* PGPlaylistSelectionViewController.m in Sources */,
+				5F089B5F18FD169B002476CB /* PGSettingsViewController.m in Sources */,
 				5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */,
 				5FD0CC7A18FC6BDE00B2DADB /* PGDiscoveryViewController.m in Sources */,
 				5F423A6D18FC115200C3ED75 /* main.m in Sources */,

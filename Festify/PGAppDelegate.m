@@ -7,8 +7,8 @@
 //
 
 #import "PGAppDelegate.h"
-#import "PGPlaylistSelectionViewController.h"
 #import "PGDiscoveryManager.h"
+#import "PGDiscoveryViewController.h"
 #import <Spotify/Spotify.h>
 
 // Spotify authentication credentials
@@ -21,17 +21,11 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
 @implementation PGAppDelegate
 
 -(void)enableAudioPlaybackWithSession:(SPTSession*)session {
-    // pass spotify session to all view controller
-    UITabBarController* tabBarController = (UITabBarController*)self.window.rootViewController;
+    // pass spotify session to root view controller
+    UINavigationController* navigationController = (UINavigationController*)self.window.rootViewController;
+    PGDiscoveryViewController* rootViewController = (PGDiscoveryViewController*)navigationController.viewControllers[0];
     
-    for (id viewController in tabBarController.viewControllers) {
-        UINavigationController* navigationController = (UINavigationController*)viewController;
-        UIViewController* rootViewController = (UIViewController*)navigationController.viewControllers[0];
-        
-        if ([rootViewController respondsToSelector:@selector(setSession:)]) {
-            [rootViewController performSelector:@selector(setSession:) withObject:session];
-        }
-    }
+    rootViewController.session = session;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

@@ -52,6 +52,12 @@
     }
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"showSettings"]) {
+        [segue.destinationViewController setSession:self.session];
+    }
+}
+
 #pragma mark - PGDiscoveryManagerDelegate
 
 -(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri {

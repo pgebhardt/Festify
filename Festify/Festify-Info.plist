@@ -39,6 +39,7 @@
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>bluetooth-central</string>
 		<string>bluetooth-peripheral</string>
 	</array>
 	<key>UIMainStoryboardFile</key>
