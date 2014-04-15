@@ -38,7 +38,6 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
     
     // check if spotify session is valid, or authenticate with oauth
     if (spotifySession.credential.length > 0) {
-        NSLog(@"Logged in from plist as user: %@", spotifySession.canonicalUsername);
         [self enableAudioPlaybackWithSession:spotifySession];
     }
     else {
@@ -64,16 +63,11 @@ static NSString* const kSpotifySessionKey = @"SpotifySession";
         [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url
                                             tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://patrik-macbook:1234/swap"]
                                                                  callback:^(NSError *error, SPTSession *session) {
-            if (error != nil) {
-                NSLog(@"*** Authentication error: %@", error);
-                return;
+            if (!error) {
+                // save current session to user defaults for future use
+                [[NSUserDefaults standardUserDefaults] setValue:[session propertyListRepresentation] forKey:kSpotifySessionKey];
+                [self enableAudioPlaybackWithSession:session];
             }
-            
-            // save current session to user defaults for future use
-            [[NSUserDefaults standardUserDefaults] setValue:[session propertyListRepresentation] forKey:kSpotifySessionKey];
-            [self enableAudioPlaybackWithSession:session];
-                                                                     
-            NSLog(@"Logged in from web as user: %@", session.canonicalUsername);
         }];
         
         return YES;

@@ -12,6 +12,7 @@
 @interface PGSettingsViewController ()
 
 @property (nonatomic, strong) SPTPlaylistList* playlists;
+@property (nonatomic, assign) BOOL playlistPickerIsShowing;
 
 @end
 
@@ -19,6 +20,9 @@
 
 -(void)viewDidLoad {
     [super viewDidLoad];
+    
+    // initially hide picker
+    [self hidePlaylistPicker];
     
     // connect switches to event handler
     [self.festifySwitch addTarget:self action:@selector(toggleFestifyState) forControlEvents:UIControlEventValueChanged];
@@ -52,13 +56,12 @@
             // update ui
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playlistPicker reloadAllComponents];
-                
+
                 // selected currently advertised playlist
-                if ([PGDiscoveryManager sharedInstance].advertisingPlaylist != nil) {
-                    for (int i = 0; i < self.playlists.items.count; ++i) {
-                        if ([[self.playlists.items[i] uri].absoluteString isEqualToString:[PGDiscoveryManager sharedInstance].advertisingPlaylist.uri.absoluteString]) {
-                            [self.playlistPicker selectRow:i inComponent:0 animated:NO];
-                        }
+                for (int i = 0; i < self.playlists.items.count; ++i) {
+                    if ([[self.playlists.items[i] uri].absoluteString isEqualToString:[PGDiscoveryManager sharedInstance].advertisingPlaylist.uri.absoluteString]) {
+                        [self.playlistPicker selectRow:i inComponent:0 animated:NO];
+                        self.playlistLabel.text = [self.playlists.items[i] name];
                     }
                 }
             });
@@ -104,12 +107,59 @@
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[row] withSession:self.session];
+    self.playlistLabel.text = [self.playlists.items[row] name];
 }
 
 #pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1 && indexPath.row == 0) {
+        if (!self.playlistPickerIsShowing) {
+            [self showPlaylistPicker];
+        }
+        else {
+            [self hidePlaylistPicker];
+        }
+    }
+    
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1 && indexPath.row == 1 && !self.playlistPickerIsShowing) {
+        return 0.0f;
+    }
+    
+    return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+}
+
+#pragma mark - Helper
+
+-(void)showPlaylistPicker {
+    self.playlistPickerIsShowing = YES;
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
+    
+    self.playlistPicker.hidden = NO;
+    self.playlistPicker.alpha = 0.0f;
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        self.playlistPicker.alpha = 1.0f;
+    }];
+}
+
+-(void)hidePlaylistPicker {
+    self.playlistPickerIsShowing = NO;
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
+    
+    [UIView animateWithDuration:0.25
+                     animations:^{
+                         self.playlistPicker.alpha = 0.0f;
+                     }
+                     completion:^(BOOL finished){
+                         self.playlistPicker.hidden = YES;
+                     }];
 }
 
 @end

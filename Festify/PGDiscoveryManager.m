@@ -110,15 +110,6 @@
     
 }
 
-- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error {
-    if (error) {
-        NSLog(@"error starting advertising: %@", error);
-        return;
-    }
-    
-    NSLog(@"peripheral manager did start advertising: %d", peripheral.isAdvertising);
-}
-
 #pragma mark - CBCentralManagerDelegate
 
 -(void)centralManagerDidUpdateState:(CBCentralManager *)central {
