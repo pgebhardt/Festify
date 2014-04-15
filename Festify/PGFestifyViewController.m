@@ -38,7 +38,6 @@
     // create new track player if not already existing
     if (!self.trackPlayer) {
         self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:@"Patrik Gebhardt" appName:@"Festify"];
-        self.trackPlayer.delegate = self;
     }
     
     // enable playback
@@ -175,33 +174,5 @@
         }
     }];
 }
-
-#pragma mark - Track Player Delegates
-
--(void)trackPlayer:(SPTTrackPlayer *)player didStartPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id <SPTTrackProvider>)provider {
-	NSLog(@"Started playback of track %@ of %@", @(index), provider.uri);
-}
-
--(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
-    NSLog(@"Ended playback of track %@ of %@", @(index), provider.uri);
-}
-
--(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id <SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
-	NSLog(@"Ended playback of provider %@ with reason %@", provider.uri, @(reason));
-}
-
--(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id <SPTTrackProvider>)provider withError:(NSError *)error {
-	NSLog(@"Ended playback of provider %@ with error %@", provider.uri, error);
-}
-
--(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
-	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Message from Spotify"
-														message:message
-													   delegate:nil
-											  cancelButtonTitle:@"OK"
-											  otherButtonTitles:nil];
-	[alertView show];
-}
-
 
 @end

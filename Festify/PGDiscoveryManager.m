@@ -50,11 +50,6 @@
 -(void)setAdvertisingPlaylist:(SPTPartialPlaylist *)playlist withSession:(SPTSession*)session {
     _advertisingPlaylist = playlist;
     
-    // call delegate
-    if (self.delegate) {
-        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:playlist.uri fromIdentifier:@"self"];
-    }
-    
     // restart bluetooth service
     if (self.peripheralManager.isAdvertising) {
         [self stopAdvertisingPlaylist];
