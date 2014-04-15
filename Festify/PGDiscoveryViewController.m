@@ -22,34 +22,8 @@
 
     self.playlists = [[NSMutableDictionary alloc] init];
 
-    // add refresh controll to table view to trigger playlist scan
-    self.refreshControl = [[UIRefreshControl alloc] init];
-    [self.refreshControl addTarget:self action:@selector(triggerPlaylistScan) forControlEvents:UIControlEventValueChanged];
-    
     // set self as discovery manager delegate
     [PGDiscoveryManager sharedInstance].delegate = self;
-}
-
--(void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    // start scanning for playlists
-    [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
-}
-
--(void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    // stop scanning for playlists
-    [[PGDiscoveryManager sharedInstance] stopDiscoveringPlaylists];
-}
-
--(void)triggerPlaylistScan {
-    [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
-    
-    if (self.refreshControl.isEnabled) {
-        [self.refreshControl endRefreshing];
-    }
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

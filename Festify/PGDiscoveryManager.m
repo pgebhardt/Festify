@@ -46,8 +46,11 @@
 }
 
 -(void)startAdvertisingPlaylist:(SPTPartialPlaylist*)playlist withSession:(SPTSession *)session {
-    // init peripheral service
-    CBMutableCharacteristic* characteristic = [[CBMutableCharacteristic alloc] initWithType:self.serviceUUID properties:CBCharacteristicPropertyRead value:[[playlist.uri absoluteString] dataUsingEncoding:NSUTF8StringEncoding] permissions:CBAttributePermissionsReadable];
+    // init peripheral service to advertise playlist uri
+    CBMutableCharacteristic* characteristic = [[CBMutableCharacteristic alloc] initWithType:self.serviceUUID
+                                                                                 properties:CBCharacteristicPropertyRead
+                                                                                      value:[[playlist.uri absoluteString] dataUsingEncoding:NSUTF8StringEncoding]
+                                                                                permissions:CBAttributePermissionsReadable];
     CBMutableService* service = [[CBMutableService alloc] initWithType:self.serviceUUID primary:YES];
     service.characteristics = @[characteristic];
     [self.peripheralManager addService:service];
@@ -85,6 +88,15 @@
 
 -(void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral {
     
+}
+
+- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error {
+    if (error) {
+        NSLog(@"error starting advertising: %@", error);
+        return;
+    }
+    
+    NSLog(@"peripheral manager did start advertising: %d", peripheral.isAdvertising);
 }
 
 #pragma mark - CBCentralManagerDelegate

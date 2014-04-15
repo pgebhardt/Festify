@@ -28,6 +28,10 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    // set switches to correct states
+    [self.festifySwitch setOn:[[PGDiscoveryManager sharedInstance] isDiscoveringPlaylists]];
+    [self.advertisementSwitch setOn:[[PGDiscoveryManager sharedInstance] isAdvertisingsPlaylist]];
+    
     [self retrievePlaylists];
 }
 
@@ -40,9 +44,6 @@
         else {
             self.playlists = object;
             
-            // start advertising default playlist
-            [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[0] withSession:self.session];
-            
             // update ui
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playlistPicker reloadAllComponents];
@@ -54,20 +55,20 @@
 #pragma mark - Switch Actions
 
 -(void)toggleFestifyState {
-    if ([[PGDiscoveryManager sharedInstance] isDiscoveringPlaylists]) {
-        [[PGDiscoveryManager sharedInstance] stopDiscoveringPlaylists];
+    if (self.festifySwitch.isOn) {
+        [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
     }
     else {
-        [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
+        [[PGDiscoveryManager sharedInstance] stopDiscoveringPlaylists];
     }
 }
 
 -(void)toggleAdvertisementState {
-    if ([[PGDiscoveryManager sharedInstance] isAdvertisingsPlaylist]) {
-        [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
+    if (self.advertisementSwitch.isOn) {
+        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[[self.playlistPicker selectedRowInComponent:0]] withSession:self.session];
     }
     else {
-        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[[self.playlistPicker selectedRowInComponent:0]] withSession:self.session];
+        [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
     }
 }
 
@@ -89,8 +90,10 @@
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     // advertise newly picked playlist
-    [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
-    [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[row] withSession:self.session];
+    if ([[PGDiscoveryManager sharedInstance] isAdvertisingsPlaylist]) {
+        [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
+        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist:self.playlists.items[row] withSession:self.session];
+    }
 }
 
 #pragma mark - UITableViewDelegate
