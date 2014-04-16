@@ -54,6 +54,9 @@
     // clear content of track provider
     [self.trackProvider clearAllTracks];
     
+    // stop playback
+    [self.trackPlayer pausePlayback];
+    
     // start discovering playlists
     [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
 }

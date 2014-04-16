@@ -84,6 +84,8 @@
         
         [self loadCoverArt];
     }
+    
+    self.navigationItem.title = [NSString stringWithFormat:@"%ld of %lu", (long)self.trackPlayer.indexOfCurrentTrack + 1, (unsigned long)self.trackPlayer.currentProvider.tracks.count];
 }
 
 -(void)loadCoverArt {
