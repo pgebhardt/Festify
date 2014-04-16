@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGFestifyViewController.h"
+#import "PGTrackPlayerViewController.h"
 #import "PGFestifyTrackProvider.h"
 #import <iAd/iAd.h>
 
-@interface PGFestifyViewController ()
+@interface PGTrackPlayerViewController ()
 
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
@@ -18,7 +18,7 @@
 
 @end
 
-@implementation PGFestifyViewController
+@implementation PGTrackPlayerViewController
 
 -(void)viewDidLoad {
     [super viewDidLoad];
