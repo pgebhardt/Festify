@@ -7,7 +7,7 @@
 //
 
 #import "PGLoginViewController.h"
-#import "PGTrackPlayerViewController.h"
+#import "PGFestifyViewController.h"
 
 @interface PGLoginViewController ()
 
@@ -44,7 +44,7 @@ static NSString* const kSpotifyCallbackURL = @"spotify-ios-sdk-beta://callback";
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showMainScene"]) {
-        PGTrackPlayerViewController* destViewController = (PGTrackPlayerViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];
+        PGFestifyViewController* destViewController = (PGFestifyViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];
         [destViewController handleNewSession:self.session];
     }
 }

@@ -67,6 +67,10 @@
     }];
 }
 
+- (IBAction)done:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - Switch Actions
 
 -(void)toggleAdvertisementState {

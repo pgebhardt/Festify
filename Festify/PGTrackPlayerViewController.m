@@ -7,14 +7,9 @@
 //
 
 #import "PGTrackPlayerViewController.h"
-#import "PGFestifyTrackProvider.h"
 #import <iAd/iAd.h>
 
 @interface PGTrackPlayerViewController ()
-
-@property (nonatomic, strong) SPTSession* session;
-@property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
-@property (nonatomic, strong) PGFestifyTrackProvider* trackProvider;
 
 @end
 
@@ -22,35 +17,29 @@
 
 -(void)viewDidLoad {
     [super viewDidLoad];
-	[self addObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack" options:0 context:nil];
 
-    // set as discovery manager delegate
-    [PGDiscoveryManager sharedInstance].delegate = self;
-    
     // enable iAd
     self.canDisplayBannerAds = YES;
 }
 
--(void)handleNewSession:(SPTSession *)session {
-    self.session = session;
-    self.trackProvider = [[PGFestifyTrackProvider alloc] initWithSession:session];
-
-    // create new track player if not already existing
-    if (!self.trackPlayer) {
-        self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:@"Patrik Gebhardt" appName:@"Festify"];
-    }
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
-    // enable playback
-    [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
-        if (error) {
-			NSLog(@"*** Enabling playback got error: %@", error);
-        }
-    }];
+	[self addObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack" options:0 context:nil];
+    [self updateUI];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self removeObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack"];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"trackPlayer.indexOfCurrentTrack"]) {
-        [self updateUI];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateUI];
+        });
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -76,19 +65,6 @@
 	[self.trackPlayer skipToNextTrack];
 }
 
-- (IBAction)festify:(id)sender {
-    // reset track player
-    if (self.trackPlayer.currentProvider != nil) {
-        [self.trackPlayer pausePlayback];
-    }
-    
-    // clear content of track provider
-    [self.trackProvider clearAllTracks];
-
-    // start discovering playlists
-    [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
-}
-
 #pragma mark - Logic
 
 -(void)updateUI {
@@ -100,7 +76,7 @@
 	}
     else {
 		NSInteger index = self.trackPlayer.indexOfCurrentTrack;
-		SPTTrack *track = (SPTTrack*)self.trackProvider.tracks[index];
+		SPTTrack *track = (SPTTrack*)self.trackPlayer.currentProvider.tracks[index];
 		self.titleLabel.text = track.name;
 		self.albumLabel.text = track.album.name;
 		self.artistLabel.text = [track.artists.firstObject name];
@@ -112,7 +88,7 @@
 
 -(void)loadCoverArt {
     // request complete album of track
-    [SPTRequest requestItemFromPartialObject:[self.trackProvider.tracks[self.trackPlayer.indexOfCurrentTrack] album]
+    [SPTRequest requestItemFromPartialObject:[self.trackPlayer.currentProvider.tracks[self.trackPlayer.indexOfCurrentTrack] album]
                                  withSession:self.session
                                     callback:^(NSError *error, id object) {
         if (error) {
@@ -157,22 +133,6 @@
     if ([segue.identifier isEqualToString:@"showSettings"]) {
         [segue.destinationViewController setSession:self.session];
     }
-}
-
-#pragma mark - PGDiscoveryManagerDelegate
-
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri fromIdentifier:(NSString *)identifier {
-    // request complete playlist and add it to track provider
-    [SPTRequest requestItemAtURI:uri withSession:self.session callback:^(NSError *error, id object) {
-        if (!error) {
-            [self.trackProvider addPlaylist:object forIdentifier:identifier];
-            
-            // start playback, if not already running
-            if (self.trackPlayer.currentProvider == nil || self.trackPlayer.paused) {
-                [self.trackPlayer playTrackProvider:self.trackProvider];
-            }
-        }
-    }];
 }
 
 @end

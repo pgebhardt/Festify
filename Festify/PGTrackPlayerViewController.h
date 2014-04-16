@@ -8,16 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
-#import "PGDiscoveryManager.h"
 
-@interface PGTrackPlayerViewController : UIViewController<PGDiscoveryManagerDelegate>
-
--(void)handleNewSession:(SPTSession*)session;
+@interface PGTrackPlayerViewController : UIViewController
 
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;
 - (IBAction)fastForward:(id)sender;
-- (IBAction)festify:(id)sender;
+
+@property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
+@property (nonatomic, strong) SPTSession* session;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *albumLabel;

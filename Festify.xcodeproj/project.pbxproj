@@ -27,6 +27,7 @@
 		5F423A8418FC115200C3ED75 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8218FC115200C3ED75 /* InfoPlist.strings */; };
 		5F423A8618FC115200C3ED75 /* FestifyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A8518FC115200C3ED75 /* FestifyTests.m */; };
 		5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */; };
+		5F521D2E18FF013800B915B7 /* PGFestifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */; };
 		5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* PGDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
 		5F88929018FEFA6000620589 /* PGLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F88928F18FEFA6000620589 /* PGLoginViewController.m */; };
@@ -71,6 +72,8 @@
 		5F423A8318FC115200C3ED75 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5F423A8518FC115200C3ED75 /* FestifyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FestifyTests.m; sourceTree = "<group>"; };
 		5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
+		5F521D2C18FF013800B915B7 /* PGFestifyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGFestifyViewController.h; sourceTree = "<group>"; };
+		5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGFestifyViewController.m; sourceTree = "<group>"; };
 		5F5A162118FC535100E408DC /* PGDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGDiscoveryManager.h; sourceTree = "<group>"; };
 		5F5A162218FC535100E408DC /* PGDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -152,12 +155,14 @@
 				5F5A162218FC535100E408DC /* PGDiscoveryManager.m */,
 				5F089B6518FD56A3002476CB /* PGFestifyTrackProvider.h */,
 				5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */,
-				5F1CF46118FD9782009E4791 /* PGTrackPlayerViewController.h */,
-				5F1CF46218FD9782009E4791 /* PGTrackPlayerViewController.m */,
+				5F521D2C18FF013800B915B7 /* PGFestifyViewController.h */,
+				5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */,
 				5F88928E18FEFA6000620589 /* PGLoginViewController.h */,
 				5F88928F18FEFA6000620589 /* PGLoginViewController.m */,
 				5F089B5D18FD169B002476CB /* PGSettingsViewController.h */,
 				5F089B5E18FD169B002476CB /* PGSettingsViewController.m */,
+				5F1CF46118FD9782009E4791 /* PGTrackPlayerViewController.h */,
+				5F1CF46218FD9782009E4791 /* PGTrackPlayerViewController.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 			);
@@ -303,6 +308,7 @@
 				5F089B5F18FD169B002476CB /* PGSettingsViewController.m in Sources */,
 				5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */,
 				5F423A6D18FC115200C3ED75 /* main.m in Sources */,
+				5F521D2E18FF013800B915B7 /* PGFestifyViewController.m in Sources */,
 				5F423A7118FC115200C3ED75 /* PGAppDelegate.m in Sources */,
 				5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */,
 				5F1CF46318FD9782009E4791 /* PGTrackPlayerViewController.m in Sources */,

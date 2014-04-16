@@ -11,6 +11,8 @@
 
 @interface PGSettingsViewController : UITableViewController<UIPickerViewDelegate, UIPickerViewDataSource>
 
+- (IBAction)done:(id)sender;
+
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *playlistLabel;
 @property (weak, nonatomic) IBOutlet UIPickerView *playlistPicker;
