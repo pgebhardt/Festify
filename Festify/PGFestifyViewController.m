@@ -66,6 +66,7 @@
         PGPlayerViewController* viewController = (PGPlayerViewController*)segue.destinationViewController;
         viewController.trackPlayer = self.trackPlayer;
         viewController.session = self.session;
+        self.trackPlayer.delegate = viewController;
     }
     else if ([segue.identifier isEqualToString:@"showSettings"]) {
         PGSettingsViewController* viewController = (PGSettingsViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];

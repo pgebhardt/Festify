@@ -25,44 +25,32 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-	[self addObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack" options:0 context:nil];
     [self updateUI];
-}
-
--(void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    [self removeObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack"];
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"trackPlayer.indexOfCurrentTrack"]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self updateUI];
-        });
-    }
-    else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 #pragma mark - Actions
 
 -(IBAction)rewind:(id)sender {
-	[self.trackPlayer skipToPreviousTrack:NO];
+    if (self.trackPlayer.currentProvider != nil) {
+        [self.trackPlayer skipToPreviousTrack:NO];
+    }
 }
 
 -(IBAction)playPause:(id)sender {
-	if (self.trackPlayer.paused) {
-		[self.trackPlayer resumePlayback];
-	}
-    else {
-		[self.trackPlayer pausePlayback];
-	}
+    if (self.trackPlayer.currentProvider != nil) {
+        if (self.trackPlayer.paused) {
+            [self.trackPlayer resumePlayback];
+        }
+        else {
+            [self.trackPlayer pausePlayback];
+        }
+    }
 }
 
 -(IBAction)fastForward:(id)sender {
-	[self.trackPlayer skipToNextTrack];
+    if (self.trackPlayer.currentProvider != nil) {
+        [self.trackPlayer skipToNextTrack];
+    }
 }
 
 #pragma mark - Logic
@@ -82,52 +70,29 @@
 		self.artistLabel.text = [track.artists.firstObject name];
         self.coverImage.image = nil;
         
-        [self loadCoverArt];
+        [self loadCoverArtForPartialAlbum:track.album];
     }
     
     self.navigationItem.title = [NSString stringWithFormat:@"%ld of %lu", (long)self.trackPlayer.indexOfCurrentTrack + 1, (unsigned long)self.trackPlayer.currentProvider.tracks.count];
 }
 
--(void)loadCoverArt {
+-(void)loadCoverArtForPartialAlbum:(SPTPartialAlbum*)album {
     // request complete album of track
-    [SPTRequest requestItemFromPartialObject:[self.trackPlayer.currentProvider.tracks[self.trackPlayer.indexOfCurrentTrack] album]
-                                 withSession:self.session
-                                    callback:^(NSError *error, id object) {
-        if (error) {
-            return;
+    [SPTRequest requestItemFromPartialObject:album withSession:self.session callback:^(NSError *error, id object) {
+        if (!error) {
+            // extract image URL
+            NSURL* imageURL = [object largestCover].imageURL;
+            
+            // download image
+            [self.spinner startAnimating];
+            [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:imageURL] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                // show cover image
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.spinner stopAnimating];
+                    self.coverImage.image = [UIImage imageWithData:data];
+                });
+            }] resume];
         }
-
-        SPTAlbum* album = (SPTAlbum*)object;
-        NSURL* imageURL = album.largestCover.imageURL;
-        
-        if (imageURL == nil) {
-            NSLog(@"Album %@ doesn't have any images!", album);
-            self.coverImage.image = nil;
-            return;
-        }
-        
-        [self.spinner startAnimating];
-        
-        // Pop over to a background queue to load the image over the network.
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            NSError *error = nil;
-            UIImage *image = nil;
-            NSData *imageData = [NSData dataWithContentsOfURL:imageURL options:0 error:&error];
-            
-            if (imageData != nil) {
-                image = [UIImage imageWithData:imageData];
-            }
-            
-            // …and back to the main queue to display the image.
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.spinner stopAnimating];
-                self.coverImage.image = image;
-                if (image == nil) {
-                    NSLog(@"Couldn't load cover image with error: %@", error);
-                }
-            });
-        });
     }];
 }
 
@@ -135,6 +100,37 @@
     if ([segue.identifier isEqualToString:@"showSettings"]) {
         [segue.destinationViewController setSession:self.session];
     }
+}
+
+#pragma mark - SPTTrackPlayerDelegate
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
+    NSLog(@"didDidReceiveMessageForEndUser: %@", message);
+}
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withError:(NSError *)error {
+    NSLog(@"didEndPlaybackOfProvider: %@ withError: %@", provider, error);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateUI];
+    });
+}
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
+    NSLog(@"didEndPlaybackOfProvider: %@ withReason: %u", provider, reason);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateUI];
+    });
+}
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
+    NSLog(@"didEndPlaybackOfTrackAtIndex: %d ofProvider: %@", index, provider);
+}
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didStartPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
+    NSLog(@"didStartPlaybackOfTrackAtIndex: %d ofProvider: %@", index, provider);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateUI];
+    });
 }
 
 @end
