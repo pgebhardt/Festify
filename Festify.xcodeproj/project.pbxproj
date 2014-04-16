@@ -11,7 +11,7 @@
 		5F089B6118FD2B5F002476CB /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089B6018FD2B5F002476CB /* iAd.framework */; };
 		5F089B6718FD56A3002476CB /* PGFestifyTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */; };
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
-		5F1CF46318FD9782009E4791 /* PGTrackPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* PGTrackPlayerViewController.m */; };
+		5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
 		5F423A6118FC115200C3ED75 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6018FC115200C3ED75 /* Foundation.framework */; };
@@ -51,8 +51,8 @@
 		5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGFestifyTrackProvider.m; sourceTree = "<group>"; };
 		5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Shuffling.h"; sourceTree = "<group>"; };
 		5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Shuffling.m"; sourceTree = "<group>"; };
-		5F1CF46118FD9782009E4791 /* PGTrackPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGTrackPlayerViewController.h; sourceTree = "<group>"; };
-		5F1CF46218FD9782009E4791 /* PGTrackPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGTrackPlayerViewController.m; sourceTree = "<group>"; };
+		5F1CF46118FD9782009E4791 /* PGPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlayerViewController.h; sourceTree = "<group>"; };
+		5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlayerViewController.m; sourceTree = "<group>"; };
 		5F1F9BD418FC31B10030A64B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5F423A5D18FC115200C3ED75 /* Festify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Festify.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,8 +161,8 @@
 				5F88928F18FEFA6000620589 /* PGLoginViewController.m */,
 				5F089B5D18FD169B002476CB /* PGSettingsViewController.h */,
 				5F089B5E18FD169B002476CB /* PGSettingsViewController.m */,
-				5F1CF46118FD9782009E4791 /* PGTrackPlayerViewController.h */,
-				5F1CF46218FD9782009E4791 /* PGTrackPlayerViewController.m */,
+				5F1CF46118FD9782009E4791 /* PGPlayerViewController.h */,
+				5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 			);
@@ -311,7 +311,7 @@
 				5F521D2E18FF013800B915B7 /* PGFestifyViewController.m in Sources */,
 				5F423A7118FC115200C3ED75 /* PGAppDelegate.m in Sources */,
 				5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */,
-				5F1CF46318FD9782009E4791 /* PGTrackPlayerViewController.m in Sources */,
+				5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

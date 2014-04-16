@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Track Player View Controller-->
+        <!--Player View Controller-->
         <scene sceneID="HN1-7L-aEX">
             <objects>
-                <viewController id="EVF-cW-P26" customClass="PGTrackPlayerViewController" sceneMemberID="viewController">
+                <viewController id="EVF-cW-P26" customClass="PGPlayerViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MVI-oj-FLp"/>
                         <viewControllerLayoutGuide type="bottom" id="eaC-Iq-7qF"/>

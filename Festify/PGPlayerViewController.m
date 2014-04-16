@@ -6,14 +6,14 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGTrackPlayerViewController.h"
+#import "PGPlayerViewController.h"
 #import <iAd/iAd.h>
 
-@interface PGTrackPlayerViewController ()
+@interface PGPlayerViewController ()
 
 @end
 
-@implementation PGTrackPlayerViewController
+@implementation PGPlayerViewController
 
 -(void)viewDidLoad {
     [super viewDidLoad];

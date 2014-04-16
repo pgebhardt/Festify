@@ -8,7 +8,7 @@
 
 #import "PGFestifyViewController.h"
 #import "PGFestifyTrackProvider.h"
-#import "PGTrackPlayerViewController.h"
+#import "PGPlayerViewController.h"
 #import "PGSettingsViewController.h"
 #import <iAd/iAd.h>
 
@@ -63,7 +63,7 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showTrackPlayer"]) {
-        PGTrackPlayerViewController* viewController = (PGTrackPlayerViewController*)segue.destinationViewController;
+        PGPlayerViewController* viewController = (PGPlayerViewController*)segue.destinationViewController;
         viewController.trackPlayer = self.trackPlayer;
         viewController.session = self.session;
     }
