@@ -16,7 +16,7 @@ static NSString* const kSpotifyCallbackURL = @"spotify-ios-sdk-beta://callback";
 @implementation PGAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // update discovery manager app id
+    // update discovery manager service UUID
     [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:@"313752b1-f55b-4769-9387-61ce9fd7a840"];
  
     return YES;

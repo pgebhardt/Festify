@@ -9,6 +9,14 @@
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
 
+@class PGSettingsViewController;
+
+@protocol PGSettingsViewDelegate <NSObject>
+
+-(void)settingsViewUserDidRequestLogout:(PGSettingsViewController*)settingsView;
+
+@end
+
 @interface PGSettingsViewController : UITableViewController<UIPickerViewDelegate, UIPickerViewDataSource>
 
 - (IBAction)done:(id)sender;
@@ -18,5 +26,6 @@
 @property (weak, nonatomic) IBOutlet UIPickerView *playlistPicker;
 
 @property (nonatomic, strong) SPTSession* session;
+@property (nonatomic, weak) id<PGSettingsViewDelegate> delegate;
 
 @end

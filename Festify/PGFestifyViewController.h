@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
 #import "PGDiscoveryManager.h"
+#import "PGSettingsViewController.h"
 
-@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate>
+@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate, PGSettingsViewDelegate>
 
 -(void)handleNewSession:(SPTSession*)session;
 - (IBAction)festify:(id)sender;

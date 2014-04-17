@@ -106,7 +106,13 @@
 #pragma mark - UITableViewDelegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row == 0) {
+    // deselect cell
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    // handle actions for specific cell
+    NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
+    if ([reuseIdentifier isEqualToString:@"playlistCell"]) {
+        // show or hide playlist picker
         if (!self.playlistPickerIsShowing) {
             [self showPlaylistPicker];
         }
@@ -114,8 +120,14 @@
             [self hidePlaylistPicker];
         }
     }
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    else if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
+        // inform delegate to logout and dismiss view controller
+        [self dismissViewControllerAnimated:YES completion:^{
+            if (self.delegate) {
+                [self.delegate settingsViewUserDidRequestLogout:self];
+            }
+        }];
+    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

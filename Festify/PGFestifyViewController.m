@@ -7,10 +7,9 @@
 //
 
 #import "PGFestifyViewController.h"
+#import <iAd/iAd.h>
 #import "PGFestifyTrackProvider.h"
 #import "PGPlayerViewController.h"
-#import "PGSettingsViewController.h"
-#import <iAd/iAd.h>
 
 @interface PGFestifyViewController ()
 
@@ -26,10 +25,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    // set as discovery manager delegate
+    // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
 
-    // enable iAd
+    // enable banner ads
     self.canDisplayBannerAds = YES;
 }
 
@@ -72,7 +71,9 @@
     }
     else if ([segue.identifier isEqualToString:@"showSettings"]) {
         PGSettingsViewController* viewController = (PGSettingsViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];
+        
         viewController.session = self.session;
+        viewController.delegate = self;
     }
 }
 
@@ -97,6 +98,20 @@
                 [self.trackPlayer playTrackProvider:self.trackProvider];
             }
          }
+    }];
+}
+
+#pragma mark - PGSettingsViewDelegate
+
+-(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
+    // stop playback, advertisiement and discovery and return to login screen
+    [[PGDiscoveryManager sharedInstance] stopDiscoveringPlaylists];
+    [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
+
+    // use a weak copy of self to avoid retain cycles
+    __weak typeof(self) weakSelf = self;
+    [self.streamingController setIsPlaying:NO callback:^(NSError *error) {
+        [weakSelf dismissViewControllerAnimated:YES completion:nil];
     }];
 }
 
