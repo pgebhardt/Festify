@@ -16,6 +16,7 @@
 
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
+@property (nonatomic, strong) SPTAudioStreamingController* streamingController;
 @property (nonatomic, strong) PGFestifyTrackProvider* trackProvider;
 
 @end
@@ -36,10 +37,9 @@
     self.session = session;
     self.trackProvider = [[PGFestifyTrackProvider alloc] initWithSession:session];
     
-    // create new track player if not already existing
-    if (!self.trackPlayer) {
-        self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:@"Patrik Gebhardt" appName:@"Festify"];
-    }
+    // create new streaming controller and track player
+    self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:@"Patrik Gebhardt" appName:@"Festify"];
+    self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
     
     // enable playback
     [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
@@ -64,9 +64,10 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showTrackPlayer"]) {
         PGPlayerViewController* viewController = (PGPlayerViewController*)segue.destinationViewController;
+        
+        viewController.streamingController = self.streamingController;
         viewController.trackPlayer = self.trackPlayer;
         viewController.session = self.session;
-        self.trackPlayer.delegate = viewController;
     }
     else if ([segue.identifier isEqualToString:@"showSettings"]) {
         PGSettingsViewController* viewController = (PGSettingsViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];

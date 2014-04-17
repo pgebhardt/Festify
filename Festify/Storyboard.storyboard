@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Player View Controller-->
+        <!--Player View Controller - Now Playing-->
         <scene sceneID="HN1-7L-aEX">
             <objects>
                 <viewController id="EVF-cW-P26" customClass="PGPlayerViewController" sceneMemberID="viewController">
@@ -117,7 +117,7 @@
                             <constraint firstItem="t2x-TT-kLX" firstAttribute="top" secondItem="wrL-am-jDI" secondAttribute="bottom" constant="8" id="vN6-Hv-uMJ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="Zmt-zk-YEv"/>
+                    <navigationItem key="navigationItem" title="Now Playing" id="Zmt-zk-YEv"/>
                     <connections>
                         <outlet property="albumLabel" destination="t2x-TT-kLX" id="hxB-Yd-k7J"/>
                         <outlet property="artistLabel" destination="IEn-sz-YgL" id="EKZ-Pf-6T7"/>

@@ -25,7 +25,14 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self updateUI];
+    self.streamingController.playbackDelegate = self;
+    [self updateUI:self.streamingController.currentTrackMetadata];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.streamingController.playbackDelegate = nil;
 }
 
 #pragma mark - Actions
@@ -38,11 +45,11 @@
 
 -(IBAction)playPause:(id)sender {
     if (self.trackPlayer.currentProvider != nil) {
-        if (self.trackPlayer.paused) {
-            [self.trackPlayer resumePlayback];
+        if (self.streamingController.isPlaying) {
+            [self.streamingController setIsPlaying:NO callback:nil];
         }
         else {
-            [self.trackPlayer pausePlayback];
+            [self.streamingController setIsPlaying:YES callback:nil];
         }
     }
 }
@@ -55,30 +62,27 @@
 
 #pragma mark - Logic
 
--(void)updateUI {
-	if (self.trackPlayer.indexOfCurrentTrack == NSNotFound) {
-		self.titleLabel.text = @"Nothing Playing";
-		self.albumLabel.text = @"";
-		self.artistLabel.text = @"";
-        self.coverImage.image = nil;
-	}
-    else {
-		NSInteger index = self.trackPlayer.indexOfCurrentTrack;
-		SPTTrack *track = (SPTTrack*)self.trackPlayer.currentProvider.tracks[index];
-		self.titleLabel.text = track.name;
-		self.albumLabel.text = track.album.name;
-		self.artistLabel.text = [track.artists.firstObject name];
-        self.coverImage.image = nil;
-        
-        [self loadCoverArtForPartialAlbum:track.album];
-    }
-    
-    self.navigationItem.title = [NSString stringWithFormat:@"%ld of %lu", (long)self.trackPlayer.indexOfCurrentTrack + 1, (unsigned long)self.trackPlayer.currentProvider.tracks.count];
+-(void)updateUI:(NSDictionary*)trackMetadata {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (trackMetadata) {
+            self.titleLabel.text = trackMetadata[SPTAudioStreamingMetadataTrackName];
+            self.albumLabel.text = trackMetadata[SPTAudioStreamingMetadataAlbumName];
+            self.artistLabel.text = trackMetadata[SPTAudioStreamingMetadataArtistName];
+            
+            [self loadCoverArtForPartialAlbum:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]]];
+        }
+        else {
+            self.titleLabel.text = @"Nothing Playing";
+            self.albumLabel.text = @"";
+            self.artistLabel.text = @"";
+            self.coverImage.image = nil;
+        }
+    });
 }
 
--(void)loadCoverArtForPartialAlbum:(SPTPartialAlbum*)album {
+-(void)loadCoverArtForPartialAlbum:(NSURL*)albumURI {
     // request complete album of track
-    [SPTRequest requestItemFromPartialObject:album withSession:self.session callback:^(NSError *error, id object) {
+    [SPTRequest requestItemAtURI:albumURI withSession:self.session callback:^(NSError *error, id object) {
         if (!error) {
             // extract image URL
             NSURL* imageURL = [object largestCover].imageURL;
@@ -102,35 +106,56 @@
     }
 }
 
-#pragma mark - SPTTrackPlayerDelegate
+#pragma mark - SPTAudioStreamingControllerPlaybackDelegate
 
--(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
-    NSLog(@"didDidReceiveMessageForEndUser: %@", message);
+-(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangePlaybackStatus:(BOOL)isPlaying {
+    NSLog(@"audioStreming didChangePlaybackStatus:%d", isPlaying);
+    
+    if (!isPlaying) {
+        [self updateUI:nil];
+    }
 }
 
--(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withError:(NSError *)error {
-    NSLog(@"didEndPlaybackOfProvider: %@ withError: %@", provider, error);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateUI];
-    });
+-(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeRepeatStatus:(BOOL)isRepeated {
+    NSLog(@"audioStreming didChangeRepeatStatus:%d", isRepeated);
 }
 
--(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
-    NSLog(@"didEndPlaybackOfProvider: %@ withReason: %u", provider, reason);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateUI];
-    });
+-(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeShuffleStatus:(BOOL)isShuffled {
+    NSLog(@"audioStreming didChangeShuffleStatus:%d", isShuffled);
 }
 
--(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
-    NSLog(@"didEndPlaybackOfTrackAtIndex: %d ofProvider: %@", index, provider);
+-(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeToTrack:(NSDictionary *)trackMetadata {
+    NSLog(@"audioStreming didChangeToTrack:%@", trackMetadata);
+
+    [self updateUI:trackMetadata];
 }
 
--(void)trackPlayer:(SPTTrackPlayer *)player didStartPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
-    NSLog(@"didStartPlaybackOfTrackAtIndex: %d ofProvider: %@", index, provider);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateUI];
-    });
+-(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeVolume:(SPVolume)volume {
+    NSLog(@"audioStreming didChangeVolume:%f", volume);
+}
+
+-(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didSeekToOffset:(NSTimeInterval)offset {
+    NSLog(@"audioStreming didSeekToOffset:%f", offset);
+}
+
+-(void)audioStreamingDidBecomeActivePlaybackDevice:(SPTAudioStreamingController *)audioStreaming {
+    NSLog(@"audioStremingDidBecomeActivePlaybackDevice");
+}
+
+-(void)audioStreamingDidBecomeInactivePlaybackDevice:(SPTAudioStreamingController *)audioStreaming {
+    NSLog(@"audioStremingDidBecomeInactivePlaybackDevice");
+}
+
+-(void)audioStreamingDidLosePermissionForPlayback:(SPTAudioStreamingController *)audioStreaming {
+    NSLog(@"audioStremingDidLosePermissionForPlayback");
+}
+
+-(void)audioStreamingDidSkipToPreviousTrack:(SPTAudioStreamingController *)audioStreaming {
+    NSLog(@"audioStremingDidSkipToPreviousTrack");
+}
+
+-(void)audioStreamingDidSkipToNextTrack:(SPTAudioStreamingController *)audioStreaming {
+    NSLog(@"audioStremingDidSkipToNextTrack");
 }
 
 @end
