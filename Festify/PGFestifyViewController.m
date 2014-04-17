@@ -40,9 +40,7 @@
     [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
 }
 
--(void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
+-(void)dealloc {
     // cleanup observer
     [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
 }
