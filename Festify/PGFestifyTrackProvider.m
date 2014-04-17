@@ -34,16 +34,30 @@
     [self.tracks removeAllObjects];
 }
 
--(void)addPlaylist:(SPTPlaylistSnapshot *)playlist forIdentifier:(NSString *)identifier {
-    self.playlists[identifier] = [playlist.tracks copy];
+-(BOOL)addPlaylist:(SPTPlaylistSnapshot *)playlist forIdentifier:(NSString *)identifier {
+    // check for existing playlist
+    for (NSDictionary* playlistDict in self.playlists.allValues) {
+        if ([playlistDict[@"URI"] isEqualToString:playlist.uri.absoluteString]) {
+            return NO;
+        }
+    }
     
+    // cleanup tracks array
     [self.tracks removeAllObjects];
-    for (NSArray* tracks in self.playlists.allValues) {
-        [self.tracks addObjectsFromArray:tracks];
+    
+    // add playlist to dictionary to allow only one playlist per identifier
+    self.playlists[identifier] = @{@"URI": playlist.uri.absoluteString,
+                                   @"Tracks": [playlist.tracks copy]};
+    
+    // add all tracks to tracks array
+    for (NSDictionary* playlistDict in self.playlists.allValues) {
+        [self.tracks addObjectsFromArray:playlistDict[@"Tracks"]];
     }
     
     // shuffle tracks array
     [self.tracks shuffle];
+    
+    return YES;
 }
 
 #pragma mark - SPTTrackProvider
