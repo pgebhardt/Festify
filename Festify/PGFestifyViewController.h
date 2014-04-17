@@ -11,7 +11,7 @@
 #import "PGDiscoveryManager.h"
 #import "PGSettingsViewController.h"
 
-@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate, PGSettingsViewDelegate>
+@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate, PGSettingsViewDelegate, SPTTrackPlayerDelegate>
 
 -(void)handleNewSession:(SPTSession*)session;
 - (IBAction)festify:(id)sender;

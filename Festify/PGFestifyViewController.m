@@ -53,6 +53,7 @@
     self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:@"Patrik Gebhardt" appName:@"Festify"];
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
     self.trackPlayer.repeatEnabled = YES;
+    self.trackPlayer.delegate = self;
     
     // enable playback
     [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
@@ -83,7 +84,9 @@
 
 - (IBAction)festify:(id)sender {
     // stop playback
-    [self.trackPlayer pausePlayback];
+    if (self.streamingController.isPlaying) {
+        [self.trackPlayer pausePlayback];
+    }
     
     // clear content of track provider
     [self.trackProvider clearAllTracks];
@@ -150,5 +153,32 @@
     }];
 }
 
+#pragma mark - SPTTrackPlayerDelegate
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
+    [TSMessage showNotificationInViewController:self.navigationController
+                                          title:@"Message by Spotify"
+                                       subtitle:message
+                                           type:TSMessageNotificationTypeMessage];
+}
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withError:(NSError *)error {
+    [TSMessage showNotificationInViewController:self.navigationController
+                                          title:@"Error"
+                                       subtitle:error.userInfo[NSLocalizedDescriptionKey]
+                                           type:TSMessageNotificationTypeError];
+}
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
+    NSLog(@"trackPlayer didEndPlaybackOfProvider withReason: %lu", reason);
+}
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
+    NSLog(@"trackPlayer didEndPlaybackOfTrackAtIndex: %ld", (long)index);
+}
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didStartPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
+    NSLog(@"trackPlayer didStartPlaybackOfTrackAtIndex: %ld", (long)index);
+}
 
 @end
