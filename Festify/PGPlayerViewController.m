@@ -7,20 +7,8 @@
 //
 
 #import "PGPlayerViewController.h"
-#import <iAd/iAd.h>
-
-@interface PGPlayerViewController ()
-
-@end
 
 @implementation PGPlayerViewController
-
--(void)viewDidLoad {
-    [super viewDidLoad];
-
-    // enable iAd
-    self.canDisplayBannerAds = YES;
-}
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -69,7 +57,7 @@
             self.albumLabel.text = trackMetadata[SPTAudioStreamingMetadataAlbumName];
             self.artistLabel.text = trackMetadata[SPTAudioStreamingMetadataArtistName];
             
-            [self loadCoverArtForPartialAlbum:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]]];
+            [self loadAlbumCoverArtWithURL:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]]];
         }
         else {
             self.titleLabel.text = @"Nothing Playing";
@@ -80,7 +68,7 @@
     });
 }
 
--(void)loadCoverArtForPartialAlbum:(NSURL*)albumURI {
+-(void)loadAlbumCoverArtWithURL:(NSURL*)albumURI {
     // request complete album of track
     [SPTRequest requestItemAtURI:albumURI withSession:self.session callback:^(NSError *error, id object) {
         if (!error) {
@@ -110,10 +98,6 @@
 
 -(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangePlaybackStatus:(BOOL)isPlaying {
     NSLog(@"audioStreming didChangePlaybackStatus:%d", isPlaying);
-    
-    if (!isPlaying) {
-        [self updateUI:nil];
-    }
 }
 
 -(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeRepeatStatus:(BOOL)isRepeated {
