@@ -26,11 +26,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
-    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
     
     // enable banner ads
     self.canDisplayBannerAds = YES;
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // observe current track to inform user of track changes
+    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    // cleanup observer
+    [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
 }
 
 -(void)handleNewSession:(SPTSession *)session {
