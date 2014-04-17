@@ -13,10 +13,12 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
+    // observe playback state change and track change to update UI accordingly
     [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
     [self addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
 
+    // initialy setup UI correctly
     [self updateTrackInfo:self.streamingController.currentTrackMetadata];
     [self updatePlayButton];
 }

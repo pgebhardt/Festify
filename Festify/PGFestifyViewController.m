@@ -7,10 +7,10 @@
 //
 
 #import "PGFestifyViewController.h"
-#import <iAd/iAd.h>
 #import "PGFestifyTrackProvider.h"
 #import "PGPlayerViewController.h"
 #import "TSMessage.h"
+#import <iAd/iAd.h>
 
 @interface PGFestifyViewController ()
 
@@ -26,9 +26,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
-
+    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
+    
     // enable banner ads
     self.canDisplayBannerAds = YES;
 }
@@ -50,6 +50,24 @@
     }];
 
 }
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"streamingController.currentTrackMetadata"]) {
+        // notify user
+        [TSMessage showNotificationInViewController:self.navigationController
+                                              title:@"Now playing"
+                                           subtitle:[NSString stringWithFormat:@"%@ - %@",
+                                                     self.streamingController.currentTrackMetadata[SPTAudioStreamingMetadataArtistName],
+                                                     self.streamingController.currentTrackMetadata[SPTAudioStreamingMetadataTrackName]]
+                                               type:TSMessageNotificationTypeMessage];
+
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+#pragma  mark - Actions
 
 - (IBAction)festify:(id)sender {
     // stop playback
