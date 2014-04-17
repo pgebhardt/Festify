@@ -40,6 +40,7 @@
     // create new streaming controller and track player
     self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:@"Patrik Gebhardt" appName:@"Festify"];
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
+    self.trackPlayer.repeatEnabled = YES;
     
     // enable playback
     [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
@@ -55,7 +56,7 @@
     [self.trackProvider clearAllTracks];
     
     // stop playback
-    [self.trackPlayer pausePlayback];
+    [self.streamingController setIsPlaying:NO callback:nil];
     
     // start discovering playlists
     [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
