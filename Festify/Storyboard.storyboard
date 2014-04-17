@@ -37,7 +37,7 @@
                                     <constraint firstAttribute="width" constant="30" id="J9e-6i-yGg"/>
                                     <constraint firstAttribute="height" constant="22" id="m0q-vY-2pB"/>
                                 </constraints>
-                                <state key="normal" image="PlayPause">
+                                <state key="normal" image="Pause">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -117,11 +117,18 @@
                             <constraint firstItem="t2x-TT-kLX" firstAttribute="top" secondItem="wrL-am-jDI" secondAttribute="bottom" constant="8" id="vN6-Hv-uMJ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Now Playing" id="Zmt-zk-YEv"/>
+                    <navigationItem key="navigationItem" title="Now Playing" id="Zmt-zk-YEv">
+                        <barButtonItem key="rightBarButtonItem" image="List" id="kGg-VL-XMV">
+                            <connections>
+                                <segue destination="Mf0-Gs-FPK" kind="push" identifier="showPlaylist" id="yt2-Yd-W6E"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="albumLabel" destination="t2x-TT-kLX" id="hxB-Yd-k7J"/>
                         <outlet property="artistLabel" destination="IEn-sz-YgL" id="EKZ-Pf-6T7"/>
                         <outlet property="coverImage" destination="AuE-Vp-LKl" id="iD6-Dg-fZx"/>
+                        <outlet property="playPauseButton" destination="6TH-cD-1sk" id="AtB-qd-0EQ"/>
                         <outlet property="spinner" destination="OcY-UH-rWg" id="yO7-aq-VYS"/>
                         <outlet property="titleLabel" destination="wrL-am-jDI" id="dOo-gC-uKb"/>
                     </connections>
@@ -129,6 +136,51 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GRa-W3-jeO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1930" y="348"/>
+        </scene>
+        <!--Playlist View Controller - Up Next-->
+        <scene sceneID="FIV-go-zyM">
+            <objects>
+                <tableViewController id="Mf0-Gs-FPK" customClass="PGPlaylistViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="cIJ-63-gqv">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" textLabel="XQM-XN-40V" detailTextLabel="vRY-SL-T6d" style="IBUITableViewCellStyleSubtitle" id="o0F-dr-Hmy">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="o0F-dr-Hmy" id="4se-RM-Mng">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="XQM-XN-40V">
+                                            <rect key="frame" x="15" y="3" width="34" height="22"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="vRY-SL-T6d">
+                                            <rect key="frame" x="15" y="25" width="43" height="15"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Mf0-Gs-FPK" id="qo8-mv-xRJ"/>
+                            <outlet property="delegate" destination="Mf0-Gs-FPK" id="KJp-zR-aIJ"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Up Next" id="ebI-nP-PHG"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yNx-3K-9z9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2456" y="348"/>
         </scene>
         <!--Settings View Controller - Settings-->
         <scene sceneID="Jei-n3-CXK">
@@ -379,7 +431,8 @@
     <resources>
         <image name="Cog" width="25" height="25"/>
         <image name="Forward" width="30" height="22"/>
-        <image name="PlayPause" width="29" height="22"/>
+        <image name="List" width="27" height="23"/>
+        <image name="Pause" width="16" height="22"/>
         <image name="Rewind" width="30" height="22"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

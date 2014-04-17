@@ -7,6 +7,7 @@
 //
 
 #import "PGPlayerViewController.h"
+#import "PGPlaylistViewController.h"
 
 @implementation PGPlayerViewController
 
@@ -14,21 +15,36 @@
     [super viewWillAppear:animated];
     
     [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
-    [self updateUI:self.streamingController.currentTrackMetadata];
+    [self addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
+
+    [self updateTrackInfo:self.streamingController.currentTrackMetadata];
+    [self updatePlayButton];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
+    [self removeObserver:self forKeyPath:@"trackPlayer.paused"];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"streamingController.currentTrackMetadata"]) {
-        [self updateUI:self.streamingController.currentTrackMetadata];
+        [self updateTrackInfo:self.streamingController.currentTrackMetadata];
+    }
+    else if ([keyPath isEqualToString:@"trackPlayer.paused"]) {
+        [self updatePlayButton];
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"showPlaylist"]) {
+        PGPlaylistViewController* viewController = (PGPlaylistViewController*)segue.destinationViewController;
+        
+        viewController.trackPlayer = self.trackPlayer;
     }
 }
 
@@ -42,11 +58,11 @@
 
 -(IBAction)playPause:(id)sender {
     if (self.trackPlayer.currentProvider != nil) {
-        if (self.streamingController.isPlaying) {
-            [self.streamingController setIsPlaying:NO callback:nil];
+        if (self.trackPlayer.paused) {
+            [self.trackPlayer resumePlayback];
         }
         else {
-            [self.streamingController setIsPlaying:YES callback:nil];
+            [self.trackPlayer pausePlayback];
         }
     }
 }
@@ -59,7 +75,16 @@
 
 #pragma mark - Logic
 
--(void)updateUI:(NSDictionary*)trackMetadata {
+-(void)updatePlayButton {
+    if (self.trackPlayer.paused) {
+        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Play"];
+    }
+    else {
+        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Pause"];
+    }
+}
+
+-(void)updateTrackInfo:(NSDictionary*)trackMetadata {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (trackMetadata) {
             self.titleLabel.text = trackMetadata[SPTAudioStreamingMetadataTrackName];
@@ -95,12 +120,6 @@
             }] resume];
         }
     }];
-}
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"showSettings"]) {
-        [segue.destinationViewController setSession:self.session];
-    }
 }
 
 @end
