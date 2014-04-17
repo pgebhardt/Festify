@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
 
-@interface PGPlayerViewController : UIViewController<SPTAudioStreamingPlaybackDelegate>
+@interface PGPlayerViewController : UIViewController
 
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;

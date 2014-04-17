@@ -13,14 +13,23 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.streamingController.playbackDelegate = self;
+    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
     [self updateUI:self.streamingController.currentTrackMetadata];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    self.streamingController.playbackDelegate = nil;
+    [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"streamingController.currentTrackMetadata"]) {
+        [self updateUI:self.streamingController.currentTrackMetadata];
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 #pragma mark - Actions
@@ -92,54 +101,6 @@
     if ([segue.identifier isEqualToString:@"showSettings"]) {
         [segue.destinationViewController setSession:self.session];
     }
-}
-
-#pragma mark - SPTAudioStreamingControllerPlaybackDelegate
-
--(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangePlaybackStatus:(BOOL)isPlaying {
-    NSLog(@"audioStreming didChangePlaybackStatus:%d", isPlaying);
-}
-
--(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeRepeatStatus:(BOOL)isRepeated {
-    NSLog(@"audioStreming didChangeRepeatStatus:%d", isRepeated);
-}
-
--(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeShuffleStatus:(BOOL)isShuffled {
-    NSLog(@"audioStreming didChangeShuffleStatus:%d", isShuffled);
-}
-
--(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeToTrack:(NSDictionary *)trackMetadata {
-    NSLog(@"audioStreming didChangeToTrack:%@", trackMetadata);
-
-    [self updateUI:trackMetadata];
-}
-
--(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeVolume:(SPVolume)volume {
-    NSLog(@"audioStreming didChangeVolume:%f", volume);
-}
-
--(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didSeekToOffset:(NSTimeInterval)offset {
-    NSLog(@"audioStreming didSeekToOffset:%f", offset);
-}
-
--(void)audioStreamingDidBecomeActivePlaybackDevice:(SPTAudioStreamingController *)audioStreaming {
-    NSLog(@"audioStremingDidBecomeActivePlaybackDevice");
-}
-
--(void)audioStreamingDidBecomeInactivePlaybackDevice:(SPTAudioStreamingController *)audioStreaming {
-    NSLog(@"audioStremingDidBecomeInactivePlaybackDevice");
-}
-
--(void)audioStreamingDidLosePermissionForPlayback:(SPTAudioStreamingController *)audioStreaming {
-    NSLog(@"audioStremingDidLosePermissionForPlayback");
-}
-
--(void)audioStreamingDidSkipToPreviousTrack:(SPTAudioStreamingController *)audioStreaming {
-    NSLog(@"audioStremingDidSkipToPreviousTrack");
-}
-
--(void)audioStreamingDidSkipToNextTrack:(SPTAudioStreamingController *)audioStreaming {
-    NSLog(@"audioStremingDidSkipToNextTrack");
 }
 
 @end
