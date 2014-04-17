@@ -10,6 +10,7 @@
 #import <iAd/iAd.h>
 #import "PGFestifyTrackProvider.h"
 #import "PGPlayerViewController.h"
+#import "TSMessage.h"
 
 @interface PGFestifyViewController ()
 
@@ -24,7 +25,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
 
@@ -51,11 +52,11 @@
 }
 
 - (IBAction)festify:(id)sender {
+    // stop playback
+    [self.trackPlayer pausePlayback];
+    
     // clear content of track provider
     [self.trackProvider clearAllTracks];
-    
-    // stop playback
-    [self.streamingController setIsPlaying:NO callback:nil];
     
     // start discovering playlists
     [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
@@ -87,16 +88,20 @@
 
 #pragma mark - PGDiscoveryManagerDelegate
 
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri fromUser:(NSString *)username withIdentifier:(NSString *)identifier {
+-(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri byIdentifier:(NSString *)identifier {
     // request complete playlist and add it to track provider
     [SPTRequest requestItemAtURI:uri withSession:self.session callback:^(NSError *error, id object) {
-        if (!error) {
-            [self.trackProvider addPlaylist:object forIdentifier:identifier];
-            
+        if (!error && [self.trackProvider addPlaylist:object forIdentifier:identifier]) {
             // restart track player
             if (self.trackPlayer.currentProvider == nil || self.trackPlayer.paused == YES) {
                 [self.trackPlayer playTrackProvider:self.trackProvider];
             }
+            
+            // notify user
+            [TSMessage showNotificationInViewController:self.navigationController
+                                                  title:[NSString stringWithFormat:@"Added: %@", [object name]]
+                                               subtitle:[NSString stringWithFormat:@"Creator: %@", [object creator]]
+                                                   type:TSMessageNotificationTypeSuccess];
          }
     }];
 }
