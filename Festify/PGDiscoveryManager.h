@@ -14,7 +14,7 @@
 
 @protocol PGDiscoveryManagerDelegate<NSObject>
 
--(void)discoveryManager:(PGDiscoveryManager*)discoveryManager didDiscoverPlaylistWithURI:(NSURL*)uri fromIdentifier:(NSString*)identifier;
+-(void)discoveryManager:(PGDiscoveryManager*)discoveryManager didDiscoverPlaylistWithURI:(NSURL*)uri fromUser:(NSString*)username withIdentifier:(NSString*)identifier;
 
 @end
 

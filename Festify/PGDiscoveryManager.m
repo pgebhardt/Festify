@@ -161,7 +161,9 @@
     
     // inform delegate about new playlist
     if (self.delegate) {
-        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:playlistURI fromIdentifier:[peripheral.identifier UUIDString]];
+        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:playlistURI
+                               fromUser:peripheral.name
+                         withIdentifier:[peripheral.identifier UUIDString]];
     }
 }
 

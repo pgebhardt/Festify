@@ -87,7 +87,7 @@
 
 #pragma mark - PGDiscoveryManagerDelegate
 
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri fromIdentifier:(NSString *)identifier {
+-(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri fromUser:(NSString *)username withIdentifier:(NSString *)identifier {
     // request complete playlist and add it to track provider
     [SPTRequest requestItemAtURI:uri withSession:self.session callback:^(NSError *error, id object) {
         if (!error) {
