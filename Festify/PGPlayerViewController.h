@@ -20,10 +20,13 @@
 @property (nonatomic, strong) SPTSession* session;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
-@property (weak, nonatomic) IBOutlet UILabel *albumLabel;
 @property (weak, nonatomic) IBOutlet UILabel *artistLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *coverImage;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @property (weak, nonatomic) IBOutlet UIButton *playPauseButton;
+
+@property (weak, nonatomic) IBOutlet UIProgressView *trackPosition;
+@property (weak, nonatomic) IBOutlet UILabel *currentTimeView;
+@property (weak, nonatomic) IBOutlet UILabel *remainingTimeView;
 
 @end

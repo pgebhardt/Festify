@@ -17,6 +17,7 @@
     // observe playback state change and track change to update UI accordingly
     [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
     [self addObserver:self forKeyPath:@"streamingController.isPlaying" options:0 context:nil];
+    [self addObserver:self forKeyPath:@"streamingController.currentPlaybackPosition" options:0 context:nil];
 
     // initialy setup UI correctly
     [self updateTrackInfo:self.streamingController.currentTrackMetadata];
@@ -28,6 +29,7 @@
     
     [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
     [self removeObserver:self forKeyPath:@"streamingController.isPlaying"];
+    [self removeObserver:self forKeyPath:@"streamingController.currentPlaybackPosition"];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -36,6 +38,10 @@
     }
     else if ([keyPath isEqualToString:@"streamingController.isPlaying"]) {
         [self updatePlayButton:self.streamingController.isPlaying];
+    }
+    else if ([keyPath isEqualToString:@"streamingController.currentPlaybackPosition"]) {
+        [self updatePlaybackPosition:self.streamingController.currentPlaybackPosition
+                         andDuration:[self.streamingController.currentTrackMetadata[SPTAudioStreamingMetadataTrackDuration] doubleValue]];
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -86,22 +92,28 @@
     }
 }
 
+-(void)updatePlaybackPosition:(NSTimeInterval)playbackPosition andDuration:(NSTimeInterval)duration {
+    self.trackPosition.progress = playbackPosition / duration;
+    self.currentTimeView.text = [NSString stringWithFormat:@"%d:%02d",
+                                 (int)playbackPosition / 60, (int)playbackPosition % 60];
+    self.remainingTimeView.text = [NSString stringWithFormat:@"%d:%02d",
+                                   (int)(playbackPosition - duration) / 60,
+                                   (int)(duration - playbackPosition) % 60];
+}
+
 -(void)updateTrackInfo:(NSDictionary*)trackMetadata {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (trackMetadata) {
-            self.titleLabel.text = trackMetadata[SPTAudioStreamingMetadataTrackName];
-            self.albumLabel.text = trackMetadata[SPTAudioStreamingMetadataAlbumName];
-            self.artistLabel.text = trackMetadata[SPTAudioStreamingMetadataArtistName];
-            
-            [self loadAlbumCoverArtWithURL:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]]];
-        }
-        else {
-            self.titleLabel.text = @"Nothing Playing";
-            self.albumLabel.text = @"";
-            self.artistLabel.text = @"";
-            self.coverImage.image = nil;
-        }
-    });
+    if (trackMetadata) {
+        self.titleLabel.text = trackMetadata[SPTAudioStreamingMetadataTrackName];
+        self.artistLabel.text = trackMetadata[SPTAudioStreamingMetadataArtistName];
+        
+        [self loadAlbumCoverArtWithURL:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]]];
+    }
+    else {
+        self.titleLabel.text = @"Nothing Playing";
+        self.trackPosition.progress = 0.0;
+        self.artistLabel.text = @"";
+        self.coverImage.image = nil;
+    }
 }
 
 -(void)loadAlbumCoverArtWithURL:(NSURL*)albumURI {
