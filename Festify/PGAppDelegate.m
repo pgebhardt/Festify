@@ -29,10 +29,8 @@ static NSString* const kSpotifyCallbackURL = @"spotify-ios-sdk-beta://callback";
         [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url
                                             tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://patrik-macbook:1234/swap"]
                                                                  callback:^(NSError *error, SPTSession *session) {
-            if (!error) {
-                // tell root view controller login has completed
-                [(PGLoginViewController*)self.window.rootViewController loginCompletedWithSession:session];
-            }
+            // tell root view controller login has completed
+            [(PGLoginViewController*)self.window.rootViewController loginCompletedWithSession:session andError:error];
         }];
         
         return YES;

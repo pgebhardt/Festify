@@ -12,6 +12,6 @@
 @interface PGLoginViewController : UIViewController
 
 - (IBAction)login:(id)sender;
--(void)loginCompletedWithSession:(SPTSession*)session;
+-(void)loginCompletedWithSession:(SPTSession*)session andError:(NSError*)error;
 
 @end

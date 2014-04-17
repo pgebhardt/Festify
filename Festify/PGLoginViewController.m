@@ -8,6 +8,7 @@
 
 #import "PGLoginViewController.h"
 #import "PGFestifyViewController.h"
+#import "TSMessage.h"
 
 @interface PGLoginViewController ()
 
@@ -26,6 +27,14 @@ static NSString* const kSpotifyCallbackURL = @"spotify-ios-sdk-beta://callback";
 
 }
 
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
+
 - (IBAction)login:(id)sender {
     // get login url
     NSURL* loginURL = [[SPTAuth defaultInstance] loginURLForClientId:kSpotifyClientId
@@ -36,10 +45,19 @@ static NSString* const kSpotifyCallbackURL = @"spotify-ios-sdk-beta://callback";
     [[UIApplication sharedApplication] openURL:loginURL];
 }
 
--(void)loginCompletedWithSession:(SPTSession *)session {
-    // show main view controller and handle session
-    self.session = session;
-    [self performSegueWithIdentifier:@"showMainScene" sender:self];
+-(void)loginCompletedWithSession:(SPTSession *)session andError:(NSError *)error {
+    if (!error) {
+        // show main view controller and handle session
+        self.session = session;
+        [self performSegueWithIdentifier:@"showMainScene" sender:self];
+    }
+    else {
+        // notify user
+        [TSMessage showNotificationInViewController:self
+                                              title:@"Authentication Error"
+                                           subtitle:error.userInfo[NSLocalizedDescriptionKey]
+                                               type:TSMessageNotificationTypeError];
+    }
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
