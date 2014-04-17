@@ -144,12 +144,16 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     // discover the playlist characteristic
-    [peripheral discoverCharacteristics:@[self.serviceUUID] forService:peripheral.services[0]];
+    if (peripheral.services.count != 0) {
+        [peripheral discoverCharacteristics:@[self.serviceUUID] forService:peripheral.services[0]];
+    }
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
     // read playlist value of the characteristic
-    [peripheral readValueForCharacteristic:service.characteristics[0]];
+    if (service.characteristics.count != 0) {
+        [peripheral readValueForCharacteristic:service.characteristics[0]];
+    }
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
@@ -161,9 +165,7 @@
     
     // inform delegate about new playlist
     if (self.delegate) {
-        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:playlistURI
-                               fromUser:peripheral.name
-                         withIdentifier:[peripheral.identifier UUIDString]];
+        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:playlistURI byIdentifier:[peripheral.identifier UUIDString]];
     }
 }
 
