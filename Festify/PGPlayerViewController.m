@@ -16,26 +16,26 @@
 
     // observe playback state change and track change to update UI accordingly
     [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
-    [self addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
+    [self addObserver:self forKeyPath:@"streamingController.isPlaying" options:0 context:nil];
 
     // initialy setup UI correctly
     [self updateTrackInfo:self.streamingController.currentTrackMetadata];
-    [self updatePlayButton];
+    [self updatePlayButton:self.streamingController.isPlaying];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
-    [self removeObserver:self forKeyPath:@"trackPlayer.paused"];
+    [self removeObserver:self forKeyPath:@"streamingController.isPlaying"];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"streamingController.currentTrackMetadata"]) {
         [self updateTrackInfo:self.streamingController.currentTrackMetadata];
     }
-    else if ([keyPath isEqualToString:@"trackPlayer.paused"]) {
-        [self updatePlayButton];
+    else if ([keyPath isEqualToString:@"streamingController.isPlaying"]) {
+        [self updatePlayButton:self.streamingController.isPlaying];
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -77,12 +77,12 @@
 
 #pragma mark - Logic
 
--(void)updatePlayButton {
-    if (self.trackPlayer.paused) {
-        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Play"];
+-(void)updatePlayButton:(BOOL)isPlaying {
+    if (isPlaying) {
+        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Pause"];
     }
     else {
-        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Pause"];
+        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Play"];
     }
 }
 
