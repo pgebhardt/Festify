@@ -9,8 +9,17 @@
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
 
+@class PGPlaylistViewController;
+
+@protocol PGPlaylistViewDelegate <NSObject>
+
+-(void)playlistView:(PGPlaylistViewController*)playlistView didSelectTrackWithIndex:(NSUInteger)index;
+
+@end
+
 @interface PGPlaylistViewController : UITableViewController
 
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
+@property (nonatomic, weak) id<PGPlaylistViewDelegate> delegate;
 
 @end

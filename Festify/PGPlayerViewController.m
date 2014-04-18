@@ -7,7 +7,6 @@
 //
 
 #import "PGPlayerViewController.h"
-#import "PGPlaylistViewController.h"
 
 @implementation PGPlayerViewController
 
@@ -53,6 +52,7 @@
         PGPlaylistViewController* viewController = (PGPlaylistViewController*)segue.destinationViewController;
         
         viewController.trackPlayer = self.trackPlayer;
+        viewController.delegate = self;
     }
 }
 
@@ -134,6 +134,12 @@
             }] resume];
         }
     }];
+}
+
+#pragma mark - PGPlaylistViewDelegate
+
+-(void)playlistView:(PGPlaylistViewController *)playlistView didSelectTrackWithIndex:(NSUInteger)index {
+    [self.trackPlayer playTrackProvider:self.trackPlayer.currentProvider fromIndex:index];
 }
 
 @end

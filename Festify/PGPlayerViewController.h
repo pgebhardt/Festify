@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
+#import "PGPlaylistViewController.h"
 
-@interface PGPlayerViewController : UIViewController
+@interface PGPlayerViewController : UIViewController<PGPlaylistViewDelegate>
 
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;
