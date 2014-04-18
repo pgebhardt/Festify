@@ -15,6 +15,10 @@
 		5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
+		5F28F75F1901287800A0468A /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7591901287800A0468A /* libTestFlight.a */; };
+		5F28F7601901287800A0468A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 5F28F75A1901287800A0468A /* README.md */; };
+		5F28F7611901287800A0468A /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = 5F28F75B1901287800A0468A /* release_notes.md */; };
+		5F28F7631901288D00A0468A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7621901288D00A0468A /* libz.dylib */; };
 		5F423A6118FC115200C3ED75 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6018FC115200C3ED75 /* Foundation.framework */; };
 		5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6218FC115200C3ED75 /* CoreGraphics.framework */; };
 		5F423A6518FC115200C3ED75 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6418FC115200C3ED75 /* UIKit.framework */; };
@@ -60,6 +64,13 @@
 		5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlayerViewController.m; sourceTree = "<group>"; };
 		5F1F9BD418FC31B10030A64B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		5F28F7591901287800A0468A /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
+		5F28F75A1901287800A0468A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		5F28F75B1901287800A0468A /* release_notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.md; sourceTree = "<group>"; };
+		5F28F75C1901287800A0468A /* TestFlight+AsyncLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+AsyncLogging.h"; sourceTree = "<group>"; };
+		5F28F75D1901287800A0468A /* TestFlight+ManualSessions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+ManualSessions.h"; sourceTree = "<group>"; };
+		5F28F75E1901287800A0468A /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
+		5F28F7621901288D00A0468A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		5F423A5D18FC115200C3ED75 /* Festify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Festify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F423A6018FC115200C3ED75 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5F423A6218FC115200C3ED75 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -92,6 +103,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F28F7631901288D00A0468A /* libz.dylib in Frameworks */,
+				5F28F75F1901287800A0468A /* libTestFlight.a in Frameworks */,
 				5F089B6118FD2B5F002476CB /* iAd.framework in Frameworks */,
 				5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */,
 				5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */,
@@ -116,6 +129,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F28F7581901287800A0468A /* TestFlightSDK3 */ = {
+			isa = PBXGroup;
+			children = (
+				5F28F7591901287800A0468A /* libTestFlight.a */,
+				5F28F75A1901287800A0468A /* README.md */,
+				5F28F75B1901287800A0468A /* release_notes.md */,
+				5F28F75C1901287800A0468A /* TestFlight+AsyncLogging.h */,
+				5F28F75D1901287800A0468A /* TestFlight+ManualSessions.h */,
+				5F28F75E1901287800A0468A /* TestFlight.h */,
+			);
+			path = TestFlightSDK3;
+			sourceTree = "<group>";
+		};
 		5F423A5418FC115200C3ED75 = {
 			isa = PBXGroup;
 			children = (
@@ -139,6 +165,7 @@
 		5F423A5F18FC115200C3ED75 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5F28F7621901288D00A0468A /* libz.dylib */,
 				5F089B6018FD2B5F002476CB /* iAd.framework */,
 				5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */,
 				5F1F9BD618FC31B70030A64B /* AVFoundation.framework */,
@@ -155,6 +182,7 @@
 		5F423A6618FC115200C3ED75 /* Festify */ = {
 			isa = PBXGroup;
 			children = (
+				5F28F7581901287800A0468A /* TestFlightSDK3 */,
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
 				5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */,
 				5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */,
@@ -298,7 +326,9 @@
 			files = (
 				5F423A6B18FC115200C3ED75 /* InfoPlist.strings in Resources */,
 				5F423A7318FC115200C3ED75 /* Images.xcassets in Resources */,
+				5F28F7601901287800A0468A /* README.md in Resources */,
 				5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */,
+				5F28F7611901287800A0468A /* release_notes.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,6 +528,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Festify/TestFlightSDK3",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -518,6 +552,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Festify/TestFlightSDK3",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

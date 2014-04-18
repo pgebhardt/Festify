@@ -10,6 +10,7 @@
 #import "PGDiscoveryManager.h"
 #import "PGLoginViewController.h"
 #import <Spotify/Spotify.h>
+#import "TestFlight.h"
 
 static NSString* const kSpotifyCallbackURL = @"spotify-ios-sdk-beta://callback";
 
@@ -19,6 +20,9 @@ static NSString* const kSpotifyCallbackURL = @"spotify-ios-sdk-beta://callback";
     // update discovery manager service UUID
     [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:@"313752b1-f55b-4769-9387-61ce9fd7a840"];
  
+    // enable test flight
+    [TestFlight takeOff:@"53842477-fe12-4f61-ba55-aa1bb1eebba0"];
+    
     return YES;
 }
 
