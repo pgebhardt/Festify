@@ -34,7 +34,7 @@
 }
 
 -(void)textViewDidChange:(UITextView *)textView {
-    // enable or disable compose button
+    // enable or disable send button
     if (self.feedbackTextView.text.length == 0) {
         self.sendButton.enabled = NO;
     }
