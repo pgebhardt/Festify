@@ -14,6 +14,9 @@
 @interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate, PGSettingsViewDelegate, SPTTrackPlayerDelegate>
 
 -(void)handleNewSession:(SPTSession*)session;
+-(void)handleLoginError:(NSError*)error;
 - (IBAction)festify:(id)sender;
+
+@property (nonatomic, strong) SPTSession* session;
 
 @end

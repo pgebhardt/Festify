@@ -9,15 +9,18 @@
 #import "PGFestifyViewController.h"
 #import "PGFestifyTrackProvider.h"
 #import "PGPlayerViewController.h"
+#import "PGLoginViewController.h"
 #import "TSMessage.h"
 #import <iAd/iAd.h>
 
+static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
+
 @interface PGFestifyViewController ()
 
-@property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
 @property (nonatomic, strong) SPTAudioStreamingController* streamingController;
 @property (nonatomic, strong) PGFestifyTrackProvider* trackProvider;
+@property (nonatomic, strong) NSError* loginError;
 
 @end
 
@@ -25,19 +28,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    // enable banner ads
+    self.canDisplayBannerAds = YES;
     
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
-    
-    // enable banner ads
-    self.canDisplayBannerAds = YES;
-}
 
--(void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    // observe current track to inform user of track changes
-    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
+    // check for valid session, or show login screen
+    if (!self.session) {
+        [self performSegueWithIdentifier:@"showLogin" sender:self];
+    }
 }
 
 -(void)dealloc {
@@ -47,6 +48,8 @@
 
 -(void)handleNewSession:(SPTSession *)session {
     self.session = session;
+    
+    // create festify track provider
     self.trackProvider = [[PGFestifyTrackProvider alloc] initWithSession:session];
     
     // create new streaming controller and track player
@@ -55,6 +58,9 @@
     self.trackPlayer.repeatEnabled = YES;
     self.trackPlayer.delegate = self;
     
+    // observe current track to inform user of track changes
+    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
+
     // enable playback
     [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
         if (error) {
@@ -62,6 +68,12 @@
         }
     }];
 
+}
+
+-(void)handleLoginError:(NSError *)error {
+    // show login screen with error message
+    self.loginError = error;
+    [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -109,6 +121,12 @@
         viewController.session = self.session;
         viewController.delegate = self;
     }
+    else if ([segue.identifier isEqualToString:@"showLogin"]) {
+        PGLoginViewController* viewController = (PGLoginViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];
+        
+        viewController.error = self.loginError;
+        self.loginError = nil;
+    }
 }
 
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
@@ -142,15 +160,27 @@
 #pragma mark - PGSettingsViewDelegate
 
 -(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
-    // stop playback, advertisiement and discovery and return to login screen
+    // stop advertisiement and discovery and return to login screen
     [[PGDiscoveryManager sharedInstance] stopDiscoveringPlaylists];
     [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
+    
+    // cleanup spotify classes
+    [self.trackPlayer pausePlayback];
+    [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
 
-    // use a weak copy of self to avoid retain cycles
     __weak typeof(self) weakSelf = self;
     [self.streamingController setIsPlaying:NO callback:^(NSError *error) {
-        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        weakSelf.trackPlayer = nil;
+        weakSelf.streamingController = nil;
+        weakSelf.session = nil;
     }];
+    
+    // clear NSUserDefault session storage
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSessionUserDefaultsKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    // show login screen
+    [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
 #pragma mark - SPTTrackPlayerDelegate

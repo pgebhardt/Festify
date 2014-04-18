@@ -12,6 +12,7 @@
 @interface PGLoginViewController : UIViewController
 
 - (IBAction)login:(id)sender;
--(void)loginCompletedWithSession:(SPTSession*)session andError:(NSError*)error;
+
+@property (nonatomic, strong) NSError* error;
 
 @end
