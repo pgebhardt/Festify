@@ -131,19 +131,11 @@
             }
             
             // notify user
-            if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-                [TSMessage showNotificationInViewController:self.navigationController
-                                                      title:[NSString stringWithFormat:@"Added: %@", [object name]]
-                                                   subtitle:[NSString stringWithFormat:@"Creator: %@", [object creator]]
-                                                       type:TSMessageNotificationTypeSuccess];
-            }
-            else {
-                UILocalNotification* notification = [[UILocalNotification alloc] init];
-                notification.alertBody = [NSString stringWithFormat:@"Added: %@\nCreator: %@", [object name], [object creator]];
-                notification.soundName = UILocalNotificationDefaultSoundName;
-                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-            }
-         }
+            [TSMessage showNotificationInViewController:self.navigationController
+                                                  title:[NSString stringWithFormat:@"Added: %@", [object name]]
+                                               subtitle:[NSString stringWithFormat:@"Creator: %@", [object creator]]
+                                                   type:TSMessageNotificationTypeSuccess];
+        }
     }];
 }
 
@@ -178,7 +170,7 @@
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
-    NSLog(@"trackPlayer didEndPlaybackOfProvider withReason: %lu", reason);
+    NSLog(@"trackPlayer didEndPlaybackOfProvider withReason: %u", (unsigned)reason);
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
