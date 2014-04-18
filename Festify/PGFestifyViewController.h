@@ -10,13 +10,12 @@
 #import <Spotify/Spotify.h>
 #import "PGDiscoveryManager.h"
 #import "PGSettingsViewController.h"
+#import "PGLoginViewController.h"
 
-@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate, PGSettingsViewDelegate, SPTTrackPlayerDelegate>
+@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate,
+    PGSettingsViewDelegate, SPTTrackPlayerDelegate, PGLoginViewDelegate>
 
--(void)handleNewSession:(SPTSession*)session;
--(void)handleLoginError:(NSError*)error;
+-(void)initSpotify;
 - (IBAction)festify:(id)sender;
-
-@property (nonatomic, strong) SPTSession* session;
 
 @end

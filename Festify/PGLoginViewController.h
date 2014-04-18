@@ -9,10 +9,18 @@
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
 
+@class PGLoginViewController;
+
+@protocol PGLoginViewDelegate <NSObject>
+
+-(void)loginViewDidCompleteLogin:(PGLoginViewController*)loginView;
+
+@end
+
 @interface PGLoginViewController : UIViewController
 
 - (IBAction)login:(id)sender;
 
-@property (nonatomic, strong) NSError* error;
+@property (nonatomic, weak) id<PGLoginViewDelegate> delegate;
 
 @end

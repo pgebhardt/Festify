@@ -9,18 +9,14 @@
 #import "PGFestifyViewController.h"
 #import "PGFestifyTrackProvider.h"
 #import "PGPlayerViewController.h"
-#import "PGLoginViewController.h"
+#import "PGAppDelegate.h"
 #import "TSMessage.h"
 #import <iAd/iAd.h>
-
-static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 
 @interface PGFestifyViewController ()
 
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
-@property (nonatomic, strong) SPTAudioStreamingController* streamingController;
 @property (nonatomic, strong) PGFestifyTrackProvider* trackProvider;
-@property (nonatomic, strong) NSError* loginError;
 
 @end
 
@@ -36,31 +32,26 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     [PGDiscoveryManager sharedInstance].delegate = self;
 
     // check for valid session, or show login screen
-    if (!self.session) {
+    if (!((PGAppDelegate*)[UIApplication sharedApplication].delegate).session) {
         [self performSegueWithIdentifier:@"showLogin" sender:self];
+    }
+    else {
+        [self initSpotify];
     }
 }
 
--(void)dealloc {
-    // cleanup observer
-    [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
-}
-
--(void)handleNewSession:(SPTSession *)session {
-    self.session = session;
+-(void)initSpotify {
+    SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+    SPTAudioStreamingController* streamingController = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController;
     
     // create festify track provider
     self.trackProvider = [[PGFestifyTrackProvider alloc] initWithSession:session];
     
     // create new streaming controller and track player
-    self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:@"Patrik Gebhardt" appName:@"Festify"];
-    self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
+    self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:streamingController];
     self.trackPlayer.repeatEnabled = YES;
     self.trackPlayer.delegate = self;
     
-    // observe current track to inform user of track changes
-    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
-
     // enable playback
     [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
         if (error) {
@@ -70,20 +61,16 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 
 }
 
--(void)handleLoginError:(NSError *)error {
-    // show login screen with error message
-    self.loginError = error;
-    [self performSegueWithIdentifier:@"showLogin" sender:self];
-}
-
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"streamingController.currentTrackMetadata"]) {
+        SPTAudioStreamingController* streamingController = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController;
+    
         // notify user
         [TSMessage showNotificationInViewController:self.navigationController
                                               title:@"Now playing"
                                            subtitle:[NSString stringWithFormat:@"%@ - %@",
-                                                     self.streamingController.currentTrackMetadata[SPTAudioStreamingMetadataArtistName],
-                                                     self.streamingController.currentTrackMetadata[SPTAudioStreamingMetadataTrackName]]
+                                                     streamingController.currentTrackMetadata[SPTAudioStreamingMetadataArtistName],
+                                                     streamingController.currentTrackMetadata[SPTAudioStreamingMetadataTrackName]]
                                                type:TSMessageNotificationTypeMessage];
 
     }
@@ -95,11 +82,6 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 #pragma  mark - Actions
 
 - (IBAction)festify:(id)sender {
-    // stop playback
-    if (self.streamingController.isPlaying) {
-        [self.trackPlayer pausePlayback];
-    }
-    
     // clear content of track provider
     [self.trackProvider clearAllTracks];
     
@@ -111,21 +93,20 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     if ([segue.identifier isEqualToString:@"showTrackPlayer"]) {
         PGPlayerViewController* viewController = (PGPlayerViewController*)segue.destinationViewController;
         
-        viewController.streamingController = self.streamingController;
+        viewController.session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+        viewController.streamingController = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController;
         viewController.trackPlayer = self.trackPlayer;
-        viewController.session = self.session;
     }
     else if ([segue.identifier isEqualToString:@"showSettings"]) {
         PGSettingsViewController* viewController = (PGSettingsViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];
         
-        viewController.session = self.session;
+        viewController.session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
         viewController.delegate = self;
     }
     else if ([segue.identifier isEqualToString:@"showLogin"]) {
         PGLoginViewController* viewController = (PGLoginViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];
         
-        viewController.error = self.loginError;
-        self.loginError = nil;
+        viewController.delegate = self;
     }
 }
 
@@ -141,10 +122,12 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 
 -(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri byIdentifier:(NSString *)identifier {
     // request complete playlist and add it to track provider
-    [SPTRequest requestItemAtURI:uri withSession:self.session callback:^(NSError *error, id object) {
+    [SPTRequest requestItemAtURI:uri
+                     withSession:((PGAppDelegate*)[UIApplication sharedApplication].delegate).session
+                        callback:^(NSError *error, id object) {
         if (!error && [self.trackProvider addPlaylist:object forIdentifier:identifier]) {
-            // restart track player
-            if (self.trackPlayer.currentProvider == nil || self.trackPlayer.paused == YES) {
+            // start track player
+            if (self.trackPlayer.currentProvider == nil) {
                 [self.trackPlayer playTrackProvider:self.trackProvider];
             }
             
@@ -166,21 +149,23 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     
     // cleanup spotify classes
     [self.trackPlayer pausePlayback];
-    [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
-
-    __weak typeof(self) weakSelf = self;
-    [self.streamingController setIsPlaying:NO callback:^(NSError *error) {
-        weakSelf.trackPlayer = nil;
-        weakSelf.streamingController = nil;
-        weakSelf.session = nil;
-    }];
+    self.trackPlayer = nil;
     
-    // clear NSUserDefault session storage
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSessionUserDefaultsKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    // log out of spotify API
+    [(PGAppDelegate*)[UIApplication sharedApplication].delegate logoutOfSpotifyAPI];
     
     // show login screen
     [self performSegueWithIdentifier:@"showLogin" sender:self];
+}
+
+#pragma mark -PGLoginViewDelegate
+
+-(void)loginViewDidCompleteLogin:(PGLoginViewController *)loginView {
+    // show main screen
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    // initialize spotify
+    [self initSpotify];
 }
 
 #pragma mark - SPTTrackPlayerDelegate
