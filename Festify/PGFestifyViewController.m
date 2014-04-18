@@ -104,7 +104,7 @@
         viewController.delegate = self;
     }
     else if ([segue.identifier isEqualToString:@"showLogin"]) {
-        PGLoginViewController* viewController = (PGLoginViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];
+        PGLoginViewController* viewController = (PGLoginViewController*)segue.destinationViewController;
         
         viewController.delegate = self;
     }

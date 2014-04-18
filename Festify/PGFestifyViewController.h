@@ -15,7 +15,6 @@
 @interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate,
     PGSettingsViewDelegate, SPTTrackPlayerDelegate, PGLoginViewDelegate>
 
--(void)initSpotify;
 - (IBAction)festify:(id)sender;
 
 @end
