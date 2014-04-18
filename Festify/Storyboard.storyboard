@@ -299,6 +299,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="aaC-nq-FSq" kind="push" id="zoK-oB-qnY"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="cfw-Oc-vPq">
                                         <rect key="frame" x="0.0" y="515" width="320" height="44"/>
@@ -517,6 +520,63 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="u6C-Wg-QL9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1930" y="1099"/>
+        </scene>
+        <!--Feedback View Controller - Feedback-->
+        <scene sceneID="lhb-Ri-u99">
+            <objects>
+                <tableViewController id="aaC-nq-FSq" customClass="PGFeedbackViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="pZG-7h-s7R">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection id="L9s-Kj-fqh">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="120" id="gep-6u-wdv">
+                                        <rect key="frame" x="0.0" y="99" width="320" height="120"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gep-6u-wdv" id="yIl-rg-2rw">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="119"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HnP-0e-Xzw">
+                                                    <rect key="frame" x="15" y="0.0" width="305" height="119"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                </textView>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="aaC-nq-FSq" id="CPN-is-kir"/>
+                            <outlet property="delegate" destination="aaC-nq-FSq" id="7wW-dv-t9Q"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Feedback" id="hRh-mf-VVE">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="7dg-Wo-fvi">
+                            <connections>
+                                <action selector="cancel:" destination="aaC-nq-FSq" id="it4-FR-mIR"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Send" style="done" id="Kgg-Aq-mfk">
+                            <connections>
+                                <action selector="sendFeedback:" destination="aaC-nq-FSq" id="ODm-Ug-4Wy"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="feedbackTextView" destination="HnP-0e-Xzw" id="xWq-LD-D1b"/>
+                        <outlet property="sendButton" destination="Kgg-Aq-mfk" id="3O2-WA-a5O"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fBa-3Z-mwS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3007" y="-483"/>
         </scene>
     </scenes>
     <resources>
