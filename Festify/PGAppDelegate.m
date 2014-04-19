@@ -12,6 +12,7 @@
 #import "TestFlight.h"
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import "TSMessage.h"
 
 // authentication IDs
 static NSString* const kPGDiscoveryManagerUUID = @"313752b1-f55b-4769-9387-61ce9fd7a840";
@@ -35,17 +36,20 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.trackInfoDictionary = [NSMutableDictionary dictionary];
     
-    // update discovery manager service UUID
+    // initialize services
     [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:kPGDiscoveryManagerUUID];
-    
-    // enable test flight
     [TestFlight takeOff:kTestFlightAppToken];
+    [self initSpotifyWithSession:[self loadSpotifySessionFromNSUserDefaults:kSessionUserDefaultsKey]];
     
-    // try to load session from NSUserDefaults
-    SPTSession* session = [self loadSpotifySessionFromNSUserDefaults:kSessionUserDefaultsKey];
-    if (session.credential.length > 0) {
-        [self initSpotifyWithSession:session];
-    }
+    // adjust default colors to match spotify color schema
+    [application setStatusBarHidden:NO];
+    [application setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:130.0/255.0 green:130.0/255.0 blue:130.0/255.0 alpha:1.0]];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    [[UIButton appearance] setTintColor:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
+    [[UIProgressView appearance] setTintColor:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
+    [TSMessage addCustomDesignFromFileWithName:@"spotifymessagedesign.json"];
     
     return YES;
 }
@@ -176,6 +180,10 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
 }
 
 -(void)initSpotifyWithSession:(SPTSession*)session {
+    if (session.credential.length == 0) {
+        return;
+    }
+    
     self.session = session;
     
     // create new streaming controller and observe track changes

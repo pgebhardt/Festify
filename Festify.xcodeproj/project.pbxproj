@@ -11,6 +11,7 @@
 		5F089B6118FD2B5F002476CB /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089B6018FD2B5F002476CB /* iAd.framework */; };
 		5F089B6718FD56A3002476CB /* PGFestifyTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */; };
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
+		5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */; };
 		5F123CA4190025FF00E46166 /* PGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
 		5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */; };
@@ -61,6 +62,7 @@
 		5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGFestifyTrackProvider.m; sourceTree = "<group>"; };
 		5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Shuffling.h"; sourceTree = "<group>"; };
 		5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Shuffling.m"; sourceTree = "<group>"; };
+		5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = spotifymessagedesign.json; sourceTree = "<group>"; };
 		5F123CA2190025FF00E46166 /* PGPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlaylistViewController.h; sourceTree = "<group>"; };
 		5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlaylistViewController.m; sourceTree = "<group>"; };
 		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -222,6 +224,7 @@
 		5F423A6718FC115200C3ED75 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */,
 				5F423A6818FC115200C3ED75 /* Festify-Info.plist */,
 				5F423A6918FC115200C3ED75 /* InfoPlist.strings */,
 				5F423A6C18FC115200C3ED75 /* main.m */,
@@ -339,6 +342,7 @@
 				5F423A6B18FC115200C3ED75 /* InfoPlist.strings in Resources */,
 				5F423A7318FC115200C3ED75 /* Images.xcassets in Resources */,
 				5F28F7601901287800A0468A /* README.md in Resources */,
+				5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */,
 				5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */,
 				5F28F7611901287800A0468A /* release_notes.md in Resources */,
 				5FDDCF6E190298810079F433 /* acknowledgements.txt in Resources */,
