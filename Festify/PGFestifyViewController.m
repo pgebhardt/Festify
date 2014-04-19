@@ -10,6 +10,8 @@
 #import "PGFestifyTrackProvider.h"
 #import "PGPlayerViewController.h"
 #import "PGAppDelegate.h"
+#import "UIView+ConvertToImage.h"
+#import "UIImage+ImageEffects.h"
 #import "TSMessage.h"
 
 @interface PGFestifyViewController ()
@@ -55,6 +57,24 @@
         PGSettingsViewController* viewController = (PGSettingsViewController*)[[segue.destinationViewController viewControllers] objectAtIndex:0];
         
         viewController.delegate = self;
+    }
+    else if ([segue.identifier isEqualToString:@"showLogin"]) {
+        UIView* view = [segue.destinationViewController view];
+        
+        // create image view containing a blured image of the current view controller.
+        // This makes the effect of a transparent playlist view
+        UIImage* image = [self.navigationController.view convertToImage];
+        image = [image applyBlurWithRadius:20
+                                 tintColor:[UIColor colorWithRed:130.0/255.0 green:130.0/255.0 blue:130.0/255.0 alpha:0.7]
+                     saturationDeltaFactor:1.3
+                                 maskImage:nil];
+        
+        UIImageView* backgroundView = [[UIImageView alloc] initWithFrame:view.frame];
+        backgroundView.image = image;
+        
+        view.backgroundColor = [UIColor clearColor];
+        [view addSubview:backgroundView];
+        [view sendSubviewToBack:backgroundView];
     }
 }
 

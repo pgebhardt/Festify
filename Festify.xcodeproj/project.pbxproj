@@ -12,6 +12,7 @@
 		5F089B6718FD56A3002476CB /* PGFestifyTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */; };
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
 		5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */; };
+		5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */; };
 		5F123CA4190025FF00E46166 /* PGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
 		5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */; };
@@ -64,6 +65,8 @@
 		5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Shuffling.h"; sourceTree = "<group>"; };
 		5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Shuffling.m"; sourceTree = "<group>"; };
 		5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = spotifymessagedesign.json; sourceTree = "<group>"; };
+		5F0E249F1903141200DC306D /* UIView+ConvertToImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ConvertToImage.h"; sourceTree = "<group>"; };
+		5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ConvertToImage.m"; sourceTree = "<group>"; };
 		5F123CA2190025FF00E46166 /* PGPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlaylistViewController.h; sourceTree = "<group>"; };
 		5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlaylistViewController.m; sourceTree = "<group>"; };
 		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -149,6 +152,8 @@
 				5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */,
 				5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */,
 				5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */,
+				5F0E249F1903141200DC306D /* UIView+ConvertToImage.h */,
+				5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -431,6 +436,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */,
 				5F089B6718FD56A3002476CB /* PGFestifyTrackProvider.m in Sources */,
 				5F88929018FEFA6000620589 /* PGLoginViewController.m in Sources */,
 				5F089B5F18FD169B002476CB /* PGSettingsViewController.m in Sources */,
