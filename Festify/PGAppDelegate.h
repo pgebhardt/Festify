@@ -17,5 +17,6 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SPTAudioStreamingController* streamingController;
+@property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
 
 @end

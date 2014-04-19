@@ -19,7 +19,6 @@
 
 @interface PGPlaylistViewController : UITableViewController
 
-@property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
 @property (nonatomic, weak) id<PGPlaylistViewDelegate> delegate;
 
 @end

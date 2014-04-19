@@ -8,6 +8,8 @@
 
 #import "PGSettingsViewController.h"
 #import "PGDiscoveryManager.h"
+#import "PGAppDelegate.h"
+#import <Spotify/Spotify.h>
 
 @interface PGSettingsViewController ()
 
@@ -39,16 +41,17 @@
 
 -(void)retrievePlaylists {
     // get the playlists of the current user
-    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
+    SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+    [SPTRequest playlistsForUser:session.canonicalUsername withSession:session callback:^(NSError *error, id object) {
         if (error) {
-            NSLog(@"Could not retrieve playlists for user: %@", self.session.canonicalUsername);
+            NSLog(@"Could not retrieve playlists for user: %@", session.canonicalUsername);
         }
         else {
             self.playlists = object;
             
             // set first playlist as default advertisement playlist
             if ([PGDiscoveryManager sharedInstance].advertisingPlaylist == nil) {
-                [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[0] withSession:self.session];
+                [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[0] withSession:session];
             }
             
             // update ui
@@ -75,7 +78,8 @@
 
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {
-        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylistWithSession:self.session];
+        SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylistWithSession:session];
     }
     else {
         [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
@@ -99,7 +103,8 @@
 }
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[row] withSession:self.session];
+    SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+    [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[row] withSession:session];
     self.playlistLabel.text = [self.playlists.items[row] name];
 }
 

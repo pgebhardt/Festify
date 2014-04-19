@@ -7,12 +7,27 @@
 //
 
 #import "PGPlayerViewController.h"
+#import "PGAppDelegate.h"
+#import <Spotify/Spotify.h>
+
+@interface PGPlayerViewController ()
+
+@property (nonatomic, weak) SPTSession* session;
+@property (nonatomic, weak) SPTAudioStreamingController* streamingController;
+@property (nonatomic, weak) SPTTrackPlayer* trackPlayer;
+
+@end
 
 @implementation PGPlayerViewController
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    // obtain spotify objects
+    self.session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+    self.streamingController = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController;
+    self.trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
+    
     // observe playback state change and track change to update UI accordingly
     [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
     [self addObserver:self forKeyPath:@"streamingController.isPlaying" options:0 context:nil];
@@ -51,7 +66,6 @@
     if ([segue.identifier isEqualToString:@"showPlaylist"]) {
         PGPlaylistViewController* viewController = (PGPlaylistViewController*)segue.destinationViewController;
         
-        viewController.trackPlayer = self.trackPlayer;
         viewController.delegate = self;
     }
 }

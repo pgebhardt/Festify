@@ -24,9 +24,7 @@
                                                    type:TSMessageNotificationTypeError];
         }
         else {
-            if (self.delegate) {
-                [self.delegate loginViewDidCompleteLogin:self];
-            }
+            [self dismissViewControllerAnimated:YES completion:nil];
         }
     }];
 }

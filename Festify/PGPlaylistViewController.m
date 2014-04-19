@@ -7,18 +7,22 @@
 //
 
 #import "PGPlaylistViewController.h"
+#import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
 
-@implementation PGPlaylistViewController
+@interface PGPlaylistViewController ()
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-}
+@property (nonatomic, weak) SPTTrackPlayer* trackPlayer;
+
+@end
+
+@implementation PGPlaylistViewController
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     // add observers to update UI accordingly to track and playlist changes
+    self.trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     [self addObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack" options:0 context:nil];
 }
 

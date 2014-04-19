@@ -7,13 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Spotify/Spotify.h>
 #import "PGDiscoveryManager.h"
 #import "PGSettingsViewController.h"
-#import "PGLoginViewController.h"
 
-@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate,
-    PGSettingsViewDelegate, SPTTrackPlayerDelegate, PGLoginViewDelegate>
+@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate, PGSettingsViewDelegate>
 
 - (IBAction)festify:(id)sender;
 

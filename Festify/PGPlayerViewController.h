@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Spotify/Spotify.h>
 #import "PGPlaylistViewController.h"
 
 @interface PGPlayerViewController : UIViewController<PGPlaylistViewDelegate>
@@ -15,10 +14,6 @@
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;
 - (IBAction)fastForward:(id)sender;
-
-@property (nonatomic, strong) SPTAudioStreamingController* streamingController;
-@property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
-@property (nonatomic, strong) SPTSession* session;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *artistLabel;

@@ -11,7 +11,6 @@
 
 @interface PGFestifyTrackProvider ()
 
-@property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) NSMutableDictionary* playlists;
 @property (nonatomic, strong) NSMutableArray* tracks;
 
@@ -19,9 +18,8 @@
 
 @implementation PGFestifyTrackProvider
 
--(id)initWithSession:(SPTSession*)session {
+-(id)init {
     if (self = [super init]) {
-        self.session = session;
         self.playlists = [NSMutableDictionary dictionary];
         self.tracks = [NSMutableArray array];
     }

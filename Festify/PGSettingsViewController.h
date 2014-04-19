@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Spotify/Spotify.h>
 
 @class PGSettingsViewController;
 
@@ -25,7 +24,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *playlistLabel;
 @property (weak, nonatomic) IBOutlet UIPickerView *playlistPicker;
 
-@property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, weak) id<PGSettingsViewDelegate> delegate;
 
 @end

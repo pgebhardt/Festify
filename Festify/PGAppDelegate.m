@@ -37,9 +37,7 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     
     // check for valid session
     if (session.credential.length > 0) {
-        self.session = session;
-        self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:@"Patrik Gebhardt"
-                                                                                appName:@"Festify"];
+        [self initSpotifyWithSession:session];
     }
     
     return YES;
@@ -55,11 +53,8 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
                 [[NSUserDefaults standardUserDefaults] setValue:[session propertyListRepresentation]
                                                          forKey:kSessionUserDefaultsKey];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-                
-                // save session and create streaming controller
-                self.session = session;
-                self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:@"Patrik Gebhardt"
-                                                                                            appName:@"Festify"];
+
+                [self initSpotifyWithSession:session];
             }
             
             // call completion handler
@@ -88,8 +83,13 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 }
 
 -(void)logoutOfSpotifyAPI {
+    if (!self.trackPlayer.paused) {
+        [self.trackPlayer pausePlayback];
+    }
+    
     __weak typeof(self) weakSelf = self;
     [self.streamingController setIsPlaying:NO callback:^(NSError *error) {
+        weakSelf.trackPlayer = nil;
         weakSelf.streamingController = nil;
         weakSelf.session = nil;
     }];
@@ -105,6 +105,23 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     // load session from NSUserDefaults
     id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:spotifySessionKey];
     return [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
+}
+
+-(void)initSpotifyWithSession:(SPTSession*)session {
+    self.session = session;
+    
+    // create new streaming controller and track player
+    self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:@"Patrik Gebhardt"
+                                                                                appName:@"Festify"];
+    self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
+    self.trackPlayer.repeatEnabled = YES;
+    
+    // enable playback
+    [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"*** Enabling playback got error: %@", error);
+        }
+    }];
 }
 
 @end
