@@ -51,7 +51,9 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     // this is the return point for the spotify authentication,
     // so completion happens here
     if ([[SPTAuth defaultInstance] canHandleURL:url withDeclaredRedirectURL:[NSURL URLWithString:kSpotifyCallbackURL]]) {
-        [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://patrik-macbook:1234/swap"] callback:^(NSError *error, SPTSession *session) {
+        [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url
+                                            tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://patrik-macbook:1234/swap"]
+                                                                 callback:^(NSError *error, SPTSession *session) {
             if (!error) {
                 // save session to user defaults
                 [[NSUserDefaults standardUserDefaults] setValue:[session propertyListRepresentation]
@@ -82,13 +84,16 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
         self.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] = trackMetadata[SPTAudioStreamingMetadataTrackDuration];
         
         // request complete album of track
-        [SPTRequest requestItemAtURI:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]] withSession:self.session callback:^(NSError *error, id object) {
+        [SPTRequest requestItemAtURI:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]]
+                         withSession:self.session
+                            callback:^(NSError *error, id object) {
             if (!error) {
                 // extract image URL
                 NSURL* imageURL = [object largestCover].imageURL;
                 
                 // download image
-                [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:imageURL] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:imageURL]
+                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                     if (!error) {
                         self.trackInfoDictionary[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageWithData:data]];
                     }

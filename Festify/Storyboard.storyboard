@@ -327,7 +327,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection footerTitle="Log out of the Spotify © service." id="lbQ-1G-Oka">
+                            <tableViewSection footerTitle="Log out of the Spotify™ service." id="lbQ-1G-Oka">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="logoutCell" id="djA-VN-U3p">
                                         <rect key="frame" x="0.0" y="625" width="320" height="44"/>
