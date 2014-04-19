@@ -441,11 +441,21 @@
                                     <action selector="festify:" destination="fyQ-f5-bAt" eventType="touchUpInside" id="aRV-5W-shG"/>
                                 </connections>
                             </button>
+                            <adBannerView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="T04-7T-fQv">
+                                <rect key="frame" x="0.0" y="518" width="320" height="50"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Dga-5I-r5u"/>
+                                </constraints>
+                            </adBannerView>
                         </subviews>
                         <color key="backgroundColor" red="0.92549026010000002" green="0.9215686917" blue="0.90196084980000002" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
                             <constraint firstAttribute="centerY" secondItem="P6e-RL-Qf1" secondAttribute="centerY" id="18x-WE-Rr9"/>
                             <constraint firstAttribute="centerX" secondItem="P6e-RL-Qf1" secondAttribute="centerX" id="Owh-zZ-LN5"/>
+                            <constraint firstAttribute="trailing" secondItem="T04-7T-fQv" secondAttribute="trailing" id="po5-eh-iNc"/>
+                            <constraint firstItem="VUn-oR-idf" firstAttribute="top" secondItem="T04-7T-fQv" secondAttribute="bottom" id="t9E-dS-gvD"/>
+                            <constraint firstItem="T04-7T-fQv" firstAttribute="leading" secondItem="PCZ-8i-4by" secondAttribute="leading" id="xUe-zp-OF9"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Festify" id="zxc-1E-uy0">
@@ -461,6 +471,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="adBanner" destination="T04-7T-fQv" id="5hW-46-UGX"/>
                         <segue destination="8Rl-HL-ow2" kind="modal" identifier="showLogin" id="sN6-9t-lxE"/>
                     </connections>
                 </viewController>

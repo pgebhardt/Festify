@@ -70,10 +70,15 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.delegate) {
-        NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
-        [self.delegate playlistView:self didSelectTrackWithIndex:trackIndex];
-        
-        [self.tableView reloadData];
+        if (self.delegate) {
+            NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
+            [self.delegate playlistView:self didSelectTrackWithIndex:trackIndex];
+            
+            [self.tableView reloadData];
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                  atScrollPosition:UITableViewScrollPositionTop
+                                          animated:YES];
+        }
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

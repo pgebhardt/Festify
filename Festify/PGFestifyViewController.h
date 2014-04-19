@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <iAd/iAd.h>
 #import "PGDiscoveryManager.h"
 #import "PGSettingsViewController.h"
 
-@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate, PGSettingsViewDelegate>
+@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate,
+    PGSettingsViewDelegate, ADBannerViewDelegate>
 
 - (IBAction)festify:(id)sender;
+@property (weak, nonatomic) IBOutlet ADBannerView *adBanner;
 
 @end

@@ -11,7 +11,6 @@
 #import "PGPlayerViewController.h"
 #import "PGAppDelegate.h"
 #import "TSMessage.h"
-#import <iAd/iAd.h>
 
 @interface PGFestifyViewController ()
 
@@ -27,11 +26,9 @@
     // init properties
     self.trackProvider = [[PGFestifyTrackProvider alloc] init];
     
-    // enable banner ads
-    self.canDisplayBannerAds = YES;
-    
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
+    self.adBanner.delegate = self;
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -107,6 +104,20 @@
     
     // show login screen
     [self performSegueWithIdentifier:@"showLogin" sender:self];
+}
+
+#pragma mark - ADBannerViewDelegate
+
+-(void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error {
+    if (error) {
+        self.adBanner.hidden = YES;
+    }
+}
+
+-(void)bannerViewDidLoadAd:(ADBannerView *)banner {
+    if (self.adBanner.hidden) {
+        self.adBanner.hidden = NO;
+    }
 }
 
 @end
