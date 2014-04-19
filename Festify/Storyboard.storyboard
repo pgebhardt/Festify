@@ -530,7 +530,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xmY-AI-ZZs">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xmY-AI-ZZs">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -541,6 +541,12 @@
                             </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="xmY-AI-ZZs" firstAttribute="leading" secondItem="idT-Bx-jGT" secondAttribute="leading" id="HRf-iJ-gQP"/>
+                            <constraint firstAttribute="trailing" secondItem="xmY-AI-ZZs" secondAttribute="trailing" id="gvj-j4-r0c"/>
+                            <constraint firstItem="xmY-AI-ZZs" firstAttribute="top" secondItem="idT-Bx-jGT" secondAttribute="top" id="h4f-4m-JoO"/>
+                            <constraint firstItem="DEG-cY-zS1" firstAttribute="top" secondItem="xmY-AI-ZZs" secondAttribute="bottom" id="mi6-wx-p3n"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Acknowledgements" id="psE-By-p0X"/>
                 </viewController>
@@ -566,7 +572,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="119"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HnP-0e-Xzw">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HnP-0e-Xzw">
                                                     <rect key="frame" x="15" y="0.0" width="305" height="119"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -574,6 +580,12 @@
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="HnP-0e-Xzw" firstAttribute="top" secondItem="yIl-rg-2rw" secondAttribute="top" id="JWK-0q-hpg"/>
+                                                <constraint firstAttribute="trailing" secondItem="HnP-0e-Xzw" secondAttribute="trailing" id="SDg-Hf-s5B"/>
+                                                <constraint firstAttribute="bottom" secondItem="HnP-0e-Xzw" secondAttribute="bottom" id="cG5-xC-6gY"/>
+                                                <constraint firstItem="HnP-0e-Xzw" firstAttribute="leading" secondItem="yIl-rg-2rw" secondAttribute="leading" constant="15" id="iiO-Oz-b2h"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
