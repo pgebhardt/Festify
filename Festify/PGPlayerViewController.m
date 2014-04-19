@@ -9,6 +9,7 @@
 #import "PGPlayerViewController.h"
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
+#import "UIImage+ImageEffects.h"
 
 @interface PGPlayerViewController ()
 
@@ -64,8 +65,26 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showPlaylist"]) {
-        PGPlaylistViewController* viewController = (PGPlaylistViewController*)segue.destinationViewController;
+        UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
+        PGPlaylistViewController* viewController = (PGPlaylistViewController*)navigationController.viewControllers[0];
         
+        // create image view containing a blured image of the current view controller.
+        // This makes the effect of a transparent playlist view
+        UIGraphicsBeginImageContext(self.view.bounds.size);
+        [self.view drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        image = [image applyBlurWithRadius:20
+                                 tintColor:[UIColor colorWithRed:236/255.0 green:235.0/255.0 blue:232.0/255.0 alpha:0.8]
+                     saturationDeltaFactor:1.3
+                                 maskImage:nil];
+        
+        UIImageView* backgroundView = [[UIImageView alloc] initWithFrame:viewController.view.frame];
+        backgroundView.image = image;
+        
+        viewController.view.backgroundColor = [UIColor clearColor];
+        viewController.tableView.backgroundView = backgroundView;
         viewController.delegate = self;
     }
 }

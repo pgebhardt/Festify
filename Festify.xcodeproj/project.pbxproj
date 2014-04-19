@@ -15,6 +15,7 @@
 		5F123CA4190025FF00E46166 /* PGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
 		5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */; };
+		5F1E97B11902E2D00009B675 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
 		5F263391190165A60082F6FD /* PGFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F263390190165A60082F6FD /* PGFeedbackViewController.m */; };
@@ -68,6 +69,8 @@
 		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		5F1CF46118FD9782009E4791 /* PGPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlayerViewController.h; sourceTree = "<group>"; };
 		5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlayerViewController.m; sourceTree = "<group>"; };
+		5F1E97AF1902E2D00009B675 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		5F1F9BD418FC31B10030A64B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5F26338F190165A60082F6FD /* PGFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGFeedbackViewController.h; sourceTree = "<group>"; };
@@ -139,6 +142,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F1E97B21902E5880009B675 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				5F1E97AF1902E2D00009B675 /* UIImage+ImageEffects.h */,
+				5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */,
+				5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */,
+				5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		5F1E97B31902E5A20009B675 /* View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5F26338F190165A60082F6FD /* PGFeedbackViewController.h */,
+				5F263390190165A60082F6FD /* PGFeedbackViewController.m */,
+				5F521D2C18FF013800B915B7 /* PGFestifyViewController.h */,
+				5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */,
+				5F88928E18FEFA6000620589 /* PGLoginViewController.h */,
+				5F88928F18FEFA6000620589 /* PGLoginViewController.m */,
+				5F1CF46118FD9782009E4791 /* PGPlayerViewController.h */,
+				5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */,
+				5F123CA2190025FF00E46166 /* PGPlaylistViewController.h */,
+				5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */,
+				5F089B5D18FD169B002476CB /* PGSettingsViewController.h */,
+				5F089B5E18FD169B002476CB /* PGSettingsViewController.m */,
+			);
+			name = "View Controller";
+			sourceTree = "<group>";
+		};
 		5F28F7581901287800A0468A /* TestFlightSDK3 */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,30 +226,18 @@
 		5F423A6618FC115200C3ED75 /* Festify */ = {
 			isa = PBXGroup;
 			children = (
+				5F1E97B21902E5880009B675 /* Extensions */,
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
-				5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */,
-				5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */,
 				5F423A6F18FC115200C3ED75 /* PGAppDelegate.h */,
 				5F423A7018FC115200C3ED75 /* PGAppDelegate.m */,
 				5F5A162118FC535100E408DC /* PGDiscoveryManager.h */,
 				5F5A162218FC535100E408DC /* PGDiscoveryManager.m */,
-				5F26338F190165A60082F6FD /* PGFeedbackViewController.h */,
-				5F263390190165A60082F6FD /* PGFeedbackViewController.m */,
 				5F089B6518FD56A3002476CB /* PGFestifyTrackProvider.h */,
 				5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */,
-				5F521D2C18FF013800B915B7 /* PGFestifyViewController.h */,
-				5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */,
-				5F88928E18FEFA6000620589 /* PGLoginViewController.h */,
-				5F88928F18FEFA6000620589 /* PGLoginViewController.m */,
-				5F1CF46118FD9782009E4791 /* PGPlayerViewController.h */,
-				5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */,
-				5F123CA2190025FF00E46166 /* PGPlaylistViewController.h */,
-				5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */,
-				5F089B5D18FD169B002476CB /* PGSettingsViewController.h */,
-				5F089B5E18FD169B002476CB /* PGSettingsViewController.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 				5F28F7581901287800A0468A /* TestFlightSDK3 */,
+				5F1E97B31902E5A20009B675 /* View Controller */,
 			);
 			path = Festify;
 			sourceTree = "<group>";
@@ -418,6 +439,7 @@
 				5F521D2E18FF013800B915B7 /* PGFestifyViewController.m in Sources */,
 				5F423A7118FC115200C3ED75 /* PGAppDelegate.m in Sources */,
 				5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */,
+				5F1E97B11902E2D00009B675 /* UIImage+ImageEffects.m in Sources */,
 				5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */,
 				5F263391190165A60082F6FD /* PGFeedbackViewController.m in Sources */,
 				5F123CA4190025FF00E46166 /* PGPlaylistViewController.m in Sources */,

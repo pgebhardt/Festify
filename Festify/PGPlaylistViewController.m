@@ -59,6 +59,11 @@
     NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
     cell.textLabel.text = [self.trackPlayer.currentProvider.tracks[trackIndex] name];
     cell.detailTextLabel.text = [[[self.trackPlayer.currentProvider.tracks[trackIndex] artists] objectAtIndex:0] name];
+    cell.backgroundColor = [UIColor clearColor];
+    
+    UIView* selectedBackgroundView = [[UIView alloc] init];
+    selectedBackgroundView.backgroundColor = [UIColor colorWithRed:130.0/255.0 green:130.0/255.0 blue:130.0/255.0 alpha:1.0];
+    cell.selectedBackgroundView = selectedBackgroundView;
     
     return cell;
 }
@@ -72,6 +77,10 @@
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (IBAction)done:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

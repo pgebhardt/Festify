@@ -150,7 +150,7 @@
                     <navigationItem key="navigationItem" title="Now Playing" id="Zmt-zk-YEv">
                         <barButtonItem key="rightBarButtonItem" image="List" id="kGg-VL-XMV">
                             <connections>
-                                <segue destination="Mf0-Gs-FPK" kind="push" identifier="showPlaylist" id="yt2-Yd-W6E"/>
+                                <segue destination="cyM-U7-Fye" kind="modal" identifier="showPlaylist" id="yt2-Yd-W6E"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -176,7 +176,8 @@
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="cIJ-63-gqv">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.92549026012420654" green="0.92156869173049927" blue="0.90196084976196289" alpha="1" colorSpace="deviceRGB"/>
+                        <color key="separatorColor" red="0.098039224743843079" green="0.098039224743843079" blue="0.098039224743843079" alpha="1" colorSpace="deviceRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" textLabel="XQM-XN-40V" detailTextLabel="vRY-SL-T6d" style="IBUITableViewCellStyleSubtitle" id="o0F-dr-Hmy">
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
@@ -208,11 +209,17 @@
                             <outlet property="delegate" destination="Mf0-Gs-FPK" id="KJp-zR-aIJ"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Up Next" id="ebI-nP-PHG"/>
+                    <navigationItem key="navigationItem" title="Up Next" id="ebI-nP-PHG">
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="qVO-jJ-rGq">
+                            <connections>
+                                <action selector="done:" destination="Mf0-Gs-FPK" id="4lY-WS-UCL"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yNx-3K-9z9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2456" y="348"/>
+            <point key="canvasLocation" x="2982" y="348"/>
         </scene>
         <!--Settings View Controller - Settings-->
         <scene sceneID="Jei-n3-CXK">
@@ -613,6 +620,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fBa-3Z-mwS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3007" y="-483"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="8UB-bL-JO7">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="cyM-U7-Fye" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="fUO-rs-SJs"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="mtc-4d-ghg">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Mf0-Gs-FPK" kind="relationship" relationship="rootViewController" id="Svf-0f-GbZ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Nxd-0R-nLg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2456" y="348"/>
         </scene>
     </scenes>
     <resources>

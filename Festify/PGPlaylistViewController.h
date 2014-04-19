@@ -20,5 +20,6 @@
 @interface PGPlaylistViewController : UITableViewController
 
 @property (nonatomic, weak) id<PGPlaylistViewDelegate> delegate;
+- (IBAction)done:(id)sender;
 
 @end
