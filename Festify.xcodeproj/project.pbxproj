@@ -38,6 +38,7 @@
 		5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* PGDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
 		5F88929018FEFA6000620589 /* PGLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F88928F18FEFA6000620589 /* PGLoginViewController.m */; };
+		5FDDCF6E190298810079F433 /* acknowledgements.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5FDDCF6D190298810079F433 /* acknowledgements.txt */; };
 		A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CEA90CA33A460DB3A7DAF3 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -100,6 +101,7 @@
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		5F88928E18FEFA6000620589 /* PGLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGLoginViewController.h; sourceTree = "<group>"; };
 		5F88928F18FEFA6000620589 /* PGLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGLoginViewController.m; sourceTree = "<group>"; };
+		5FDDCF6D190298810079F433 /* acknowledgements.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = acknowledgements.txt; sourceTree = "<group>"; };
 		A413B68A804A40FDB5EB7BFA /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -224,6 +226,7 @@
 				5F423A6918FC115200C3ED75 /* InfoPlist.strings */,
 				5F423A6C18FC115200C3ED75 /* main.m */,
 				5F423A6E18FC115200C3ED75 /* Festify-Prefix.pch */,
+				5FDDCF6D190298810079F433 /* acknowledgements.txt */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -338,6 +341,7 @@
 				5F28F7601901287800A0468A /* README.md in Resources */,
 				5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */,
 				5F28F7611901287800A0468A /* release_notes.md in Resources */,
+				5FDDCF6E190298810079F433 /* acknowledgements.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

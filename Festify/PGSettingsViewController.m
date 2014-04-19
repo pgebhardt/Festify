@@ -74,6 +74,20 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"showAcknowledgements"]) {
+        UITextView* textView = (UITextView*)[[[segue.destinationViewController view] subviews] objectAtIndex:0];
+        
+        // adjust textview
+        textView.textContainerInset = UIEdgeInsetsMake(40.0, 10.0, 12.0, 10.0);
+        textView.text = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"acknowledgements" ofType:@"txt"]
+                                                  encoding:NSUTF8StringEncoding
+                                                     error:nil];
+        textView.font = [UIFont systemFontOfSize:14.0];
+        textView.textColor = [UIColor darkGrayColor];
+    }
+}
+
 #pragma mark - Switch Actions
 
 -(void)toggleAdvertisementState {
