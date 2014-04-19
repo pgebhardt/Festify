@@ -8,7 +8,6 @@
 
 #import "PGAppDelegate.h"
 #import "PGDiscoveryManager.h"
-#import "PGFestifyViewController.h"
 #import "TestFlight.h"
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
@@ -89,6 +88,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
         self.trackInfoDictionary[MPMediaItemPropertyAlbumTitle] = trackMetadata[SPTAudioStreamingMetadataTrackName];
         self.trackInfoDictionary[MPMediaItemPropertyArtist] = trackMetadata[SPTAudioStreamingMetadataArtistName];
         self.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] = trackMetadata[SPTAudioStreamingMetadataTrackDuration];
+        self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @0.0;
         
         // request complete album of track
         [SPTRequest requestItemAtURI:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]]
@@ -109,9 +109,11 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
             }
         }];
     }
-    else if ([keyPath isEqualToString:@"streamingController.currentPlaybackPosition"]) {
-        self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.streamingController.currentPlaybackPosition];
-        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
+    else if ([keyPath isEqualToString:@"trackPlayer.paused"]) {
+        if (!self.trackPlayer.paused) {
+            self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.streamingController.currentPlaybackPosition];
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
+        }
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -126,6 +128,14 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
         }
         else if (event.subtype == UIEventSubtypeRemoteControlPlay) {
             [self.trackPlayer resumePlayback];
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
+            if (self.trackPlayer.paused) {
+                [self.trackPlayer resumePlayback];
+            }
+            else {
+                [self.trackPlayer pausePlayback];
+            }
         }
         else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
             [self.trackPlayer skipToNextTrack];
@@ -156,7 +166,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // cleanup spotify api
     __weak typeof(self) weakSelf = self;
     [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
-    [self removeObserver:self forKeyPath:@"streamingController.currentPlaybackPosition"];
+    [self removeObserver:self forKeyPath:@"trackPlayer.paused"];
     if (!self.trackPlayer.paused) {
         [self.trackPlayer pausePlayback];
     }
@@ -190,11 +200,11 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
                                                                                 appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
-    [self addObserver:self forKeyPath:@"streamingController.currentPlaybackPosition" options:0 context:nil];
     
     // create track player and enable playback
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
     self.trackPlayer.repeatEnabled = YES;
+    [self addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
     [self.trackPlayer enablePlaybackWithSession:session callback:nil];
     
     // start handling remote control events
