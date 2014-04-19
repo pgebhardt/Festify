@@ -110,6 +110,18 @@
 
 #pragma mark - UITableViewDelegate
 
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return [NSString stringWithFormat:@"%@ %@ (%@)",
+                [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey],
+                [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
+                [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleVersionKey]];
+    }
+    else {
+        return @"";
+    }
+}
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // deselect cell
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
