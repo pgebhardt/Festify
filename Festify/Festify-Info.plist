@@ -24,9 +24,9 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<string>Viewer</string>
 			<key>CFBundleURLName</key>
-			<string>com.patrikgebhardt.festify</string>
+			<string>de.patrikgebhardt.festify</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>spotify-ios-sdk-beta</string>

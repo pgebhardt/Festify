@@ -13,10 +13,15 @@
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
 
-// authentication credentials
-static NSString* const kSpotifyClientId = @"spotify-ios-sdk-beta";
-static NSString* const kSpotifyCallbackURL = @"spotify-ios-sdk-beta://callback";
-static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
+// authentication IDs
+static NSString* const kPGDiscoveryManagerUUID = @"313752b1-f55b-4769-9387-61ce9fd7a840";
+static NSString* const kTestFlightAppToken = @"64c2e34b-5362-4a6f-8d64-644887b84b52";
+
+// spotify authentication constants
+// TODO: replace with post-beta IDs and adjust the App's URL type
+static NSString* const kClientID = @"spotify-ios-sdk-beta";
+static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
+static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
 
 @interface PGAppDelegate ()
 
@@ -31,15 +36,13 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     self.trackInfoDictionary = [NSMutableDictionary dictionary];
     
     // update discovery manager service UUID
-    [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:@"313752b1-f55b-4769-9387-61ce9fd7a840"];
+    [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:kPGDiscoveryManagerUUID];
     
     // enable test flight
-    [TestFlight takeOff:@"53842477-fe12-4f61-ba55-aa1bb1eebba0"];
+    [TestFlight takeOff:kTestFlightAppToken];
     
     // try to load session from NSUserDefaults
-    SPTSession* session = [self loadSpotifySessionFromNSUserDefaults:kSessionUserDefaultsKey];;
-    
-    // check for valid session
+    SPTSession* session = [self loadSpotifySessionFromNSUserDefaults:kSessionUserDefaultsKey];
     if (session.credential.length > 0) {
         [self initSpotifyWithSession:session];
     }
@@ -50,7 +53,7 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 -(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // this is the return point for the spotify authentication,
     // so completion happens here
-    if ([[SPTAuth defaultInstance] canHandleURL:url withDeclaredRedirectURL:[NSURL URLWithString:kSpotifyCallbackURL]]) {
+    if ([[SPTAuth defaultInstance] canHandleURL:url withDeclaredRedirectURL:[NSURL URLWithString:kCallbackURL]]) {
         [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url
                                             tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://patrik-macbook:1234/swap"]
                                                                  callback:^(NSError *error, SPTSession *session) {
@@ -134,8 +137,8 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     self.loginCallback = completion;
     
     // get login url
-    NSURL* loginURL = [[SPTAuth defaultInstance] loginURLForClientId:kSpotifyClientId
-                                                 declaredRedirectURL:[NSURL URLWithString:kSpotifyCallbackURL]
+    NSURL* loginURL = [[SPTAuth defaultInstance] loginURLForClientId:kClientID
+                                                 declaredRedirectURL:[NSURL URLWithString:kCallbackURL]
                                                               scopes:@[@"login"]];
     
     // open url in safari to login to spotify api
