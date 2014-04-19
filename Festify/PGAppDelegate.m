@@ -21,12 +21,15 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 @interface PGAppDelegate ()
 
 @property (nonatomic, copy) void (^loginCallback)(NSError* error);
+@property (nonatomic, strong) NSMutableDictionary* trackInfoDictionary;
 
 @end
 
 @implementation PGAppDelegate
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.trackInfoDictionary = [NSMutableDictionary dictionary];
+    
     // update discovery manager service UUID
     [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:@"313752b1-f55b-4769-9387-61ce9fd7a840"];
     
@@ -71,14 +74,12 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    NSDictionary* trackMetadata = self.streamingController.currentTrackMetadata;
+    NSDictionary* trackMetadata = [self.streamingController.currentTrackMetadata copy];
     if ([keyPath isEqualToString:@"streamingController.currentTrackMetadata"]) {
         // fill track data dictionary
-        NSMutableDictionary* trackInfo = [NSMutableDictionary dictionary];
-        trackInfo[MPMediaItemPropertyAlbumTitle] = trackMetadata[SPTAudioStreamingMetadataTrackName];
-        trackInfo[MPMediaItemPropertyArtist] = trackMetadata[SPTAudioStreamingMetadataArtistName];
-        trackInfo[MPMediaItemPropertyPlaybackDuration] = trackMetadata[SPTAudioStreamingMetadataTrackDuration];
-        // trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.streamingController.currentPlaybackPosition];
+        self.trackInfoDictionary[MPMediaItemPropertyAlbumTitle] = trackMetadata[SPTAudioStreamingMetadataTrackName];
+        self.trackInfoDictionary[MPMediaItemPropertyArtist] = trackMetadata[SPTAudioStreamingMetadataArtistName];
+        self.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] = trackMetadata[SPTAudioStreamingMetadataTrackDuration];
         
         // request complete album of track
         [SPTRequest requestItemAtURI:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]] withSession:self.session callback:^(NSError *error, id object) {
@@ -89,13 +90,16 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
                 // download image
                 [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:imageURL] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                     if (!error) {
-                        trackInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageWithData:data]];
+                        self.trackInfoDictionary[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageWithData:data]];
                     }
-                    
-                    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:trackInfo];
+                    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
                 }] resume];
             }
         }];
+    }
+    else if ([keyPath isEqualToString:@"streamingController.currentPlaybackPosition"]) {
+        self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.streamingController.currentPlaybackPosition];
+        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -140,6 +144,7 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     // cleanup spotify api
     __weak typeof(self) weakSelf = self;
     [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
+    [self removeObserver:self forKeyPath:@"streamingController.currentPlaybackPosition"];
     if (!self.trackPlayer.paused) {
         [self.trackPlayer pausePlayback];
     }
@@ -169,6 +174,7 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
                                                                                 appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
+    [self addObserver:self forKeyPath:@"streamingController.currentPlaybackPosition" options:0 context:nil];
     
     // create track player and enable playback
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
