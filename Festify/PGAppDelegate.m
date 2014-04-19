@@ -9,10 +9,11 @@
 #import "PGAppDelegate.h"
 #import "PGDiscoveryManager.h"
 #import "PGFestifyViewController.h"
-#import <Spotify/Spotify.h>
 #import "TestFlight.h"
+#import <Spotify/Spotify.h>
+#import <MediaPlayer/MediaPlayer.h>
 
-// Spotify authentication credentials
+// authentication credentials
 static NSString* const kSpotifyClientId = @"spotify-ios-sdk-beta";
 static NSString* const kSpotifyCallbackURL = @"spotify-ios-sdk-beta://callback";
 static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
@@ -69,6 +70,56 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
     return NO;
 }
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    NSDictionary* trackMetadata = self.streamingController.currentTrackMetadata;
+    if ([keyPath isEqualToString:@"streamingController.currentTrackMetadata"]) {
+        // fill track data dictionary
+        NSMutableDictionary* trackInfo = [NSMutableDictionary dictionary];
+        trackInfo[MPMediaItemPropertyAlbumTitle] = trackMetadata[SPTAudioStreamingMetadataTrackName];
+        trackInfo[MPMediaItemPropertyArtist] = trackMetadata[SPTAudioStreamingMetadataArtistName];
+        trackInfo[MPMediaItemPropertyPlaybackDuration] = trackMetadata[SPTAudioStreamingMetadataTrackDuration];
+        // trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.streamingController.currentPlaybackPosition];
+        
+        // request complete album of track
+        [SPTRequest requestItemAtURI:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]] withSession:self.session callback:^(NSError *error, id object) {
+            if (!error) {
+                // extract image URL
+                NSURL* imageURL = [object largestCover].imageURL;
+                
+                // download image
+                [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:imageURL] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                    if (!error) {
+                        trackInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageWithData:data]];
+                    }
+                    
+                    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:trackInfo];
+                }] resume];
+            }
+        }];
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+-(void)remoteControlReceivedWithEvent:(UIEvent *)event {
+    // control track player by remote events
+    if (event.type == UIEventTypeRemoteControl) {
+        if (event.subtype == UIEventSubtypeRemoteControlPause) {
+            [self.trackPlayer pausePlayback];
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlPlay) {
+            [self.trackPlayer resumePlayback];
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
+            [self.trackPlayer skipToNextTrack];
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlPreviousTrack) {
+            [self.trackPlayer skipToPreviousTrack:NO];
+        }
+    }
+}
+
 -(void)loginToSpotifyAPI:(void (^)(NSError *))completion {
     // set login callback
     self.loginCallback = completion;
@@ -83,11 +134,15 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 }
 
 -(void)logoutOfSpotifyAPI {
+    // stop receiving remot control events
+    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+    
+    // cleanup spotify api
+    __weak typeof(self) weakSelf = self;
+    [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
     if (!self.trackPlayer.paused) {
         [self.trackPlayer pausePlayback];
     }
-    
-    __weak typeof(self) weakSelf = self;
     [self.streamingController setIsPlaying:NO callback:^(NSError *error) {
         weakSelf.trackPlayer = nil;
         weakSelf.streamingController = nil;
@@ -110,18 +165,18 @@ static NSString* const kSessionUserDefaultsKey = @"SpotifySession";
 -(void)initSpotifyWithSession:(SPTSession*)session {
     self.session = session;
     
-    // create new streaming controller and track player
-    self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:@"Patrik Gebhardt"
-                                                                                appName:@"Festify"];
+    // create new streaming controller and observe track changes
+    self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
+                                                                                appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
+    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
+    
+    // create track player and enable playback
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
     self.trackPlayer.repeatEnabled = YES;
+    [self.trackPlayer enablePlaybackWithSession:session callback:nil];
     
-    // enable playback
-    [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
-        if (error) {
-            NSLog(@"*** Enabling playback got error: %@", error);
-        }
-    }];
+    // start handling remote control events
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 }
 
 @end

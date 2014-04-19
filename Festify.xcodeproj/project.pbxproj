@@ -12,6 +12,7 @@
 		5F089B6718FD56A3002476CB /* PGFestifyTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */; };
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
 		5F123CA4190025FF00E46166 /* PGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */; };
+		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
 		5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
@@ -61,6 +62,7 @@
 		5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Shuffling.m"; sourceTree = "<group>"; };
 		5F123CA2190025FF00E46166 /* PGPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlaylistViewController.h; sourceTree = "<group>"; };
 		5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlaylistViewController.m; sourceTree = "<group>"; };
+		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		5F1CF46118FD9782009E4791 /* PGPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlayerViewController.h; sourceTree = "<group>"; };
 		5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlayerViewController.m; sourceTree = "<group>"; };
 		5F1F9BD418FC31B10030A64B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */,
 				5F28F7631901288D00A0468A /* libz.dylib in Frameworks */,
 				5F28F75F1901287800A0468A /* libTestFlight.a in Frameworks */,
 				5F089B6118FD2B5F002476CB /* iAd.framework in Frameworks */,
@@ -168,6 +171,7 @@
 		5F423A5F18FC115200C3ED75 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5F12D3291902774E00B49FCA /* MediaPlayer.framework */,
 				5F28F7621901288D00A0468A /* libz.dylib */,
 				5F089B6018FD2B5F002476CB /* iAd.framework */,
 				5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */,
