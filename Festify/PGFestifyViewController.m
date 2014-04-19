@@ -32,7 +32,11 @@
     
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
+}
 
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
     // check for valid session, or show login screen
     if (!((PGAppDelegate*)[UIApplication sharedApplication].delegate).session) {
         [self performSegueWithIdentifier:@"showLogin" sender:self];
