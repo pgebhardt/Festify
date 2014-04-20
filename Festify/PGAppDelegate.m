@@ -38,7 +38,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // initialize services
     [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:kPGDiscoveryManagerUUID];
     [TestFlight takeOff:kTestFlightAppToken];
-    [self initSpotifyWithSession:[self loadSpotifySessionFromNSUserDefaults:kSessionUserDefaultsKey]];
+    self.session = [self loadSpotifySessionFromNSUserDefaults:kSessionUserDefaultsKey];
     
     // adjust default colors to match spotify color schema
     [application setStatusBarHidden:NO];
@@ -65,8 +65,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
                 [[NSUserDefaults standardUserDefaults] setValue:[session propertyListRepresentation]
                                                          forKey:kSessionUserDefaultsKey];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-
-                [self initSpotifyWithSession:session];
+                self.session = session;
             }
             
             // call completion handler
@@ -186,21 +185,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-#pragma mark - Helper
-
--(SPTSession*)loadSpotifySessionFromNSUserDefaults:(NSString*)spotifySessionKey {
-    // load session from NSUserDefaults
-    id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:spotifySessionKey];
-    return [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
-}
-
--(void)initSpotifyWithSession:(SPTSession*)session {
-    if (session.credential.length == 0) {
-        return;
-    }
-    
-    self.session = session;
-    
+-(void)initSpotifyWithCompletionHandler:(void (^)(NSError* error))completion {
     // create new streaming controller and observe track changes
     self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
                                                                                 appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
@@ -210,10 +195,18 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // create track player and enable playback
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
     self.trackPlayer.repeatEnabled = YES;
-    [self.trackPlayer enablePlaybackWithSession:session callback:nil];
+    [self.trackPlayer enablePlaybackWithSession:self.session callback:completion];
     
     // start handling remote control events
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+}
+
+#pragma mark - Helper
+
+-(SPTSession*)loadSpotifySessionFromNSUserDefaults:(NSString*)spotifySessionKey {
+    // load session from NSUserDefaults
+    id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:spotifySessionKey];
+    return [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
 }
 
 @end

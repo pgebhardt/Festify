@@ -12,6 +12,7 @@
 #import "UIView+ConvertToImage.h"
 #import "UIImage+ImageEffects.h"
 #import "TSMessage.h"
+#import "MBProgressHud.h"
 
 @interface PGFestifyViewController ()
 
@@ -30,6 +31,25 @@
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
     self.adBanner.delegate = self;
+    
+    // init spotify when session valid, or show login screen
+    if (((PGAppDelegate*)[UIApplication sharedApplication].delegate).session) {
+        [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+        [(PGAppDelegate*)[UIApplication sharedApplication].delegate initSpotifyWithCompletionHandler:^(NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (!error) {
+                    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
+                }
+                else {
+                    [self performSegueWithIdentifier:@"showLogin" sender:self];
+                }
+            });
+        }];
+    }
+    else {
+        [self performSegueWithIdentifier:@"showLogin" sender:self];
+    }
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated {
