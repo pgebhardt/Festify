@@ -109,11 +109,16 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
             }
         }];
     }
-    else if ([keyPath isEqualToString:@"trackPlayer.paused"]) {
-        if (!self.trackPlayer.paused) {
-            self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.streamingController.currentPlaybackPosition];
-            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
+    else if ([keyPath isEqualToString:@"streamingController.isPlaying"]) {
+        if (self.streamingController.isPlaying) {
+            self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
         }
+        else {
+            self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
+        }
+        self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.streamingController.currentPlaybackPosition];
+        
+        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -166,7 +171,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // cleanup spotify api
     __weak typeof(self) weakSelf = self;
     [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
-    [self removeObserver:self forKeyPath:@"trackPlayer.paused"];
+    [self removeObserver:self forKeyPath:@"streamingController.isPlaying"];
     if (!self.trackPlayer.paused) {
         [self.trackPlayer pausePlayback];
     }
@@ -200,11 +205,11 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
                                                                                 appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
+    [self addObserver:self forKeyPath:@"streamingController.isPlaying" options:0 context:nil];
     
     // create track player and enable playback
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
     self.trackPlayer.repeatEnabled = YES;
-    [self addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
     [self.trackPlayer enablePlaybackWithSession:session callback:nil];
     
     // start handling remote control events
