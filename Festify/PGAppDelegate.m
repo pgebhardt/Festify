@@ -185,7 +185,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
--(void)initSpotifyWithCompletionHandler:(void (^)(NSError* error))completion {
+-(void)initStreamingControllerWithCompletionHandler:(void (^)(NSError* error))completion {
     // create new streaming controller and observe track changes
     self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
                                                                                 appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];

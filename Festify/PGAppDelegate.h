@@ -13,7 +13,7 @@
 
 -(void)loginToSpotifyAPI:(void (^)(NSError* error))completion ;
 -(void)logoutOfSpotifyAPI;
--(void)initSpotifyWithCompletionHandler:(void (^)(NSError* error))completion;
+-(void)initStreamingControllerWithCompletionHandler:(void (^)(NSError* error))completion;
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) SPTSession* session;

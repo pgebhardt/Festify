@@ -31,32 +31,26 @@
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
     self.adBanner.delegate = self;
-    
-    // init spotify when session valid, or show login screen
-    if (((PGAppDelegate*)[UIApplication sharedApplication].delegate).session) {
-        [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
-        [(PGAppDelegate*)[UIApplication sharedApplication].delegate initSpotifyWithCompletionHandler:^(NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!error) {
-                    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
-                }
-                else {
-                    [self performSegueWithIdentifier:@"showLogin" sender:self];
-                }
-            });
-        }];
-    }
-    else {
-        [self performSegueWithIdentifier:@"showLogin" sender:self];
-    }
-    
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // check for valid session, or show login screen
-    if (!((PGAppDelegate*)[UIApplication sharedApplication].delegate).session) {
+    // init streaming controller when session valid, or show login screen
+    if (((PGAppDelegate*)[UIApplication sharedApplication].delegate).session) {
+        if (!((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController) {
+            [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+            [(PGAppDelegate*)[UIApplication sharedApplication].delegate initStreamingControllerWithCompletionHandler:^(NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
+                    if (error) {
+                        [self performSegueWithIdentifier:@"showLogin" sender:self];
+                    }
+                });
+            }];
+        }
+    }
+    else {
         [self performSegueWithIdentifier:@"showLogin" sender:self];
     }
 }
@@ -119,8 +113,8 @@
             
             // notify user
             [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:[NSString stringWithFormat:@"Added: %@", [object name]]
-                                               subtitle:[NSString stringWithFormat:@"Creator: %@", [object creator]]
+                                                  title:@"Playlist discovered!"
+                                               subtitle:[object name]
                                                    type:TSMessageNotificationTypeSuccess];
         }
     }];

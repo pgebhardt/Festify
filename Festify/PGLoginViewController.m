@@ -29,7 +29,7 @@
         }
         else {
             [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            [(PGAppDelegate*)[UIApplication sharedApplication].delegate initSpotifyWithCompletionHandler:^(NSError *error) {
+            [(PGAppDelegate*)[UIApplication sharedApplication].delegate initStreamingControllerWithCompletionHandler:^(NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [MBProgressHUD hideHUDForView:self.view animated:YES];
                     
