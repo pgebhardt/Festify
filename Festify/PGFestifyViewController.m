@@ -83,8 +83,8 @@
         // create image view containing a blured image of the current view controller.
         // This makes the effect of a transparent playlist view
         UIImage* image = [self.navigationController.view convertToImage];
-        image = [image applyBlurWithRadius:20
-                                 tintColor:[UIColor colorWithRed:130.0/255.0 green:130.0/255.0 blue:130.0/255.0 alpha:0.7]
+        image = [image applyBlurWithRadius:5
+                                 tintColor:[UIColor colorWithRed:130.0/255.0 green:130.0/255.0 blue:130.0/255.0 alpha:0.4]
                      saturationDeltaFactor:1.3
                                  maskImage:nil];
         

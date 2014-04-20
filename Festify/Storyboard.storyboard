@@ -488,7 +488,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="adBanner" destination="T04-7T-fQv" id="5hW-46-UGX"/>
-                        <segue destination="8Rl-HL-ow2" kind="modal" identifier="showLogin" id="sN6-9t-lxE"/>
+                        <segue destination="8Rl-HL-ow2" kind="modal" identifier="showLogin" modalTransitionStyle="crossDissolve" id="sN6-9t-lxE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="exX-nK-8kW" userLabel="First Responder" sceneMemberID="firstResponder"/>
