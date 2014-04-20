@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
+#import "PGFestifyTrackProvider.h"
 
 @interface PGAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -19,5 +20,6 @@
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SPTAudioStreamingController* streamingController;
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
+@property (nonatomic, strong) PGFestifyTrackProvider* trackProvider;
 
 @end

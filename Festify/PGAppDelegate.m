@@ -12,6 +12,7 @@
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import "TSMessage.h"
+#import "MBProgressHUD.h"
 
 // authentication IDs
 static NSString* const kPGDiscoveryManagerUUID = @"313752b1-f55b-4769-9387-61ce9fd7a840";
@@ -34,7 +35,8 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.trackInfoDictionary = [NSMutableDictionary dictionary];
-    
+    self.trackProvider = [[PGFestifyTrackProvider alloc] init];
+
     // initialize services
     [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:kPGDiscoveryManagerUUID];
     [TestFlight takeOff:kTestFlightAppToken];
@@ -58,7 +60,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // so completion happens here
     if ([[SPTAuth defaultInstance] canHandleURL:url withDeclaredRedirectURL:[NSURL URLWithString:kCallbackURL]]) {
         [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url
-                                            tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://patrik-macbook:1234/swap"]
+                                            tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://192.168.178.28:1234/swap"]
                                                                  callback:^(NSError *error, SPTSession *session) {
             if (!error) {
                 // save session to user defaults
@@ -94,11 +96,8 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
                          withSession:self.session
                             callback:^(NSError *error, id object) {
             if (!error) {
-                // extract image URL
-                NSURL* imageURL = [object largestCover].imageURL;
-                
                 // download image
-                [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:imageURL]
+                [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[object largestCover].imageURL]
                                                  completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                     if (!error) {
                         self.trackInfoDictionary[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageWithData:data]];
@@ -109,15 +108,24 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
         }];
     }
     else if ([keyPath isEqualToString:@"streamingController.isPlaying"]) {
-        if (self.streamingController.isPlaying) {
-            self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
-        }
-        else {
-            self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
-        }
+        self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = self.streamingController.isPlaying ? @1.0 : @0.0;
         self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.streamingController.currentPlaybackPosition];
         
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
+    }
+    else if ([keyPath isEqualToString:@"streamingController.loggedIn"]) {
+        if (!self.streamingController.loggedIn) {
+            [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
+            [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+                [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
+
+                // restore track player state
+                if (!error && self.trackProvider.tracks.count != 0) {
+                    [self.trackPlayer playTrackProvider:self.trackProvider];
+                    [self.trackPlayer pausePlayback];
+                }
+            }];
+        }
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -168,17 +176,18 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     
     // cleanup spotify api
-    __weak typeof(self) weakSelf = self;
     [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
     [self removeObserver:self forKeyPath:@"streamingController.isPlaying"];
+    [self removeObserver:self forKeyPath:@"streamingController.loggedIn"];
     if (!self.trackPlayer.paused) {
         [self.trackPlayer pausePlayback];
     }
     [self.streamingController setIsPlaying:NO callback:^(NSError *error) {
-        weakSelf.trackPlayer = nil;
-        weakSelf.streamingController = nil;
-        weakSelf.session = nil;
+        // TODO: really log out of spotify, as soon as it is available
     }];
+    
+    // clear track provider
+    [self.trackProvider clearAllTracks];
     
     // clear NSUserDefault session storage
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSessionUserDefaultsKey];
@@ -189,13 +198,19 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // create new streaming controller and observe track changes
     self.streamingController = [[SPTAudioStreamingController alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
                                                                                 appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
-    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
-    [self addObserver:self forKeyPath:@"streamingController.isPlaying" options:0 context:nil];
     
     // create track player and enable playback
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithStreamingController:self.streamingController];
     self.trackPlayer.repeatEnabled = YES;
-    [self.trackPlayer enablePlaybackWithSession:self.session callback:completion];
+    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+        [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
+        [self addObserver:self forKeyPath:@"streamingController.isPlaying" options:0 context:nil];
+        [self addObserver:self forKeyPath:@"streamingController.loggedIn" options:0 context:nil];
+    
+        if (completion) {
+            completion(error);
+        }
+    }];
     
     // start handling remote control events
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];

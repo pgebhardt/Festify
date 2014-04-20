@@ -14,20 +14,11 @@
 #import "TSMessage.h"
 #import "MBProgressHud.h"
 
-@interface PGFestifyViewController ()
-
-@property (nonatomic, strong) PGFestifyTrackProvider* trackProvider;
-
-@end
-
 @implementation PGFestifyViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    // init properties
-    self.trackProvider = [[PGFestifyTrackProvider alloc] init];
-    
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
     self.adBanner.delegate = self;
@@ -67,7 +58,7 @@
     }
     else {
         // clear content of track provider
-        [self.trackProvider clearAllTracks];
+        [((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider clearAllTracks];
     }
 }
 
@@ -103,12 +94,12 @@
     [SPTRequest requestItemAtURI:uri
                      withSession:((PGAppDelegate*)[UIApplication sharedApplication].delegate).session
                         callback:^(NSError *error, id object) {
-        if (!error && [self.trackProvider addPlaylist:object forIdentifier:identifier]) {
+        if (!error && [((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider addPlaylist:object forIdentifier:identifier]) {
             // play track provider, if not already playing
-            SPTAudioStreamingController* streaminController = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController;
+            SPTAudioStreamingController* streamingController = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController;
             SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
-            if (!streaminController.isPlaying) {
-                [trackPlayer playTrackProvider:self.trackProvider];
+            if (!streamingController.isPlaying) {
+                [trackPlayer playTrackProvider:((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider];
             }
             
             // notify user
@@ -130,9 +121,6 @@
     // log out of spotify API
     [(PGAppDelegate*)[UIApplication sharedApplication].delegate logoutOfSpotifyAPI];
 
-    // clear track provider
-    [self.trackProvider clearAllTracks];
-    
     // show login screen
     [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
