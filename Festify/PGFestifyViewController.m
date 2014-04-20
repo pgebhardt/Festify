@@ -8,7 +8,6 @@
 
 #import "PGFestifyViewController.h"
 #import "PGFestifyTrackProvider.h"
-#import "PGPlayerViewController.h"
 #import "PGAppDelegate.h"
 #import "UIView+ConvertToImage.h"
 #import "UIImage+ImageEffects.h"
@@ -45,11 +44,17 @@
 #pragma  mark - Actions
 
 - (IBAction)festify:(id)sender {
-    // clear content of track provider
-    [self.trackProvider clearAllTracks];
-    
     // start discovering playlists
-    [[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists];
+    if (![[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists]) {
+        [TSMessage showNotificationInViewController:self.navigationController
+                                              title:@"Error"
+                                           subtitle:@"Turn On Bluetooth!"
+                                               type:TSMessageNotificationTypeError];
+    }
+    else {
+        // clear content of track provider
+        [self.trackProvider clearAllTracks];
+    }
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -72,18 +77,9 @@
         UIImageView* backgroundView = [[UIImageView alloc] initWithFrame:view.frame];
         backgroundView.image = image;
         
-        view.backgroundColor = [UIColor clearColor];
         [view addSubview:backgroundView];
         [view sendSubviewToBack:backgroundView];
     }
-}
-
--(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
-    if ([identifier isEqualToString:@"showTrackPlayer"] && self.trackProvider.tracks.count == 0) {
-        return NO;
-    }
-    
-    return YES;
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
@@ -95,8 +91,9 @@
                         callback:^(NSError *error, id object) {
         if (!error && [self.trackProvider addPlaylist:object forIdentifier:identifier]) {
             // play track provider, if not already playing
+            SPTAudioStreamingController* streaminController = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController;
             SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
-            if (trackPlayer.currentProvider == nil || trackPlayer.paused) {
+            if (!streaminController.isPlaying) {
                 [trackPlayer playTrackProvider:self.trackProvider];
             }
             

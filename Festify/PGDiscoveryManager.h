@@ -18,16 +18,16 @@
 
 @end
 
-@interface PGDiscoveryManager : NSObject<CBCentralManagerDelegate, CBPeripheralManagerDelegate, CBPeripheralDelegate>
+@interface PGDiscoveryManager : NSObject<CBCentralManagerDelegate, CBPeripheralDelegate>
 
 +(PGDiscoveryManager*)sharedInstance;
 
--(void)setAdvertisingPlaylist:(SPTPartialPlaylist*)playlist withSession:(SPTSession*)session;
--(void)startAdvertisingPlaylistWithSession:(SPTSession*)session;
+-(BOOL)setAdvertisingPlaylist:(SPTPartialPlaylist*)playlist withSession:(SPTSession*)session;
+-(BOOL)startAdvertisingPlaylistWithSession:(SPTSession*)session;
 -(void)stopAdvertisingPlaylist;
 -(BOOL)isAdvertisingsPlaylist;
 
--(void)startDiscoveringPlaylists;
+-(BOOL)startDiscoveringPlaylists;
 -(void)stopDiscoveringPlaylists;
 -(BOOL)isDiscoveringPlaylists;
 

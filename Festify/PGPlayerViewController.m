@@ -38,6 +38,8 @@
     // initialy setup UI correctly
     [self updateTrackInfo:self.streamingController.currentTrackMetadata];
     [self updatePlayButton:self.streamingController.isPlaying];
+    [self updatePlaybackPosition:self.streamingController.currentPlaybackPosition
+                     andDuration:[self.streamingController.currentTrackMetadata[SPTAudioStreamingMetadataTrackDuration] doubleValue]];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {

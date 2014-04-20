@@ -10,6 +10,7 @@
 #import "PGDiscoveryManager.h"
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
+#import "TSMessage.h"
 
 @interface PGSettingsViewController ()
 
@@ -93,7 +94,14 @@
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {
         SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-        [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylistWithSession:session];
+        if (![[PGDiscoveryManager sharedInstance] startAdvertisingPlaylistWithSession:session]) {
+            [TSMessage showNotificationInViewController:self.navigationController
+                                                  title:@"Error"
+                                               subtitle:@"Turn On Bluetooth!"
+                                                   type:TSMessageNotificationTypeError];
+            
+            [self.advertisementSwitch setOn:NO animated:YES];
+        }
     }
     else {
         [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];

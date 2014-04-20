@@ -38,7 +38,7 @@
         dispatch_queue_t centralManagerQueue = dispatch_queue_create("com.patrikgebhardt.festify.centralManager", DISPATCH_QUEUE_SERIAL);
         dispatch_queue_t peripheralManagerQueue = dispatch_queue_create("com.patrikgebhardt.festify.peripheralManager", DISPATCH_QUEUE_SERIAL);
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:centralManagerQueue];
-        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:peripheralManagerQueue];
+        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:nil queue:peripheralManagerQueue];
         self.discoveringPlaylists = NO;
         
         self.discoveredPeripherals = [[NSMutableArray alloc] init];
@@ -47,23 +47,30 @@
     return self;
 }
 
--(void)setAdvertisingPlaylist:(SPTPartialPlaylist *)playlist withSession:(SPTSession*)session {
+-(BOOL)setAdvertisingPlaylist:(SPTPartialPlaylist *)playlist withSession:(SPTSession*)session {
     _advertisingPlaylist = playlist;
     
     // restart bluetooth service
     if (self.peripheralManager.isAdvertising) {
         [self stopAdvertisingPlaylist];
-        [self startAdvertisingPlaylistWithSession:session];
+        return [self startAdvertisingPlaylistWithSession:session];
     }
+    
+    return NO;
 }
 
 -(SPTPartialPlaylist*)advertisingPlaylist {
     return _advertisingPlaylist;
 }
 
--(void)startAdvertisingPlaylistWithSession:(SPTSession *)session {
+-(BOOL)startAdvertisingPlaylistWithSession:(SPTSession *)session {
     if (!self.advertisingPlaylist) {
-        return;
+        return NO;
+    }
+    
+    // check the bluetooth state
+    if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn) {
+        return NO;
     }
     
     // init peripheral service to advertise playlist uri
@@ -78,6 +85,8 @@
     // advertise service
     [self.peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey: @[self.serviceUUID],
                                                CBAdvertisementDataLocalNameKey: session.canonicalUsername}];
+    
+    return YES;
 }
 
 -(void)stopAdvertisingPlaylist {
@@ -89,11 +98,18 @@
     return self.peripheralManager.isAdvertising;
 }
 
--(void)startDiscoveringPlaylists {
+-(BOOL)startDiscoveringPlaylists {
+    // check the bluetooth state
+    if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn) {
+        return NO;
+    }
+    
     // scan for festify services
     [self.centralManager scanForPeripheralsWithServices:@[self.serviceUUID]
                                                 options:@{CBCentralManagerScanOptionAllowDuplicatesKey: @NO}];
     self.discoveringPlaylists = YES;
+    
+    return YES;
 }
 
 -(void)stopDiscoveringPlaylists {
@@ -105,16 +121,10 @@
     return self.discoveringPlaylists;
 }
 
-#pragma mark - CBPeripheralManagerDelegate
-
--(void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral {
-    
-}
-
 #pragma mark - CBCentralManagerDelegate
 
 -(void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    
+
 }
 
 -(void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
