@@ -90,20 +90,20 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
                 [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
             }];
         }
-        else {
+        else if (self.trackPlayer.paused) {
+            // dismiss delegate to avoid updating track player state when loggin in again
+            self.streamingController.delegate = nil;
+            
             // check logged in state, but wait a little bit, to let Spotify check the logged in state ;)
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)),
                 dispatch_get_main_queue(), ^{
+                // restore correct delegate
+                self.streamingController.delegate = (id<SPTAudioStreamingDelegate>)self.trackPlayer;
+
                 if (!self.streamingController.loggedIn) {
                     [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
-                    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+                    [self.streamingController loginWithSession:self.session callback:^(NSError *error) {
                         [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
-                        
-                        // restore track player state
-                        if (!error && self.trackProvider.tracks.count != 0) {
-                            [self.trackPlayer playTrackProvider:self.trackProvider];
-                            [self.trackPlayer pausePlayback];
-                        }
                     }];
                 }
            });

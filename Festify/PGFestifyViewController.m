@@ -12,7 +12,6 @@
 #import "UIView+ConvertToImage.h"
 #import "UIImage+ImageEffects.h"
 #import "TSMessage.h"
-#import "MBProgressHud.h"
 
 @implementation PGFestifyViewController
 
