@@ -82,6 +82,13 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     return NO;
 }
 
+-(void)applicationDidBecomeActive:(UIApplication *)application {
+    // restore streaming controller if not logged in anymore
+    if (self.trackPlayer && !self.streamingController.loggedIn) {
+        [self restoreTrackPlayer];
+    }
+}
+
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSDictionary* trackMetadata = [self.streamingController.currentTrackMetadata copy];
     if ([keyPath isEqualToString:@"streamingController.currentTrackMetadata"]) {
@@ -115,16 +122,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     }
     else if ([keyPath isEqualToString:@"streamingController.loggedIn"]) {
         if (!self.streamingController.loggedIn) {
-            [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
-            [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-                [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
-
-                // restore track player state
-                if (!error && self.trackProvider.tracks.count != 0) {
-                    [self.trackPlayer playTrackProvider:self.trackProvider];
-                    [self.trackPlayer pausePlayback];
-                }
-            }];
+            [self restoreTrackPlayer];
         }
     }
     else {
@@ -182,8 +180,13 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     if (!self.trackPlayer.paused) {
         [self.trackPlayer pausePlayback];
     }
+    
+    // TODO: As soon as available, really log out of spotify ;)
+    __weak typeof(self) weakSelf = self;
     [self.streamingController setIsPlaying:NO callback:^(NSError *error) {
-        // TODO: really log out of spotify, as soon as it is available
+        weakSelf.trackPlayer = nil;
+        // weakSelf.streamingController = nil;
+        weakSelf.session = nil;
     }];
     
     // clear track provider
@@ -222,6 +225,19 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // load session from NSUserDefaults
     id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:spotifySessionKey];
     return [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
+}
+
+-(void)restoreTrackPlayer {
+    [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
+    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+        [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
+        
+        // restore track player state
+        if (!error && self.trackProvider.tracks.count != 0) {
+            [self.trackPlayer playTrackProvider:self.trackProvider];
+            [self.trackPlayer pausePlayback];
+        }
+    }];
 }
 
 @end

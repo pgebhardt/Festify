@@ -480,7 +480,7 @@
                                 <segue destination="GXy-uy-A2Y" kind="modal" identifier="showSettings" id="QYG-rm-Jlk"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="play" id="wXj-3i-kV3">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" systemItem="play" id="wXj-3i-kV3">
                             <connections>
                                 <segue destination="EVF-cW-P26" kind="push" identifier="showTrackPlayer" id="NTL-9Y-2qr"/>
                             </connections>
@@ -488,6 +488,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="adBanner" destination="T04-7T-fQv" id="5hW-46-UGX"/>
+                        <outlet property="playButton" destination="wXj-3i-kV3" id="2H7-5S-0Dx"/>
                         <segue destination="8Rl-HL-ow2" kind="modal" identifier="showLogin" modalTransitionStyle="crossDissolve" id="sN6-9t-lxE"/>
                     </connections>
                 </viewController>

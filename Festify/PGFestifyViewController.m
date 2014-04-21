@@ -103,6 +103,7 @@
             }
             
             // notify user
+            self.playButton.enabled = YES;
             [TSMessage showNotificationInViewController:self.navigationController
                                                   title:@"Playlist discovered!"
                                                subtitle:[object name]
@@ -119,6 +120,7 @@
     [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
     
     // log out of spotify API
+    self.playButton.enabled = NO;
     [(PGAppDelegate*)[UIApplication sharedApplication].delegate logoutOfSpotifyAPI];
 
     // show login screen

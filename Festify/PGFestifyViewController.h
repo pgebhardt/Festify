@@ -16,5 +16,6 @@
 
 - (IBAction)festify:(id)sender;
 @property (weak, nonatomic) IBOutlet ADBannerView *adBanner;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *playButton;
 
 @end
