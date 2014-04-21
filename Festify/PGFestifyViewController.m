@@ -21,7 +21,6 @@
 
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
-    self.adBanner.delegate = self;
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -112,20 +111,6 @@
 
     // show login screen
     [self performSegueWithIdentifier:@"showLogin" sender:self];
-}
-
-#pragma mark - ADBannerViewDelegate
-
--(void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error {
-    if (error) {
-        self.adBanner.hidden = YES;
-    }
-}
-
--(void)bannerViewDidLoadAd:(ADBannerView *)banner {
-    if (self.adBanner.hidden) {
-        self.adBanner.hidden = NO;
-    }
 }
 
 @end

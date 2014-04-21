@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5F089B5F18FD169B002476CB /* PGSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* PGSettingsViewController.m */; };
-		5F089B6118FD2B5F002476CB /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F089B6018FD2B5F002476CB /* iAd.framework */; };
 		5F089B6718FD56A3002476CB /* PGFestifyTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */; };
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
 		5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */; };
@@ -121,7 +120,6 @@
 				5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */,
 				5F28F7631901288D00A0468A /* libz.dylib in Frameworks */,
 				5F28F75F1901287800A0468A /* libTestFlight.a in Frameworks */,
-				5F089B6118FD2B5F002476CB /* iAd.framework in Frameworks */,
 				5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */,
 				5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */,
 				5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */,
