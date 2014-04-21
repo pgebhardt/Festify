@@ -83,9 +83,31 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
 }
 
 -(void)applicationDidBecomeActive:(UIApplication *)application {
-    // restore streaming controller if not logged in anymore
-    if (self.trackPlayer && !self.streamingController.loggedIn) {
-        [self restoreTrackPlayer];
+    if (self.session) {
+        if (!self.trackPlayer) {
+            [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
+            [self initStreamingControllerWithCompletionHandler:^(NSError *error) {
+                [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
+            }];
+        }
+        else {
+            // check logged in state, but wait a little bit, to let Spotify check the logged in state ;)
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)),
+                dispatch_get_main_queue(), ^{
+                if (!self.streamingController.loggedIn) {
+                    [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
+                    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+                        [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
+                        
+                        // restore track player state
+                        if (!error && self.trackProvider.tracks.count != 0) {
+                            [self.trackPlayer playTrackProvider:self.trackProvider];
+                            [self.trackPlayer pausePlayback];
+                        }
+                    }];
+                }
+           });
+        }
     }
 }
 
@@ -119,11 +141,6 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
         self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.streamingController.currentPlaybackPosition];
         
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
-    }
-    else if ([keyPath isEqualToString:@"streamingController.loggedIn"]) {
-        if (!self.streamingController.loggedIn) {
-            [self restoreTrackPlayer];
-        }
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -176,7 +193,6 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // cleanup spotify api
     [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
     [self removeObserver:self forKeyPath:@"streamingController.isPlaying"];
-    [self removeObserver:self forKeyPath:@"streamingController.loggedIn"];
     if (!self.trackPlayer.paused) {
         [self.trackPlayer pausePlayback];
     }
@@ -208,7 +224,6 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
         [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
         [self addObserver:self forKeyPath:@"streamingController.isPlaying" options:0 context:nil];
-        [self addObserver:self forKeyPath:@"streamingController.loggedIn" options:0 context:nil];
     
         if (completion) {
             completion(error);
@@ -225,19 +240,6 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // load session from NSUserDefaults
     id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:spotifySessionKey];
     return [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
-}
-
--(void)restoreTrackPlayer {
-    [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
-    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-        [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
-        
-        // restore track player state
-        if (!error && self.trackProvider.tracks.count != 0) {
-            [self.trackPlayer playTrackProvider:self.trackProvider];
-            [self.trackPlayer pausePlayback];
-        }
-    }];
 }
 
 @end

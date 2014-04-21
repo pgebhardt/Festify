@@ -28,20 +28,7 @@
     [super viewDidAppear:animated];
     
     // init streaming controller when session valid, or show login screen
-    if (((PGAppDelegate*)[UIApplication sharedApplication].delegate).session) {
-        if (!((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController) {
-            [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
-            [(PGAppDelegate*)[UIApplication sharedApplication].delegate initStreamingControllerWithCompletionHandler:^(NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [MBProgressHUD hideHUDForView:self.navigationController.view animated:YES];
-                    if (error) {
-                        [self performSegueWithIdentifier:@"showLogin" sender:self];
-                    }
-                });
-            }];
-        }
-    }
-    else {
+    if (!((PGAppDelegate*)[UIApplication sharedApplication].delegate).session) {
         [self performSegueWithIdentifier:@"showLogin" sender:self];
     }
 }
