@@ -95,6 +95,7 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
             self.streamingController.delegate = nil;
             
             // check logged in state, but wait a little bit, to let Spotify check the logged in state ;)
+            // All this is a horrible workaround, because the spotify SDK handles it all very strange
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)),
                 dispatch_get_main_queue(), ^{
                 // restore correct delegate
@@ -102,8 +103,14 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
 
                 if (!self.streamingController.loggedIn) {
                     [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
+                    
                     [self.streamingController loginWithSession:self.session callback:^(NSError *error) {
                         [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
+                        
+                        if (!self.trackPlayer.currentProvider) {
+                            [self.trackPlayer playTrackProvider:self.trackProvider];
+                            [self.trackPlayer pausePlayback];
+                        }
                     }];
                 }
            });
@@ -208,8 +215,8 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // clear track provider
     [self.trackProvider clearAllTracks];
     
-    // clear NSUserDefault session storage
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSessionUserDefaultsKey];
+    // clear NSUserDefault storage
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[NSBundle mainBundle].bundleIdentifier];;
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
