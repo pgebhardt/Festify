@@ -59,13 +59,10 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playlistPicker reloadAllComponents];
 
-                // selected currently advertised playlist
-                for (int i = 0; i < self.playlists.items.count; ++i) {
-                    if ([[self.playlists.items[i] uri].absoluteString isEqualToString:[PGDiscoveryManager sharedInstance].advertisingPlaylist.uri.absoluteString]) {
-                        [self.playlistPicker selectRow:i inComponent:0 animated:NO];
-                        self.playlistLabel.text = [self.playlists.items[i] name];
-                    }
-                }
+                // set advertised playlist to user defaults
+                NSInteger indexOfAdvertisedPlaylist = [[[NSUserDefaults standardUserDefaults] valueForKey:@"indexOfAdvertisedPlaylist"] integerValue];
+                [self.playlistPicker selectRow:indexOfAdvertisedPlaylist inComponent:0 animated:NO];
+                self.playlistLabel.text = [self.playlists.items[indexOfAdvertisedPlaylist] name];
             });
         }
     }];
@@ -94,6 +91,8 @@
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {
         SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+        [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[[self.playlistPicker selectedRowInComponent:0]]
+                                                        withSession:session];
         if (![[PGDiscoveryManager sharedInstance] startAdvertisingPlaylistWithSession:session]) {
             [TSMessage showNotificationInViewController:self.navigationController
                                                   title:@"Error"
@@ -125,9 +124,8 @@
 }
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-    [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[row] withSession:session];
     self.playlistLabel.text = [self.playlists.items[row] name];
+    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithInteger:row] forKey:@"indexOfAdvertisedPlaylist"];
 }
 
 #pragma mark - UITableViewDelegate
