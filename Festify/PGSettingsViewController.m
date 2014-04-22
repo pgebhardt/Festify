@@ -116,6 +116,7 @@
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     self.playlistLabel.text = [self.playlists.items[row] name];
+    [PGUserDefaults setValue:[NSNumber numberWithInteger:row] forKey:PGUserDefaultsIndexOfAdvertisedPlaylistKey];
 }
 
 #pragma mark - UITableViewDelegate
