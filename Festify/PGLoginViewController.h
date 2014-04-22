@@ -12,5 +12,6 @@
 @interface PGLoginViewController : UIViewController
 
 - (IBAction)login:(id)sender;
+@property (nonatomic, strong) UIView* underlyingView;
 
 @end

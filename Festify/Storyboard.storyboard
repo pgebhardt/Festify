@@ -171,6 +171,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.92549026012420654" green="0.92156869173049927" blue="0.90196084976196289" alpha="1" colorSpace="deviceRGB"/>
                         <color key="separatorColor" red="0.098039224743843079" green="0.098039224743843079" blue="0.098039224743843079" alpha="1" colorSpace="deviceRGB"/>
+                        <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" textLabel="XQM-XN-40V" detailTextLabel="vRY-SL-T6d" style="IBUITableViewCellStyleSubtitle" id="o0F-dr-Hmy">
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
@@ -502,7 +503,6 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="0.54117649793624878" green="0.54509806632995605" blue="0.54117649793624878" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="2bj-t6-ax4" secondAttribute="centerX" id="49R-tx-lj6"/>
                             <constraint firstAttribute="centerY" secondItem="2bj-t6-ax4" secondAttribute="centerY" constant="0.5" id="Nmu-6V-iGN"/>

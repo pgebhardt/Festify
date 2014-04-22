@@ -9,6 +9,8 @@
 #import "PGPlaylistViewController.h"
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
+#import "UIImage+ImageEffects.h"
+#import "UIView+ConvertToImage.h"
 
 @interface PGPlaylistViewController ()
 
@@ -21,24 +23,12 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // add observers to update UI accordingly to track and playlist changes
     self.trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
-    [self addObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack" options:0 context:nil];
+    [self createBlurredBackgroundFromView:self.underlyingView];
 }
 
--(void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    [self removeObserver:self forKeyPath:@"trackPlayer.indexOfCurrentTrack"];
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"trackPlayer.indexOfCurrentTrack"]) {
-        [self.tableView reloadData];
-    }
-    else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
+- (IBAction)done:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Table view data source
@@ -65,19 +55,39 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
-    [trackPlayer playTrackProvider:trackPlayer.currentProvider fromIndex:trackIndex];
+    [self.trackPlayer playTrackProvider:self.trackPlayer.currentProvider fromIndex:trackIndex];
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [tableView reloadData];
-    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                     atScrollPosition:UITableViewScrollPositionTop
-                             animated:YES];
 }
 
-- (IBAction)done:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+#pragma mark - PGPlayerViewDelegate
+
+-(void)playerView:(PGPlayerViewController *)playerView didUpdateTrackInfo:(NSDictionary *)trackInfo {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // update background image
+        [self createBlurredBackgroundFromView:self.underlyingView];
+        
+        // update table view
+        [self.tableView reloadData];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                              atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    });
+}
+
+#pragma mark - Helper
+
+-(void)createBlurredBackgroundFromView:(UIView*)view {
+    // create image view containing a blured image of the current view controller.
+    // This makes the effect of a transparent playlist view
+    UIImage* image = [view convertToImage];
+    image = [image applyBlurWithRadius:15
+                             tintColor:[UIColor colorWithRed:236.0/255.0 green:235.0/255.0 blue:232.0/255.0 alpha:0.7]
+                 saturationDeltaFactor:1.3
+                             maskImage:nil];
+    
+    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:self.view.frame];
+    [(UIImageView*)self.tableView.backgroundView setImage:image];
 }
 
 @end

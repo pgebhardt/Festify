@@ -11,8 +11,12 @@
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
-#import "UIImage+ImageEffects.h"
-#import "UIView+ConvertToImage.h"
+
+@interface PGPlayerViewController ()
+
+@property (nonatomic, assign) BOOL transitioningToPlaylistView;
+
+@end
 
 @implementation PGPlayerViewController
 
@@ -21,10 +25,13 @@
 
     // observe playback state change and track change to update UI accordingly
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
     [appDelegate addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
     [appDelegate addObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition" options:0 context:nil];
-
+    if (!self.transitioningToPlaylistView) {
+        [appDelegate addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
+        self.transitioningToPlaylistView = NO;
+    }
+    
     // initialy setup UI correctly
     [self updateTrackInfo:appDelegate.trackInfoDictionary andCoverArt:appDelegate.coverArtOfCurrentTrack];
     [self updatePlayButton:appDelegate.trackPlayer.paused];
@@ -36,15 +43,21 @@
     [super viewWillDisappear:animated];
     
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate removeObserver:self forKeyPath:@"coverArtOfCurrentTrack"];
     [appDelegate removeObserver:self forKeyPath:@"trackPlayer.paused"];
     [appDelegate removeObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition"];
+    if (!self.transitioningToPlaylistView) {
+        [appDelegate removeObserver:self forKeyPath:@"coverArtOfCurrentTrack"];
+    }
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
     if ([keyPath isEqualToString:@"coverArtOfCurrentTrack"]) {
         [self updateTrackInfo:appDelegate.trackInfoDictionary andCoverArt:appDelegate.coverArtOfCurrentTrack];
+        
+        if (self.delegate) {
+            [self.delegate playerView:self didUpdateTrackInfo:appDelegate.trackInfoDictionary];
+        }
     }
     else if ([keyPath isEqualToString:@"trackPlayer.paused"]) {
         [self updatePlayButton:appDelegate.trackPlayer.paused];
@@ -63,19 +76,9 @@
         UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
         PGPlaylistViewController* viewController = (PGPlaylistViewController*)navigationController.viewControllers[0];
         
-        // create image view containing a blured image of the current view controller.
-        // This makes the effect of a transparent playlist view
-        UIImage* image = [self.navigationController.view convertToImage];
-        image = [image applyBlurWithRadius:20
-                                 tintColor:[UIColor colorWithRed:236.0/255.0 green:235.0/255.0 blue:232.0/255.0 alpha:0.8]
-                     saturationDeltaFactor:1.3
-                                 maskImage:nil];
-        
-        UIImageView* backgroundView = [[UIImageView alloc] initWithFrame:viewController.view.frame];
-        backgroundView.image = image;
-        
-        viewController.view.backgroundColor = [UIColor clearColor];
-        viewController.tableView.backgroundView = backgroundView;
+        viewController.underlyingView = self.navigationController.view;
+        self.delegate = viewController;
+        self.transitioningToPlaylistView = YES;
     }
 }
 

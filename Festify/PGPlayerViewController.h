@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class PGPlayerViewController;
+
+@protocol PGPlayerViewDelegate <NSObject>
+
+-(void)playerView:(PGPlayerViewController*)playerView didUpdateTrackInfo:(NSDictionary*)trackInfo;
+
+@end
+
 @interface PGPlayerViewController : UIViewController
 
 - (IBAction)rewind:(id)sender;
@@ -22,5 +30,7 @@
 @property (weak, nonatomic) IBOutlet UIProgressView *trackPosition;
 @property (weak, nonatomic) IBOutlet UILabel *currentTimeView;
 @property (weak, nonatomic) IBOutlet UILabel *remainingTimeView;
+
+@property (nonatomic, weak) id<PGPlayerViewDelegate> delegate;
 
 @end

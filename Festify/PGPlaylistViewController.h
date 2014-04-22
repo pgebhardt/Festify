@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
+#import "PGPlayerViewController.h"
 
-@interface PGPlaylistViewController : UITableViewController
+@interface PGPlaylistViewController : UITableViewController<PGPlayerViewDelegate>
 
 - (IBAction)done:(id)sender;
+@property (nonatomic, strong) UIView* underlyingView;
 
 @end
