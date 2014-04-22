@@ -47,13 +47,13 @@
     return self;
 }
 
--(BOOL)setAdvertisingPlaylist:(SPTPartialPlaylist *)playlist withSession:(SPTSession*)session {
+-(BOOL)setAdvertisingPlaylist:(SPTPartialPlaylist *)playlist {
     _advertisingPlaylist = playlist;
     
     // restart bluetooth service
     if (self.peripheralManager.isAdvertising) {
         [self stopAdvertisingPlaylist];
-        return [self startAdvertisingPlaylistWithSession:session];
+        return [self startAdvertisingPlaylist];
     }
     
     return NO;
@@ -63,7 +63,7 @@
     return _advertisingPlaylist;
 }
 
--(BOOL)startAdvertisingPlaylistWithSession:(SPTSession *)session {
+-(BOOL)startAdvertisingPlaylist {
     if (!self.advertisingPlaylist) {
         return NO;
     }
@@ -84,7 +84,7 @@
     
     // advertise service
     [self.peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey: @[self.serviceUUID],
-                                               CBAdvertisementDataLocalNameKey: session.canonicalUsername}];
+                                               CBAdvertisementDataLocalNameKey: [UIDevice currentDevice].name}];
     
     return YES;
 }
@@ -169,7 +169,7 @@
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     // get playlist URI
     NSURL* playlistURI = [NSURL URLWithString:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]];
-
+    
     // disconnect device
     [self.centralManager cancelPeripheralConnection:peripheral];
     

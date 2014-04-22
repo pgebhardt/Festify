@@ -8,9 +8,9 @@
 
 #import "PGAppDelegate.h"
 #import "PGDiscoveryManager.h"
-#import "TestFlight.h"
-#import <Spotify/Spotify.h>
+#import "PGUserDefaults.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import <Spotify/Spotify.h>
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
 
@@ -22,7 +22,6 @@ static NSString* const kTestFlightAppToken = @"64c2e34b-5362-4a6f-8d64-644887b84
 // TODO: replace with post-beta IDs and adjust the App's URL type
 static NSString* const kClientID = @"spotify-ios-sdk-beta";
 static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
-static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
 
 @interface PGAppDelegate ()
 
@@ -39,8 +38,9 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
 
     // initialize services
     [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:kPGDiscoveryManagerUUID];
-    [TestFlight takeOff:kTestFlightAppToken];
-    self.session = [self loadSpotifySessionFromNSUserDefaults:kSessionUserDefaultsKey];
+    
+    // restore application state
+    [PGUserDefaults restoreApplicationState];
     
     // adjust default colors to match spotify color schema
     [application setStatusBarHidden:NO];
@@ -63,10 +63,6 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
                                             tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://192.168.178.28:1234/swap"]
                                                                  callback:^(NSError *error, SPTSession *session) {
             if (!error) {
-                // save session to user defaults
-                [[NSUserDefaults standardUserDefaults] setValue:[session propertyListRepresentation]
-                                                         forKey:kSessionUserDefaultsKey];
-                [[NSUserDefaults standardUserDefaults] synchronize];
                 self.session = session;
             }
             
@@ -116,6 +112,11 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
            });
         }
     }
+}
+
+-(void)applicationWillTerminate:(UIApplication *)application {
+    // save current application state
+    [PGUserDefaults saveApplicationState];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -215,9 +216,8 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     // clear track provider
     [self.trackProvider clearAllTracks];
     
-    // clear NSUserDefault storage
-    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[NSBundle mainBundle].bundleIdentifier];;
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    // clear user defaults
+    [PGUserDefaults clear];
 }
 
 -(void)initStreamingControllerWithCompletionHandler:(void (^)(NSError* error))completion {
@@ -239,14 +239,6 @@ static NSString * const kSessionUserDefaultsKey = @"SpotifySession";
     
     // start handling remote control events
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-}
-
-#pragma mark - Helper
-
--(SPTSession*)loadSpotifySessionFromNSUserDefaults:(NSString*)spotifySessionKey {
-    // load session from NSUserDefaults
-    id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:spotifySessionKey];
-    return [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
 }
 
 @end

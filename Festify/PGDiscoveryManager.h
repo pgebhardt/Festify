@@ -22,8 +22,8 @@
 
 +(PGDiscoveryManager*)sharedInstance;
 
--(BOOL)setAdvertisingPlaylist:(SPTPartialPlaylist*)playlist withSession:(SPTSession*)session;
--(BOOL)startAdvertisingPlaylistWithSession:(SPTSession*)session;
+-(BOOL)setAdvertisingPlaylist:(SPTPartialPlaylist*)playlist;
+-(BOOL)startAdvertisingPlaylist;;
 -(void)stopAdvertisingPlaylist;
 -(BOOL)isAdvertisingsPlaylist;
 

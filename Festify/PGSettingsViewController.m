@@ -9,6 +9,7 @@
 #import "PGSettingsViewController.h"
 #import "PGDiscoveryManager.h"
 #import "PGAppDelegate.h"
+#import "PGUserDefaults.h"
 #import <Spotify/Spotify.h>
 #import "TSMessage.h"
 
@@ -44,23 +45,15 @@
     // get the playlists of the current user
     SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
     [SPTRequest playlistsForUser:session.canonicalUsername withSession:session callback:^(NSError *error, id object) {
-        if (error) {
-            NSLog(@"Could not retrieve playlists for user: %@", session.canonicalUsername);
-        }
-        else {
+        if (!error) {
             self.playlists = object;
-            
-            // set first playlist as default advertisement playlist
-            if ([PGDiscoveryManager sharedInstance].advertisingPlaylist == nil) {
-                [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[0] withSession:session];
-            }
             
             // update ui
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.playlistPicker reloadAllComponents];
 
                 // set advertised playlist to user defaults
-                NSInteger indexOfAdvertisedPlaylist = [[[NSUserDefaults standardUserDefaults] valueForKey:@"indexOfAdvertisedPlaylist"] integerValue];
+                NSInteger indexOfAdvertisedPlaylist = [[PGUserDefaults valueForKey:PGUserDefaultsIndexOfAdvertisedPlaylistKey] integerValue];
                 [self.playlistPicker selectRow:indexOfAdvertisedPlaylist inComponent:0 animated:NO];
                 self.playlistLabel.text = [self.playlists.items[indexOfAdvertisedPlaylist] name];
             });
@@ -90,10 +83,8 @@
 
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {
-        SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-        [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[[self.playlistPicker selectedRowInComponent:0]]
-                                                        withSession:session];
-        if (![[PGDiscoveryManager sharedInstance] startAdvertisingPlaylistWithSession:session]) {
+        [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[[self.playlistPicker selectedRowInComponent:0]]];
+        if (![[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist]) {
             [TSMessage showNotificationInViewController:self.navigationController
                                                   title:@"Error"
                                                subtitle:@"Turn On Bluetooth!"
@@ -125,7 +116,6 @@
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     self.playlistLabel.text = [self.playlists.items[row] name];
-    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithInteger:row] forKey:@"indexOfAdvertisedPlaylist"];
 }
 
 #pragma mark - UITableViewDelegate

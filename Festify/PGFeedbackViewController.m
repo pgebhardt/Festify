@@ -7,7 +7,6 @@
 //
 
 #import "PGFeedbackViewController.h"
-#import "TestFlight.h"
 
 @implementation PGFeedbackViewController
 
@@ -25,7 +24,7 @@
 }
 
 - (IBAction)sendFeedback:(id)sender {
-    [TestFlight submitFeedback:self.feedbackTextView.text];
+    // TODO: really send feedback
     [self.navigationController popViewControllerAnimated:YES];
 }
 
