@@ -25,11 +25,15 @@
     // try to login to spotify api
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [((PGAppDelegate*)[UIApplication sharedApplication].delegate) loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        
         // show login screen
         if (error) {
-            [self performSegueWithIdentifier:@"showLogin" sender:self];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:self.view animated:NO];
+                [self performSegueWithIdentifier:@"showLogin" sender:self];
+            });
+        }
+        else {
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
         }
     }];
 }
@@ -77,7 +81,7 @@
 
 #pragma mark - PGDiscoveryManagerDelegate
 
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri byIdentifier:(NSString *)identifier {
+-(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri devicename:(NSString *)devicename identifier:(NSString *)identifier {
     // request complete playlist and add it to track provider
     [SPTRequest requestItemAtURI:uri
                      withSession:((PGAppDelegate*)[UIApplication sharedApplication].delegate).session
@@ -92,8 +96,8 @@
             // notify user
             self.playButton.enabled = YES;
             [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:@"Playlist discovered!"
-                                               subtitle:[object name]
+                                                  title:[NSString stringWithFormat:@"Discovered: %@", devicename]
+                                               subtitle:[NSString stringWithFormat:@"Added: %@", [object name]]
                                                    type:TSMessageNotificationTypeSuccess];
         }
     }];

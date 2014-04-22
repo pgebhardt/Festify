@@ -14,10 +14,6 @@
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
 
-// authentication IDs
-static NSString* const kPGDiscoveryManagerUUID = @"313752b1-f55b-4769-9387-61ce9fd7a840";
-static NSString* const kTestFlightAppToken = @"64c2e34b-5362-4a6f-8d64-644887b84b52";
-
 // spotify authentication constants
 // TODO: replace with post-beta IDs and adjust the App's URL type
 static NSString* const kClientID = @"spotify-ios-sdk-beta";
@@ -42,9 +38,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
                                                            appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     self.trackPlayer.repeatEnabled = YES;
-    
-    // initialize services
-    [PGDiscoveryManager sharedInstance].serviceUUID = [CBUUID UUIDWithString:kPGDiscoveryManagerUUID];
     
     // adjust default colors to match spotify color schema
     [application setStatusBarHidden:NO];
@@ -189,7 +182,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
-    NSLog(@"didEnfPlaybackOfTrachAtIndex: %ld", (long)index);
+    NSLog(@"didEndPlaybackOfTrachAtIndex: %ld", (long)index);
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
