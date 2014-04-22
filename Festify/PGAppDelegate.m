@@ -188,6 +188,10 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     }];
 }
 
+-(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
+    NSLog(@"didEnfPlaybackOfTrachAtIndex: %ld", (long)index);
+}
+
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
     if (reason == SPTPlaybackEndReasonLoggedOut) {
         // try to login again
@@ -203,4 +207,15 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     }
 }
 
+-(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withError:(NSError *)error {
+    NSLog(@"didEndPlaybackOfProviderWithError: %@", error);
+}
+
+-(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
+    // show message to user
+    [TSMessage showNotificationInViewController:self.window.rootViewController
+                                          title:@"Message from Spotify:"
+                                       subtitle:message
+                                           type:TSMessageNotificationTypeMessage];
+}
 @end
