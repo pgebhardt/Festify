@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PGPlaylistViewController.h"
 
-@interface PGPlayerViewController : UIViewController<PGPlaylistViewDelegate>
+@interface PGPlayerViewController : UIViewController
 
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;

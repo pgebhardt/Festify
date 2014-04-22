@@ -7,6 +7,7 @@
 //
 
 #import "PGPlayerViewController.h"
+#import "PGPlaylistViewController.h"
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
@@ -75,7 +76,6 @@
         
         viewController.view.backgroundColor = [UIColor clearColor];
         viewController.tableView.backgroundView = backgroundView;
-        viewController.delegate = self;
     }
 }
 
@@ -135,13 +135,6 @@
             self.coverImage.image = nil;
         }
     });
-}
-
-#pragma mark - PGPlaylistViewDelegate
-
--(void)playlistView:(PGPlaylistViewController *)playlistView didSelectTrackWithIndex:(NSUInteger)index {
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.trackPlayer playTrackProvider:appDelegate.trackPlayer.currentProvider fromIndex:index];
 }
 
 @end
