@@ -10,16 +10,17 @@
 #import <Spotify/Spotify.h>
 #import "PGFestifyTrackProvider.h"
 
-@interface PGAppDelegate : UIResponder <UIApplicationDelegate>
+@interface PGAppDelegate : UIResponder <UIApplicationDelegate, SPTTrackPlayerDelegate>
 
--(void)loginToSpotifyAPI:(void (^)(NSError* error))completion ;
+-(void)requestSpotifySessionWithCompletionHandler:(void (^)(NSError* error))completion;
+-(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)logoutOfSpotifyAPI;
--(void)initStreamingControllerWithCompletionHandler:(void (^)(NSError* error))completion;
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) SPTSession* session;
-@property (nonatomic, strong) SPTAudioStreamingController* streamingController;
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
 @property (nonatomic, strong) PGFestifyTrackProvider* trackProvider;
+@property (nonatomic, strong) NSMutableDictionary* trackInfoDictionary;
+@property (nonatomic, strong) UIImage* coverArtOfCurrentTrack;
 
 @end

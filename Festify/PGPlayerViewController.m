@@ -9,57 +9,48 @@
 #import "PGPlayerViewController.h"
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import "UIImage+ImageEffects.h"
 #import "UIView+ConvertToImage.h"
-
-@interface PGPlayerViewController ()
-
-@property (nonatomic, weak) SPTSession* session;
-@property (nonatomic, weak) SPTAudioStreamingController* streamingController;
-@property (nonatomic, weak) SPTTrackPlayer* trackPlayer;
-
-@end
 
 @implementation PGPlayerViewController
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    // obtain spotify objects
-    self.session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-    self.streamingController = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController;
-    self.trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
-    
     // observe playback state change and track change to update UI accordingly
-    [self addObserver:self forKeyPath:@"streamingController.currentTrackMetadata" options:0 context:nil];
-    [self addObserver:self forKeyPath:@"streamingController.isPlaying" options:0 context:nil];
-    [self addObserver:self forKeyPath:@"streamingController.currentPlaybackPosition" options:0 context:nil];
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
+    [appDelegate addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
+    [appDelegate addObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition" options:0 context:nil];
 
     // initialy setup UI correctly
-    [self updateTrackInfo:self.streamingController.currentTrackMetadata];
-    [self updatePlayButton:self.streamingController.isPlaying];
-    [self updatePlaybackPosition:self.streamingController.currentPlaybackPosition
-                     andDuration:[self.streamingController.currentTrackMetadata[SPTAudioStreamingMetadataTrackDuration] doubleValue]];
+    [self updateTrackInfo:appDelegate.trackInfoDictionary andCoverArt:appDelegate.coverArtOfCurrentTrack];
+    [self updatePlayButton:appDelegate.trackPlayer.paused];
+    [self updatePlaybackPosition:appDelegate.trackPlayer.currentPlaybackPosition
+                     andDuration:[appDelegate.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] doubleValue]];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [self removeObserver:self forKeyPath:@"streamingController.currentTrackMetadata"];
-    [self removeObserver:self forKeyPath:@"streamingController.isPlaying"];
-    [self removeObserver:self forKeyPath:@"streamingController.currentPlaybackPosition"];
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate removeObserver:self forKeyPath:@"coverArtOfCurrentTrack"];
+    [appDelegate removeObserver:self forKeyPath:@"trackPlayer.paused"];
+    [appDelegate removeObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition"];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"streamingController.currentTrackMetadata"]) {
-        [self updateTrackInfo:self.streamingController.currentTrackMetadata];
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    if ([keyPath isEqualToString:@"coverArtOfCurrentTrack"]) {
+        [self updateTrackInfo:appDelegate.trackInfoDictionary andCoverArt:appDelegate.coverArtOfCurrentTrack];
     }
-    else if ([keyPath isEqualToString:@"streamingController.isPlaying"]) {
-        [self updatePlayButton:self.streamingController.isPlaying];
+    else if ([keyPath isEqualToString:@"trackPlayer.paused"]) {
+        [self updatePlayButton:appDelegate.trackPlayer.paused];
     }
-    else if ([keyPath isEqualToString:@"streamingController.currentPlaybackPosition"]) {
-        [self updatePlaybackPosition:self.streamingController.currentPlaybackPosition
-                         andDuration:[self.streamingController.currentTrackMetadata[SPTAudioStreamingMetadataTrackDuration] doubleValue]];
+    else if ([keyPath isEqualToString:@"trackPlayer.currentPlaybackPosition"]) {
+        [self updatePlaybackPosition:appDelegate.trackPlayer.currentPlaybackPosition
+                         andDuration:[appDelegate.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] doubleValue]];
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -91,36 +82,33 @@
 #pragma mark - Actions
 
 -(IBAction)rewind:(id)sender {
-    if (self.trackPlayer.currentProvider != nil) {
-        [self.trackPlayer skipToPreviousTrack:NO];
-    }
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.trackPlayer skipToPreviousTrack:NO];
 }
 
 -(IBAction)playPause:(id)sender {
-    if (self.trackPlayer.currentProvider != nil) {
-        if (self.trackPlayer.paused) {
-            [self.trackPlayer resumePlayback];
-        }
-        else {
-            [self.trackPlayer pausePlayback];
-        }
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    if (appDelegate.trackPlayer.paused) {
+        [appDelegate.trackPlayer resumePlayback];
+    }
+    else {
+        [appDelegate.trackPlayer pausePlayback];
     }
 }
 
 -(IBAction)fastForward:(id)sender {
-    if (self.trackPlayer.currentProvider != nil) {
-        [self.trackPlayer skipToNextTrack];
-    }
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.trackPlayer skipToNextTrack];
 }
 
 #pragma mark - Logic
 
--(void)updatePlayButton:(BOOL)isPlaying {
-    if (isPlaying) {
-        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Pause"];
+-(void)updatePlayButton:(BOOL)paused {
+    if (paused) {
+        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Play"];
     }
     else {
-        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Play"];
+        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Pause"];
     }
 }
 
@@ -133,45 +121,27 @@
                                    (int)(duration - playbackPosition) % 60];
 }
 
--(void)updateTrackInfo:(NSDictionary*)trackMetadata {
-    if (trackMetadata) {
-        self.titleLabel.text = trackMetadata[SPTAudioStreamingMetadataTrackName];
-        self.artistLabel.text = trackMetadata[SPTAudioStreamingMetadataArtistName];
-        
-        [self loadAlbumCoverArtWithURL:[NSURL URLWithString:trackMetadata[SPTAudioStreamingMetadataAlbumURI]]];
-    }
-    else {
-        self.titleLabel.text = @"Nothing Playing";
-        self.trackPosition.progress = 0.0;
-        self.artistLabel.text = @"";
-        self.coverImage.image = nil;
-    }
-}
-
--(void)loadAlbumCoverArtWithURL:(NSURL*)albumURI {
-    // request complete album of track
-    [SPTRequest requestItemAtURI:albumURI withSession:self.session callback:^(NSError *error, id object) {
-        if (!error) {
-            // extract image URL
-            NSURL* imageURL = [object largestCover].imageURL;
-            
-            // download image
-            [self.spinner startAnimating];
-            [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:imageURL] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                // show cover image
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.spinner stopAnimating];
-                    self.coverImage.image = [UIImage imageWithData:data];
-                });
-            }] resume];
+-(void)updateTrackInfo:(NSDictionary*)trackInfoDictionary andCoverArt:(UIImage*)coverArt {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (trackInfoDictionary) {
+            self.titleLabel.text = trackInfoDictionary[MPMediaItemPropertyTitle];
+            self.artistLabel.text = trackInfoDictionary[MPMediaItemPropertyArtist];
+            self.coverImage.image = coverArt;
         }
-    }];
+        else {
+            self.titleLabel.text = @"Nothing Playing";
+            self.trackPosition.progress = 0.0;
+            self.artistLabel.text = @"";
+            self.coverImage.image = nil;
+        }
+    });
 }
 
 #pragma mark - PGPlaylistViewDelegate
 
 -(void)playlistView:(PGPlaylistViewController *)playlistView didSelectTrackWithIndex:(NSUInteger)index {
-    [self.trackPlayer playTrackProvider:self.trackPlayer.currentProvider fromIndex:index];
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.trackPlayer playTrackProvider:appDelegate.trackPlayer.currentProvider fromIndex:index];
 }
 
 @end

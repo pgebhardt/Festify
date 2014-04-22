@@ -15,33 +15,22 @@
 @implementation PGLoginViewController
 
 - (IBAction)login:(id)sender {
-    void (^errorHandler)(NSError* error) = ^(NSError* error) {
-        [TSMessage showNotificationInViewController:self
-                                              title:@"Authentication Error"
-                                           subtitle:error.userInfo[NSLocalizedDescriptionKey]
-                                               type:TSMessageNotificationTypeError];
-    };
-    
     // login to spotify api
-    [(PGAppDelegate*)[UIApplication sharedApplication].delegate loginToSpotifyAPI:^(NSError *error) {
-        if (error) {
-            errorHandler(error);
-        }
-        else {
-            [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            [(PGAppDelegate*)[UIApplication sharedApplication].delegate initStreamingControllerWithCompletionHandler:^(NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    
-                    if (!error) {
-                        [self dismissViewControllerAnimated:YES completion:nil];
-                    }
-                    else {
-                        errorHandler(error);
-                    }
-                });
-            }];
-        }
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [(PGAppDelegate*)[UIApplication sharedApplication].delegate requestSpotifySessionWithCompletionHandler:^(NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            
+            if (!error) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
+            else {
+                [TSMessage showNotificationInViewController:self
+                                                      title:@"Authentication Error"
+                                                   subtitle:error.userInfo[NSLocalizedDescriptionKey]
+                                                       type:TSMessageNotificationTypeError];
+            }
+        });
     }];
 }
 

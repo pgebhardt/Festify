@@ -12,6 +12,7 @@
 #import "UIView+ConvertToImage.h"
 #import "UIImage+ImageEffects.h"
 #import "TSMessage.h"
+#import "MBProgressHUD.h"
 
 @implementation PGFestifyViewController
 
@@ -20,15 +21,17 @@
 
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
-}
 
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    // init streaming controller when session valid, or show login screen
-    if (!((PGAppDelegate*)[UIApplication sharedApplication].delegate).session) {
-        [self performSegueWithIdentifier:@"showLogin" sender:self];
-    }
+    // try to login to spotify api
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [((PGAppDelegate*)[UIApplication sharedApplication].delegate) loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        
+        // show login screen
+        if (error) {
+            [self performSegueWithIdentifier:@"showLogin" sender:self];
+        }
+    }];
 }
 
 #pragma  mark - Actions
@@ -81,11 +84,8 @@
                         callback:^(NSError *error, id object) {
         if (!error && [((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider addPlaylist:object forIdentifier:identifier]) {
             // play track provider, if not already playing
-            SPTAudioStreamingController* streamingController = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).streamingController;
             SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
-            if (!streamingController.isPlaying) {
-                [trackPlayer playTrackProvider:((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider];
-            }
+            [trackPlayer playTrackProvider:((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider];
             
             // notify user
             self.playButton.enabled = YES;
