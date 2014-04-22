@@ -168,7 +168,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     // fill track data dictionary
     self.trackInfoDictionary[MPMediaItemPropertyTitle] = [provider.tracks[index] name];
     self.trackInfoDictionary[MPMediaItemPropertyArtist] = [[[provider.tracks[index] artists] objectAtIndex:0] name];
-    self.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] = [NSNumber numberWithDouble:[provider.tracks[index] duration]];
+    self.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] = [NSNumber numberWithDouble:[(SPTTrack*)provider.tracks[index] duration]];
     self.trackInfoDictionary[MPMediaItemPropertyAlbumTrackNumber] = [NSNumber numberWithInteger:index];
     self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @0.0;
     

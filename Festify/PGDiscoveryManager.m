@@ -50,12 +50,17 @@
 -(BOOL)setAdvertisingPlaylist:(SPTPartialPlaylist *)playlist {
     _advertisingPlaylist = playlist;
     
+    // detect own playlist
+    if (self.isDiscoveringPlaylists && self.delegate) {
+        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:self.advertisingPlaylist.uri byIdentifier:@"self"];
+    }
+    
     // restart bluetooth service
     if (self.peripheralManager.isAdvertising) {
         [self stopAdvertisingPlaylist];
         return [self startAdvertisingPlaylist];
     }
-    
+
     return NO;
 }
 
@@ -108,6 +113,11 @@
     [self.centralManager scanForPeripheralsWithServices:@[self.serviceUUID]
                                                 options:@{CBCentralManagerScanOptionAllowDuplicatesKey: @NO}];
     self.discoveringPlaylists = YES;
+    
+    // detect own playlist
+    if (self.advertisingPlaylist && self.delegate) {
+        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:self.advertisingPlaylist.uri byIdentifier:@"self"];
+    }
     
     return YES;
 }
