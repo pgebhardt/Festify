@@ -224,7 +224,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.92549026010000002" green="0.9215686917" blue="0.90196084980000002" alpha="1" colorSpace="deviceRGB"/>
                         <sections>
-                            <tableViewSection headerTitle="Festify X.X.X (XXXXX)" footerTitle="Let nearby users detect you and play your public playlists." id="8qo-Db-wgQ">
+                            <tableViewSection headerTitle="Festify X.X.X (XXXXX)" footerTitle="Let nearby users detect you and play songs from your public playlists." id="8qo-Db-wgQ">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="AqW-tl-qBJ">
                                         <rect key="frame" x="0.0" y="119" width="320" height="44"/>

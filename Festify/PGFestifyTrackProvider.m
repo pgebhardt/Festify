@@ -11,6 +11,7 @@
 
 @interface PGFestifyTrackProvider ()
 
+@property (nonatomic, strong) NSMutableArray* playlistURIs;
 @property (nonatomic, strong) NSMutableArray* tracks;
 
 @end
@@ -19,6 +20,7 @@
 
 -(id)init {
     if (self = [super init]) {
+        self.playlistURIs = [NSMutableArray array];
         self.tracks = [NSMutableArray array];
     }
     
@@ -27,14 +29,25 @@
 
 -(void)clearAllTracks {
     [self.tracks removeAllObjects];
+    [self.playlistURIs removeAllObjects];
 }
 
--(void)addPlaylist:(SPTPlaylistSnapshot *)playlist {
-    // add all tracks to tracks array
+-(BOOL)addPlaylist:(SPTPlaylistSnapshot *)playlist {
+    // check for existing playlist
+    for (NSString* playlistURI in self.playlistURIs) {
+        if ([playlistURI isEqualToString:playlist.uri.absoluteString]) {
+            return NO;
+        }
+    }
+    
+    // add all tracks and playlist uri to arrays
     [self.tracks addObjectsFromArray:playlist.tracks];
+    [self.playlistURIs addObject:playlist.uri.absoluteString];
     
     // shuffle tracks array
     [self.tracks shuffle];
+    
+    return YES;
 }
 
 #pragma mark - SPTTrackProvider
