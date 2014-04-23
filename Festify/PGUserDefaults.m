@@ -20,24 +20,14 @@
     id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:PGUserDefaultsSpotifySessionKey];
     appDelegate.session = [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
     
-    // load advertised playlist and advertisement state of discovery manager
-    NSNumber* indexOfAdvertisedPlaylist = [[NSUserDefaults standardUserDefaults] valueForKey:PGUserDefaultsIndexOfAdvertisedPlaylistKey];
+    // load advertisement state of discovery manager
     NSNumber* advertisementState = [[NSUserDefaults standardUserDefaults] valueForKeyPath:PGUserDefaultsAdvertisementStateKey];
-    
-    // set discovery manager
-    [SPTRequest playlistsForUser:appDelegate.session.canonicalUsername withSession:appDelegate.session callback:^(NSError *error, id object) {
-        if (!error) {
-            SPTPlaylistList* playlists = (SPTPlaylistList*)object;
-            
-            [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:playlists.items[[indexOfAdvertisedPlaylist integerValue]]];
-            if ([advertisementState boolValue]) {
-                [[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist];
-            }
-            else {
-                [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
-            }
-        }
-    }];
+    if ([advertisementState boolValue]) {
+        [[PGDiscoveryManager sharedInstance] startAdvertisingUser:appDelegate.session.canonicalUsername];
+    }
+    else {
+        [[PGDiscoveryManager sharedInstance] stopAdvertising];
+    }
 }
 
 +(void)saveApplicationState {
@@ -48,24 +38,9 @@
                                          forKeyPath:PGUserDefaultsSpotifySessionKey];
     
     // save current discovery manager state
-    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:[PGDiscoveryManager sharedInstance].isAdvertisingsPlaylist]
+    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:[PGDiscoveryManager sharedInstance].isAdvertising]
                                          forKeyPath:PGUserDefaultsAdvertisementStateKey];
-    
-    // determine index of advertised playlist
-    [SPTRequest playlistsForUser:appDelegate.session.canonicalUsername withSession:appDelegate.session callback:^(NSError *error, id object) {
-        if (!error) {
-            SPTPlaylistList* playlists = (SPTPlaylistList*)object;
-            
-            for (int i = 0; i < playlists.items.count; ++i) {
-                if ([[playlists.items[i] uri].absoluteString isEqualToString:[PGDiscoveryManager sharedInstance].advertisingPlaylist.uri.absoluteString]) {
-                    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithInt:i] forKeyPath:PGUserDefaultsIndexOfAdvertisedPlaylistKey];
-                    break;
-                }
-            }
-        }
-        
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 +(void)clear {

@@ -11,7 +11,6 @@
 
 @interface PGFestifyTrackProvider ()
 
-@property (nonatomic, strong) NSMutableDictionary* playlists;
 @property (nonatomic, strong) NSMutableArray* tracks;
 
 @end
@@ -20,7 +19,6 @@
 
 -(id)init {
     if (self = [super init]) {
-        self.playlists = [NSMutableDictionary dictionary];
         self.tracks = [NSMutableArray array];
     }
     
@@ -28,34 +26,15 @@
 }
 
 -(void)clearAllTracks {
-    [self.playlists removeAllObjects];
     [self.tracks removeAllObjects];
 }
 
--(BOOL)addPlaylist:(SPTPlaylistSnapshot *)playlist forIdentifier:(NSString *)identifier {
-    // check for existing playlist
-    for (NSDictionary* playlistDict in self.playlists.allValues) {
-        if ([playlistDict[@"URI"] isEqualToString:playlist.uri.absoluteString]) {
-            return NO;
-        }
-    }
-    
-    // cleanup tracks array
-    [self.tracks removeAllObjects];
-    
-    // add playlist to dictionary to allow only one playlist per identifier
-    self.playlists[identifier] = @{@"URI": playlist.uri.absoluteString,
-                                   @"Tracks": [playlist.tracks copy]};
-    
+-(void)addPlaylist:(SPTPlaylistSnapshot *)playlist {
     // add all tracks to tracks array
-    for (NSDictionary* playlistDict in self.playlists.allValues) {
-        [self.tracks addObjectsFromArray:playlistDict[@"Tracks"]];
-    }
+    [self.tracks addObjectsFromArray:playlist.tracks];
     
     // shuffle tracks array
     [self.tracks shuffle];
-    
-    return YES;
 }
 
 #pragma mark - SPTTrackProvider

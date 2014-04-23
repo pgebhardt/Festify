@@ -13,20 +13,10 @@
 #import <Spotify/Spotify.h>
 #import "TSMessage.h"
 
-@interface PGSettingsViewController ()
-
-@property (nonatomic, strong) SPTPlaylistList* playlists;
-@property (nonatomic, assign) BOOL playlistPickerIsShowing;
-
-@end
-
 @implementation PGSettingsViewController
 
 -(void)viewDidLoad {
     [super viewDidLoad];
-    
-    // initially hide picker
-    [self hidePlaylistPicker];
     
     // connect switches to event handler
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState) forControlEvents:UIControlEventValueChanged];
@@ -36,29 +26,7 @@
     [super viewWillAppear:animated];
 
     // set switches to correct states
-    [self.advertisementSwitch setOn:[[PGDiscoveryManager sharedInstance] isAdvertisingsPlaylist]];
-    
-    [self retrievePlaylists];
-}
-
--(void)retrievePlaylists {
-    // get the playlists of the current user
-    SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-    [SPTRequest playlistsForUser:session.canonicalUsername withSession:session callback:^(NSError *error, id object) {
-        if (!error) {
-            self.playlists = object;
-            
-            // update ui
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.playlistPicker reloadAllComponents];
-
-                // set advertised playlist to user defaults
-                NSInteger indexOfAdvertisedPlaylist = [[PGUserDefaults valueForKey:PGUserDefaultsIndexOfAdvertisedPlaylistKey] integerValue];
-                [self.playlistPicker selectRow:indexOfAdvertisedPlaylist inComponent:0 animated:NO];
-                self.playlistLabel.text = [self.playlists.items[indexOfAdvertisedPlaylist] name];
-            });
-        }
-    }];
+    [self.advertisementSwitch setOn:[[PGDiscoveryManager sharedInstance] isAdvertising]];
 }
 
 - (IBAction)done:(id)sender {
@@ -83,8 +51,7 @@
 
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {
-        [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[[self.playlistPicker selectedRowInComponent:0]]];
-        if (![[PGDiscoveryManager sharedInstance] startAdvertisingPlaylist]) {
+        if (![[PGDiscoveryManager sharedInstance] startAdvertisingUser:((PGAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername]) {
             [TSMessage showNotificationInViewController:self.navigationController
                                                   title:@"Error"
                                                subtitle:@"Turn On Bluetooth!"
@@ -94,30 +61,8 @@
         }
     }
     else {
-        [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
+        [[PGDiscoveryManager sharedInstance] stopAdvertising];
     }
-}
-
-#pragma mark - UIPickerViewDataSource
-
--(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
-    return 1;
-}
-
--(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return self.playlists.items.count;
-}
-
-#pragma mark - UIPickerViewDelegate
-
--(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    return [self.playlists.items[row] name];
-}
-
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    self.playlistLabel.text = [self.playlists.items[row] name];
-    [[PGDiscoveryManager sharedInstance] setAdvertisingPlaylist:self.playlists.items[row]];
-    [PGUserDefaults setValue:[NSNumber numberWithInteger:row] forKey:PGUserDefaultsIndexOfAdvertisedPlaylistKey];
 }
 
 #pragma mark - UITableViewDelegate
@@ -140,16 +85,7 @@
     
     // handle actions for specific cell
     NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
-    if ([reuseIdentifier isEqualToString:@"playlistCell"]) {
-        // show or hide playlist picker
-        if (!self.playlistPickerIsShowing) {
-            [self showPlaylistPicker];
-        }
-        else {
-            [self hidePlaylistPicker];
-        }
-    }
-    else if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
+    if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
         // inform delegate to logout and dismiss view controller
         [self dismissViewControllerAnimated:YES completion:^{
             if (self.delegate) {
@@ -157,43 +93,6 @@
             }
         }];
     }
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row == 1 && !self.playlistPickerIsShowing) {
-        return 0.0f;
-    }
-    
-    return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-}
-
-#pragma mark - Helper
-
--(void)showPlaylistPicker {
-    self.playlistPickerIsShowing = YES;
-    [self.tableView beginUpdates];
-    [self.tableView endUpdates];
-    
-    self.playlistPicker.hidden = NO;
-    self.playlistPicker.alpha = 0.0f;
-    
-    [UIView animateWithDuration:0.25 animations:^{
-        self.playlistPicker.alpha = 1.0f;
-    }];
-}
-
--(void)hidePlaylistPicker {
-    self.playlistPickerIsShowing = NO;
-    [self.tableView beginUpdates];
-    [self.tableView endUpdates];
-    
-    [UIView animateWithDuration:0.25
-                     animations:^{
-                         self.playlistPicker.alpha = 0.0f;
-                     }
-                     completion:^(BOOL finished){
-                         self.playlistPicker.hidden = YES;
-                     }];
 }
 
 @end

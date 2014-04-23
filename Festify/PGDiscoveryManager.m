@@ -14,13 +14,11 @@
 @property (nonatomic, strong) CBPeripheralManager* peripheralManager;
 @property (nonatomic, strong) NSMutableArray* discoveredPeripherals;
 @property (nonatomic, strong) NSMutableDictionary* peripheralData;
-@property (nonatomic, assign) BOOL discoveringPlaylists;
+@property (nonatomic, assign) BOOL discovering;
 
 @end
 
-@implementation PGDiscoveryManager {
-    SPTPartialPlaylist* _advertisingPlaylist;
-}
+@implementation PGDiscoveryManager
 
 // create a singleton instance of discovery manager
 +(PGDiscoveryManager*)sharedInstance {
@@ -40,7 +38,7 @@
         dispatch_queue_t peripheralManagerQueue = dispatch_queue_create("com.patrikgebhardt.festify.peripheralManager", DISPATCH_QUEUE_SERIAL);
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:centralManagerQueue];
         self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:nil queue:peripheralManagerQueue];
-        self.discoveringPlaylists = NO;
+        self.discovering = NO;
         
         self.discoveredPeripherals = [NSMutableArray array];
         self.peripheralData = [NSMutableDictionary dictionary];
@@ -49,50 +47,25 @@
     return self;
 }
 
--(BOOL)setAdvertisingPlaylist:(SPTPartialPlaylist *)playlist {
-    _advertisingPlaylist = playlist;
-    
-    // detect own playlist
-    if (self.isDiscoveringPlaylists && self.delegate) {
-        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:self.advertisingPlaylist.uri devicename:[UIDevice currentDevice].name identifier:@"self"];
-    }
-    
-    // restart bluetooth service
-    if (self.peripheralManager.isAdvertising) {
-        [self stopAdvertisingPlaylist];
-        return [self startAdvertisingPlaylist];
-    }
-
-    return NO;
-}
-
--(SPTPartialPlaylist*)advertisingPlaylist {
-    return _advertisingPlaylist;
-}
-
--(BOOL)startAdvertisingPlaylist {
-    if (!self.advertisingPlaylist) {
-        return NO;
-    }
-    
+-(BOOL)startAdvertisingUser:(NSString*)canonicalUserName {
     // check the bluetooth state
     if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn) {
         return NO;
     }
     
     // init peripheral service to advertise playlist uri and device name
-    CBMutableCharacteristic* nameCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:PGDiscoveryManagerNameUUIDString]
+    CBMutableCharacteristic* usernameCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:PGDiscoveryManagerSpotifyUserUUIDString]
                                                                                      properties:CBCharacteristicPropertyRead
-                                                                                          value:[[UIDevice currentDevice].name dataUsingEncoding:NSUTF8StringEncoding]
+                                                                                          value:[canonicalUserName dataUsingEncoding:NSUTF8StringEncoding]
                                                                                     permissions:CBAttributePermissionsReadable];
     
-    CBMutableCharacteristic* uriCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:PGDiscoveryManagerPlaylistUUIDString]
+    CBMutableCharacteristic* devicenameCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:PGDiscoveryManagerDevicenameUUIDString]
                                                                                     properties:CBCharacteristicPropertyRead
-                                                                                         value:[[self.advertisingPlaylist.uri absoluteString] dataUsingEncoding:NSUTF8StringEncoding]
+                                                                                         value:[[UIDevice currentDevice].name dataUsingEncoding:NSUTF8StringEncoding]
                                                                                    permissions:CBAttributePermissionsReadable];
     
     CBMutableService* service = [[CBMutableService alloc] initWithType:[CBUUID UUIDWithString:PGDiscoveryManagerServiceUUIDString] primary:YES];
-    service.characteristics = @[nameCharacteristic, uriCharacteristic];
+    service.characteristics = @[usernameCharacteristic, devicenameCharacteristic];
     [self.peripheralManager addService:service];
     
     // advertise service
@@ -102,16 +75,18 @@
     return YES;
 }
 
--(void)stopAdvertisingPlaylist {
-    [self.peripheralManager stopAdvertising];
-    [self.peripheralManager removeAllServices];
+-(void)stopAdvertising {
+    if (self.isAdvertising) {
+        [self.peripheralManager stopAdvertising];
+        [self.peripheralManager removeAllServices];
+    }
 }
 
--(BOOL)isAdvertisingsPlaylist {
+-(BOOL)isAdvertising {
     return self.peripheralManager.isAdvertising;
 }
 
--(BOOL)startDiscoveringPlaylists {
+-(BOOL)startDiscovering {
     // check the bluetooth state
     if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn) {
         return NO;
@@ -120,23 +95,18 @@
     // scan for festify services
     [self.centralManager scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:PGDiscoveryManagerServiceUUIDString]]
                                                 options:@{CBCentralManagerScanOptionAllowDuplicatesKey: @NO}];
-    self.discoveringPlaylists = YES;
-    
-    // detect own playlist
-    if (self.advertisingPlaylist && self.delegate) {
-        [self.delegate discoveryManager:self didDiscoverPlaylistWithURI:self.advertisingPlaylist.uri devicename:[UIDevice currentDevice].name identifier:@"self"];
-    }
+    self.discovering = YES;
     
     return YES;
 }
 
--(void)stopDiscoveringPlaylists {
+-(void)stopDiscovering {
     [self.centralManager stopScan];
-    self.discoveringPlaylists = NO;
+    self.discovering = NO;
 }
 
--(BOOL)isDiscoveringPlaylists {
-    return self.discoveringPlaylists;
+-(BOOL)isDiscovering {
+    return self.discovering;
 }
 
 #pragma mark - CBCentralManagerDelegate
@@ -175,7 +145,7 @@
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     // discover the playlist characteristic
     if (peripheral.services.count != 0) {
-        [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:PGDiscoveryManagerNameUUIDString], [CBUUID UUIDWithString:PGDiscoveryManagerPlaylistUUIDString]]
+        [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:PGDiscoveryManagerSpotifyUserUUIDString], [CBUUID UUIDWithString:PGDiscoveryManagerDevicenameUUIDString]]
                                  forService:peripheral.services[0]];
     }
 }
@@ -201,12 +171,9 @@
     if ([self.peripheralData[peripheral.identifier.UUIDString] allKeys].count == 2) {
         // inform delegate about new playlist
         if (self.delegate) {
-            NSURL* playlistURI = [NSURL URLWithString:[self.peripheralData[peripheral.identifier.UUIDString] objectForKey:PGDiscoveryManagerPlaylistUUIDString]];
-            NSString* devicename = [NSString stringWithString:[self.peripheralData[peripheral.identifier.UUIDString] objectForKey:PGDiscoveryManagerNameUUIDString]];
-            [self.delegate discoveryManager:self
-                 didDiscoverPlaylistWithURI:playlistURI
-                                 devicename:devicename
-                                 identifier:peripheral.identifier.UUIDString];
+            NSString* username = [NSString stringWithString:[self.peripheralData[peripheral.identifier.UUIDString] objectForKey:PGDiscoveryManagerSpotifyUserUUIDString]];
+            NSString* devicename = [NSString stringWithString:[self.peripheralData[peripheral.identifier.UUIDString] objectForKey:PGDiscoveryManagerDevicenameUUIDString]];
+            [self.delegate discoveryManager:self didDiscoverUser:username devicename:devicename];
         }
         
         // disconnect device

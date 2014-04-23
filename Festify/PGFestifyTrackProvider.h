@@ -12,7 +12,7 @@
 @interface PGFestifyTrackProvider : NSObject<SPTTrackProvider>
 
 -(id)init;
--(BOOL)addPlaylist:(SPTPlaylistSnapshot*)playlist forIdentifier:(NSString*)identifier;
+-(void)addPlaylist:(SPTPlaylistSnapshot*)playlist;
 -(void)clearAllTracks;
 
 @end

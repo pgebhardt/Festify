@@ -41,7 +41,7 @@
 
 - (IBAction)festify:(id)sender {
     // start discovering playlists
-    if (![[PGDiscoveryManager sharedInstance] startDiscoveringPlaylists]) {
+    if (![[PGDiscoveryManager sharedInstance] startDiscovering]) {
         [TSMessage showNotificationInViewController:self.navigationController
                                               title:@"Error"
                                            subtitle:@"Turn On Bluetooth!"
@@ -66,23 +66,33 @@
 
 #pragma mark - PGDiscoveryManagerDelegate
 
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverPlaylistWithURI:(NSURL *)uri devicename:(NSString *)devicename identifier:(NSString *)identifier {
-    // request complete playlist and add it to track provider
-    [SPTRequest requestItemAtURI:uri
-                     withSession:((PGAppDelegate*)[UIApplication sharedApplication].delegate).session
-                        callback:^(NSError *error, id object) {
-        if (!error && [((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider addPlaylist:object forIdentifier:identifier]) {
-            // play track provider, if not already playing
-            SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
-            if (!trackPlayer.currentProvider || trackPlayer.paused) {
-                [trackPlayer playTrackProvider:((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider];
+-(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverUser:(NSString *)username devicename:(NSString *)devicename {
+    SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+    SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
+    PGFestifyTrackProvider* trackProvider = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider;
+    
+    // reguest and add all playlists of the given user
+    [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
+        if (!error) {
+            SPTPlaylistList* playlists = object;
+            for (NSUInteger i = 0; i < playlists.items.count; ++i) {
+                [SPTRequest requestItemFromPartialObject:playlists.items[i] withSession:session callback:^(NSError *error, id object) {
+                    if (!error) {
+                        [trackProvider addPlaylist:object];
+                    }
+                    
+                    if (i == playlists.items.count - 1 && trackProvider.tracks.count != 0 &&
+                        (trackPlayer.currentProvider == nil || trackPlayer.paused)) {
+                        [trackPlayer playTrackProvider:trackProvider];
+                    }
+                }];
             }
             
             // notify user
             self.playButton.enabled = YES;
             [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:[NSString stringWithFormat:@"Discovered: %@", devicename]
-                                               subtitle:[NSString stringWithFormat:@"Added: %@", [object name]]
+                                                  title:[NSString stringWithFormat:@"Discovered: %@", username]
+                                               subtitle:[NSString stringWithFormat:@"Device: %@", devicename]
                                                    type:TSMessageNotificationTypeSuccess];
         }
     }];
@@ -92,8 +102,8 @@
 
 -(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
     // stop advertisiement and discovery and return to login screen
-    [[PGDiscoveryManager sharedInstance] stopDiscoveringPlaylists];
-    [[PGDiscoveryManager sharedInstance] stopAdvertisingPlaylist];
+    [[PGDiscoveryManager sharedInstance] stopDiscovering];
+    [[PGDiscoveryManager sharedInstance] stopAdvertising];
     
     // log out of spotify API
     self.playButton.enabled = NO;
