@@ -66,10 +66,13 @@
 
 #pragma mark - PGDiscoveryManagerDelegate
 
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverUser:(NSString *)username devicename:(NSString *)devicename {
+-(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
     SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
     SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     PGFestifyTrackProvider* trackProvider = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider;
+    
+    // extract spotify username from device property
+    NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
     
     // reguest and add all playlists of the given user
     [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
@@ -103,7 +106,7 @@
 -(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
     // stop advertisiement and discovery and return to login screen
     [[PGDiscoveryManager sharedInstance] stopDiscovering];
-    [[PGDiscoveryManager sharedInstance] stopAdvertising];
+    [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
     
     // log out of spotify API
     self.playButton.enabled = NO;

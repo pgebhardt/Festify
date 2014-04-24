@@ -26,7 +26,7 @@
     [super viewWillAppear:animated];
 
     // set switches to correct states
-    [self.advertisementSwitch setOn:[[PGDiscoveryManager sharedInstance] isAdvertising]];
+    [self.advertisementSwitch setOn:[PGDiscoveryManager sharedInstance].isAdvertisingProperty];
 }
 
 - (IBAction)done:(id)sender {
@@ -51,7 +51,8 @@
 
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {
-        if (![[PGDiscoveryManager sharedInstance] startAdvertisingUser:((PGAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername]) {
+        NSString* username = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername;
+        if (![[PGDiscoveryManager sharedInstance] advertiseProperty:[username dataUsingEncoding:NSUTF8StringEncoding]]) {
             [TSMessage showNotificationInViewController:self.navigationController
                                                   title:@"Error"
                                                subtitle:@"Turn On Bluetooth!"
@@ -61,7 +62,7 @@
         }
     }
     else {
-        [[PGDiscoveryManager sharedInstance] stopAdvertising];
+        [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
     }
 }
 

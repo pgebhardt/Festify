@@ -23,10 +23,10 @@
     // load advertisement state of discovery manager
     NSNumber* advertisementState = [[NSUserDefaults standardUserDefaults] valueForKeyPath:PGUserDefaultsAdvertisementStateKey];
     if ([advertisementState boolValue]) {
-        [[PGDiscoveryManager sharedInstance] startAdvertisingUser:appDelegate.session.canonicalUsername];
+        [[PGDiscoveryManager sharedInstance] advertiseProperty:[appDelegate.session.canonicalUsername dataUsingEncoding:NSUTF8StringEncoding]];
     }
     else {
-        [[PGDiscoveryManager sharedInstance] stopAdvertising];
+        [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
     }
 }
 
@@ -38,7 +38,7 @@
                                          forKeyPath:PGUserDefaultsSpotifySessionKey];
     
     // save current discovery manager state
-    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:[PGDiscoveryManager sharedInstance].isAdvertising]
+    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:[PGDiscoveryManager sharedInstance].isAdvertisingProperty]
                                          forKeyPath:PGUserDefaultsAdvertisementStateKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
