@@ -75,14 +75,14 @@
     return YES;
 }
 
--(void)stopAdvertising {
-    if (self.isAdvertising) {
+-(void)stopAdvertisingProperty {
+    if (self.isAdvertisingProperty) {
         [self.peripheralManager stopAdvertising];
         [self.peripheralManager removeAllServices];
     }
 }
 
--(BOOL)isAdvertising {
+-(BOOL)isAdvertisingProperty {
     return self.peripheralManager.isAdvertising;
 }
 

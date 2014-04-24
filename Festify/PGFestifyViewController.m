@@ -48,8 +48,9 @@
                                                type:TSMessageNotificationTypeError];
     }
     else {
-        // clear content of track provider
+        // clear content of track provider and add own playlists
         [((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider clearAllTracks];
+        [self addPlaylistsForUser:((PGAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername];
     }
 }
 
@@ -67,12 +68,33 @@
 #pragma mark - PGDiscoveryManagerDelegate
 
 -(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
+    // extract spotify username from device property
+    NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
+    
+    [self addPlaylistsForUser:username];
+}
+
+#pragma mark - PGSettingsViewDelegate
+
+-(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
+    // stop advertisiement and discovery and return to login screen
+    [[PGDiscoveryManager sharedInstance] stopDiscovering];
+    [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
+    
+    // log out of spotify API
+    self.playButton.enabled = NO;
+    [(PGAppDelegate*)[UIApplication sharedApplication].delegate logoutOfSpotifyAPI];
+
+    // show login screen
+    [self performSegueWithIdentifier:@"showLogin" sender:self];
+}
+
+#pragma mark - Helper
+
+-(void)addPlaylistsForUser:(NSString*)username {
     SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
     SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     PGFestifyTrackProvider* trackProvider = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider;
-    
-    // extract spotify username from device property
-    NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
     
     // reguest and add all playlists of the given user
     [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
@@ -94,26 +116,11 @@
             // notify user
             self.playButton.enabled = YES;
             [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:[NSString stringWithFormat:@"Discovered: %@", username]
-                                               subtitle:[NSString stringWithFormat:@"Device: %@", devicename]
+                                                  title:@"Tracks added!"
+                                               subtitle:[NSString stringWithFormat:@"Username: %@", username]
                                                    type:TSMessageNotificationTypeSuccess];
         }
     }];
-}
-
-#pragma mark - PGSettingsViewDelegate
-
--(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
-    // stop advertisiement and discovery and return to login screen
-    [[PGDiscoveryManager sharedInstance] stopDiscovering];
-    [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
-    
-    // log out of spotify API
-    self.playButton.enabled = NO;
-    [(PGAppDelegate*)[UIApplication sharedApplication].delegate logoutOfSpotifyAPI];
-
-    // show login screen
-    [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
 @end
