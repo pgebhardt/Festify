@@ -49,8 +49,16 @@
     }
     else {
         // clear content of track provider and add own playlists
-        [((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider clearAllTracks];
-        [self addPlaylistsForUser:((PGAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername];
+        SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+        __weak PGFestifyTrackProvider* trackProvider = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider;
+        SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
+        
+        [trackProvider clearAllTracks];
+        [trackProvider addPlaylistsFromUser:session.canonicalUsername session:session completion:^(NSError *error) {
+            if (!error) {
+                [trackPlayer playTrackProvider:trackProvider];
+            }
+        }];
     }
 }
 
@@ -68,10 +76,23 @@
 #pragma mark - PGDiscoveryManagerDelegate
 
 -(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
+    SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+    PGFestifyTrackProvider* trackProvider = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider;
+    
     // extract spotify username from device property
     NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
     
-    [self addPlaylistsForUser:username];
+    // add playlist for discovered user and notify user
+    [trackProvider addPlaylistsFromUser:username session:session completion:^(NSError *error) {
+        if (!error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [TSMessage showNotificationInViewController:self.navigationController
+                                                      title:[NSString stringWithFormat:@"Discovered %@", devicename]
+                                                   subtitle:[NSString stringWithFormat:@"Added tracks for user %@", username]
+                                                       type:TSMessageNotificationTypeSuccess];
+            });
+        }
+    }];
 }
 
 #pragma mark - PGSettingsViewDelegate
@@ -82,45 +103,10 @@
     [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
     
     // log out of spotify API
-    self.playButton.enabled = NO;
     [(PGAppDelegate*)[UIApplication sharedApplication].delegate logoutOfSpotifyAPI];
 
     // show login screen
     [self performSegueWithIdentifier:@"showLogin" sender:self];
-}
-
-#pragma mark - Helper
-
--(void)addPlaylistsForUser:(NSString*)username {
-    SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-    SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
-    PGFestifyTrackProvider* trackProvider = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider;
-    
-    // reguest and add all playlists of the given user
-    [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
-        if (!error) {
-            SPTPlaylistList* playlists = object;
-            for (NSUInteger i = 0; i < playlists.items.count; ++i) {
-                [SPTRequest requestItemFromPartialObject:playlists.items[i] withSession:session callback:^(NSError *error, id object) {
-                    if (!error) {
-                        [trackProvider addPlaylist:object];
-                    }
-                    
-                    if (i == playlists.items.count - 1 && trackProvider.tracks.count != 0 &&
-                        (trackPlayer.currentProvider == nil || trackPlayer.paused)) {
-                        [trackPlayer playTrackProvider:trackProvider];
-                    }
-                }];
-            }
-            
-            // notify user
-            self.playButton.enabled = YES;
-            [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:@"Tracks added!"
-                                               subtitle:[NSString stringWithFormat:@"Username: %@", username]
-                                                   type:TSMessageNotificationTypeSuccess];
-        }
-    }];
 }
 
 @end

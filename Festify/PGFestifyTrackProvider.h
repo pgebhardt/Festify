@@ -13,6 +13,7 @@
 
 -(id)init;
 -(BOOL)addPlaylist:(SPTPlaylistSnapshot*)playlist;
+-(void)addPlaylistsFromUser:(NSString*)username session:(SPTSession*)session completion:(void (^)(NSError* error))completion;
 -(void)clearAllTracks;
 
 @end

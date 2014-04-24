@@ -164,7 +164,7 @@
     }
 
     // save received data to peripheral dictionary
-    [self.peripheralData[peripheral.identifier.UUIDString] setValue:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]
+    [self.peripheralData[peripheral.identifier.UUIDString] setValue:[characteristic.value copy]
                                                              forKey:[characteristic.UUID.UUIDString lowercaseString]];
 
     // check if all data are collected
@@ -172,7 +172,8 @@
         // inform delegate about new playlist
         if (self.delegate) {
             NSData* property = [self.peripheralData[peripheral.identifier.UUIDString] objectForKey:PGDiscoveryManagerPropertyUUIDString];
-            NSString* devicename = [NSString stringWithString:[self.peripheralData[peripheral.identifier.UUIDString] objectForKey:PGDiscoveryManagerDevicenameUUIDString]];
+            NSString* devicename = [[NSString alloc] initWithData:self.peripheralData[peripheral.identifier.UUIDString][PGDiscoveryManagerDevicenameUUIDString]
+                                                         encoding:NSUTF8StringEncoding];
             [self.delegate discoveryManager:self didDiscoverDevice:devicename withProperty:property];
         }
         

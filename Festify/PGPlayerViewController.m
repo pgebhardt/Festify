@@ -29,8 +29,10 @@
     [appDelegate addObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition" options:0 context:nil];
     if (!self.transitioningToPlaylistView) {
         [appDelegate addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
+    }
+    else {
         self.transitioningToPlaylistView = NO;
-        self.delegate = nil;
+        self.delegate = nil;        
     }
     
     // initialy setup UI correctly

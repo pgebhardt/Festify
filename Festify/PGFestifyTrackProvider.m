@@ -50,6 +50,37 @@
     return YES;
 }
 
+-(void)addPlaylistsFromUser:(NSString *)username session:(SPTSession *)session completion:(void (^)(NSError *))completion {
+    // reguest and add all playlists of the given user
+    [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
+        if (error) {
+            if (completion) {
+                completion(error);
+            }
+        }
+        else {
+            SPTPlaylistList* playlists = object;
+            for (NSUInteger i = 0; i < playlists.items.count; ++i) {
+                [SPTRequest requestItemFromPartialObject:playlists.items[i] withSession:session callback:^(NSError *error, id object) {
+                    if (error) {
+                        if (completion) {
+                            completion(error);
+                        }
+                    }
+                    else {
+                        [self addPlaylist:object];
+                    }
+                    
+                    if (i == playlists.items.count - 1 && self.tracks.count != 0 && completion) {
+                        completion(nil);
+                    }
+                }];
+            }
+        }
+    }];
+}
+
+
 #pragma mark - SPTTrackProvider
 
 -(NSArray *)tracks {
