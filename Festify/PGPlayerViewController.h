@@ -16,7 +16,9 @@
 
 @end
 
-@interface PGPlayerViewController : UIViewController
+#import "PGPlaylistViewController.h"
+
+@interface PGPlayerViewController : UIViewController<PGPlaylistViewDelegate>
 
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;

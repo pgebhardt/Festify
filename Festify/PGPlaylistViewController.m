@@ -28,7 +28,11 @@
 }
 
 - (IBAction)done:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (self.delegate) {
+            [self.delegate playlistViewDidEndShowing:self];
+        }
+    }];
 }
 
 #pragma mark - Table view data source

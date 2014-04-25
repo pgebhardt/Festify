@@ -8,11 +8,21 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
+
+@class PGPlaylistViewController;
+
+@protocol PGPlaylistViewDelegate <NSObject>
+
+-(void)playlistViewDidEndShowing:(PGPlaylistViewController*)playlistView;
+
+@end
+
 #import "PGPlayerViewController.h"
 
 @interface PGPlaylistViewController : UITableViewController<PGPlayerViewDelegate>
 
 - (IBAction)done:(id)sender;
 @property (nonatomic, strong) UIView* underlyingView;
+@property (nonatomic, weak) id<PGPlaylistViewDelegate> delegate;
 
 @end

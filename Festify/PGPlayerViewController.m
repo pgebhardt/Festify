@@ -7,16 +7,9 @@
 //
 
 #import "PGPlayerViewController.h"
-#import "PGPlaylistViewController.h"
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
-
-@interface PGPlayerViewController ()
-
-@property (nonatomic, assign) BOOL transitioningToPlaylistView;
-
-@end
 
 @implementation PGPlayerViewController
 
@@ -27,12 +20,8 @@
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
     [appDelegate addObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition" options:0 context:nil];
-    if (!self.transitioningToPlaylistView) {
+    if (!self.delegate) {
         [appDelegate addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
-    }
-    else {
-        self.transitioningToPlaylistView = NO;
-        self.delegate = nil;        
     }
     
     // initialy setup UI correctly
@@ -48,7 +37,7 @@
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate removeObserver:self forKeyPath:@"trackPlayer.paused"];
     [appDelegate removeObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition"];
-    if (!self.transitioningToPlaylistView) {
+    if (!self.delegate) {
         [appDelegate removeObserver:self forKeyPath:@"coverArtOfCurrentTrack"];
     }
 }
@@ -81,7 +70,7 @@
         
         viewController.underlyingView = self.navigationController.view;
         self.delegate = viewController;
-        self.transitioningToPlaylistView = YES;
+        viewController.delegate = self;
     }
 }
 
@@ -141,6 +130,13 @@
             self.coverImage.image = nil;
         }
     });
+}
+
+#pragma mark - PGPlaylistViewDelegate
+
+-(void)playlistViewDidEndShowing:(PGPlaylistViewController *)playlistView {
+    playlistView.delegate = nil;
+    self.delegate = nil;
 }
 
 @end
