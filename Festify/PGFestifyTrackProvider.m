@@ -62,17 +62,19 @@
             SPTPlaylistList* playlists = object;
             for (NSUInteger i = 0; i < playlists.items.count; ++i) {
                 [SPTRequest requestItemFromPartialObject:playlists.items[i] withSession:session callback:^(NSError *error, id object) {
-                    if (error) {
-                        if (completion) {
-                            completion(error);
-                        }
-                    }
-                    else {
+                    if (!error) {
                         [self addPlaylist:object];
                     }
                     
-                    if (i == playlists.items.count - 1 && self.tracks.count != 0 && completion) {
-                        completion(nil);
+                    if (i == playlists.items.count - 1 && completion) {
+                        if (self.tracks.count != 0) {
+                            completion(nil);
+                        }
+                        else {
+                            completion([NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier
+                                                           code:1
+                                                       userInfo:nil]);
+                        }
                     }
                 }];
             }

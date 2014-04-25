@@ -93,9 +93,7 @@
                                                type:TSMessageNotificationTypeError];
     }
     else {
-        [loginView dismissViewControllerAnimated:YES completion:^{
-            [self loginToSpotifyAPI];
-        }];
+        [self loginToSpotifyAPI];
     }
 }
 
@@ -121,13 +119,12 @@
     __weak PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
         if (error) {
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            [self performSegueWithIdentifier:@"showLogin" sender:nil];
+            [self performSegueWithIdentifier:@"showLogin" sender:self];
         }
         else {
             // fill trackprovider with own songs
             [appDelegate.trackProvider addPlaylistsFromUser:appDelegate.session.canonicalUsername session:appDelegate.session completion:^(NSError *error) {
-                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                 
                 if (!error) {
                     [appDelegate.trackPlayer playTrackProvider:appDelegate.trackProvider];

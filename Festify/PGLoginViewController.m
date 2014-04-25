@@ -36,16 +36,16 @@
 
 - (IBAction)login:(id)sender {
     // login to spotify api
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [(PGAppDelegate*)[UIApplication sharedApplication].delegate requestSpotifySessionWithCompletionHandler:^(NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            
             if (self.delegate) {
                 [self.delegate loginView:self didCompleteLoginWithError:error];
             }
         });
     }];
+    
+    // return to main screen
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
