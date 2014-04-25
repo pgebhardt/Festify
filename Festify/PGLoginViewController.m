@@ -41,14 +41,8 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             
-            if (!error) {
-                [self dismissViewControllerAnimated:YES completion:nil];
-            }
-            else {
-                [TSMessage showNotificationInViewController:self
-                                                      title:@"Authentication Error"
-                                                   subtitle:error.userInfo[NSLocalizedDescriptionKey]
-                                                       type:TSMessageNotificationTypeError];
+            if (self.delegate) {
+                [self.delegate loginView:self didCompleteLoginWithError:error];
             }
         });
     }];

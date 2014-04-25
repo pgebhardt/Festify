@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "PGDiscoveryManager.h"
+#import "PGLoginViewController.h"
 #import "PGSettingsViewController.h"
 
 @interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate,
-    PGSettingsViewDelegate>
+    PGLoginViewDelegate, PGSettingsViewDelegate>
 
 - (IBAction)festify:(id)sender;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *playButton;

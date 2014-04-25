@@ -8,7 +8,6 @@
 
 #import "PGFestifyViewController.h"
 #import "PGFestifyTrackProvider.h"
-#import "PGLoginViewController.h"
 #import "PGAppDelegate.h"
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
@@ -17,24 +16,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
 
     // try to login to spotify api
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [((PGAppDelegate*)[UIApplication sharedApplication].delegate) loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
-        // show login screen
-        if (error) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [MBProgressHUD hideHUDForView:self.view animated:NO];
-                [self performSegueWithIdentifier:@"showLogin" sender:self];
-            });
-        }
-        else {
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-        }
-    }];
+    [self loginToSpotifyAPI];
 }
 
 #pragma  mark - Actions
@@ -70,6 +57,7 @@
     else if ([segue.identifier isEqualToString:@"showLogin"]) {
         PGLoginViewController* viewController = (PGLoginViewController*)segue.destinationViewController;
         viewController.underlyingView = self.navigationController.view;
+        viewController.delegate = self;
     }
 }
 
@@ -95,6 +83,22 @@
     }];
 }
 
+#pragma mark - PGLoginViewDelegate
+
+-(void)loginView:(PGLoginViewController *)loginView didCompleteLoginWithError:(NSError *)error {
+    if (error) {
+        [TSMessage showNotificationInViewController:loginView
+                                              title:@"Authentication Error"
+                                           subtitle:error.userInfo[NSLocalizedDescriptionKey]
+                                               type:TSMessageNotificationTypeError];
+    }
+    else {
+        [loginView dismissViewControllerAnimated:YES completion:^{
+            [self loginToSpotifyAPI];
+        }];
+    }
+}
+
 #pragma mark - PGSettingsViewDelegate
 
 -(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
@@ -107,6 +111,31 @@
 
     // show login screen
     [self performSegueWithIdentifier:@"showLogin" sender:self];
+}
+
+#pragma mark - Helper
+
+-(void)loginToSpotifyAPI {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
+    __weak PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
+        if (error) {
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [self performSegueWithIdentifier:@"showLogin" sender:nil];
+        }
+        else {
+            // fill trackprovider with own songs
+            [appDelegate.trackProvider addPlaylistsFromUser:appDelegate.session.canonicalUsername session:appDelegate.session completion:^(NSError *error) {
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                
+                if (!error) {
+                    [appDelegate.trackPlayer playTrackProvider:appDelegate.trackProvider];
+                    [appDelegate.trackPlayer pausePlayback];
+                }
+            }];
+        }
+    }];
 }
 
 @end

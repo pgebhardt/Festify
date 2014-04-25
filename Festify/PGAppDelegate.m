@@ -63,8 +63,10 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
                 self.session = session;
             }
             
-            // init track player
-            [self loginToSpotifyAPIWithCompletionHandler:self.loginCallback];
+            // call callback to inform about completed session request
+            if (self.loginCallback) {
+                self.loginCallback(error);
+            }
         }];
         
         return YES;
