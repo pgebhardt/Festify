@@ -213,4 +213,5 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
                                        subtitle:message
                                            type:TSMessageNotificationTypeMessage];
 }
+
 @end

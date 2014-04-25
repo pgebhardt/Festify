@@ -42,7 +42,7 @@
         
         [trackProvider clearAllTracks];
         [trackProvider addPlaylistsFromUser:session.canonicalUsername session:session completion:^(NSError *error) {
-            if (!error) {
+            if (!error && trackPlayer.paused) {
                 [trackPlayer playTrackProvider:trackProvider];
             }
         }];
