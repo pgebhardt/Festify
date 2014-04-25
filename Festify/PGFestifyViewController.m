@@ -114,7 +114,7 @@
 #pragma mark - Helper
 
 -(void)loginToSpotifyAPI {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     
     __weak PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
@@ -124,7 +124,7 @@
         else {
             // fill trackprovider with own songs
             [appDelegate.trackProvider addPlaylistsFromUser:appDelegate.session.canonicalUsername session:appDelegate.session completion:^(NSError *error) {
-                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
                 
                 if (!error) {
                     [appDelegate.trackPlayer playTrackProvider:appDelegate.trackProvider];
