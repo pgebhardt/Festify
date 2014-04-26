@@ -164,16 +164,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     
     // add playlist for discovered user and notify user
     [self.trackProvider addPlaylistsFromUser:username session:self.session];
-/*
-        if (!error) {
-            // start playback, if not already running
-            if (weakSelf.trackPlayer.currentProvider == nil || weakSelf.trackPlayer.paused) {
-                [weakSelf.trackPlayer playTrackProvider:weakSelf.trackProvider];
-            }
-            
-        }
-    }];
-*/
 }
 
 #pragma mark - SPTTrackPlayerDelegate
