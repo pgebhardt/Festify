@@ -10,6 +10,7 @@
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <Social/Social.h>
 
 @implementation PGPlayerViewController
 
@@ -97,7 +98,7 @@
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Open in Spotify", @"Copy URL", @"Email URL", nil];
+                                                    otherButtonTitles:@"Compose Tweet", @"Open in Spotify", @"Copy URL", @"Email URL", nil];
     [actionSheet showInView:self.navigationController.view];
 }
 
@@ -174,9 +175,15 @@
     NSString* buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
 
+    // request complete track object and call correct handler for selected button
     [SPTRequest requestItemAtURI:appDelegate.trackInfoDictionary[@"spotifyURI"] withSession:appDelegate.session callback:^(NSError *error, id object) {
         if (!error) {
-            if ([buttonTitle isEqualToString:@"Open in Spotify"]) {
+            if ([buttonTitle isEqualToString:@"Compose Tweet"]) {
+                SLComposeViewController* composer = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+                [composer addURL:[object sharingURL]];
+                [self.navigationController presentViewController:composer animated:YES completion:nil];
+            }
+            else if ([buttonTitle isEqualToString:@"Open in Spotify"]) {
                 [appDelegate.trackPlayer pausePlayback];
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"spotify://%@", [object uri].absoluteString]]];
             }
