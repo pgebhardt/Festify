@@ -93,11 +93,12 @@
 #pragma mark - Actions
 
 -(void)showActivityView:(id)sender {
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-    [SPTRequest requestItemAtURI:appDelegate.trackInfoDictionary[@"spotifyURI"] withSession:appDelegate.session callback:^(NSError *error, id object) {
-        UIActivityViewController* activityView = [[UIActivityViewController alloc] initWithActivityItems:@[[object sharingURL]] applicationActivities:nil];
-        [self.navigationController presentViewController:activityView animated:YES completion:nil];
-    }];
+    UIActionSheet* actionSheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"%@ - %@", self.artistLabel.text, self.titleLabel.text]
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"Open in Spotify", @"Copy URL", @"Email URL", nil];
+    [actionSheet showInView:self.navigationController.view];
 }
 
 -(void)showPlaylistView:(id)sender {
@@ -165,6 +166,39 @@
 -(void)playlistViewDidEndShowing:(PGPlaylistViewController *)playlistView {
     playlistView.delegate = nil;
     self.delegate = nil;
+}
+
+#pragma mark - UIActionSheetDelegate
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSString* buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+
+    [SPTRequest requestItemAtURI:appDelegate.trackInfoDictionary[@"spotifyURI"] withSession:appDelegate.session callback:^(NSError *error, id object) {
+        if (!error) {
+            if ([buttonTitle isEqualToString:@"Open in Spotify"]) {
+                [appDelegate.trackPlayer pausePlayback];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"spotify://%@", [object uri].absoluteString]]];
+            }
+            else if ([buttonTitle isEqualToString:@"Copy URL"]) {
+                [[UIPasteboard generalPasteboard] setURL:[object sharingURL]];
+            }
+            else if ([buttonTitle isEqualToString:@"Email URL"]) {
+                MFMailComposeViewController* mailComposer = [[MFMailComposeViewController alloc] init];
+                [mailComposer setMessageBody:[object sharingURL].absoluteString isHTML:NO];
+                [mailComposer setSubject:[NSString stringWithFormat:@"%@ - %@", self.artistLabel.text, self.titleLabel.text]];
+                mailComposer.mailComposeDelegate = self;
+                
+                [self.navigationController presentViewController:mailComposer animated:YES completion:nil];
+            }
+        }
+    }];
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+
+-(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
