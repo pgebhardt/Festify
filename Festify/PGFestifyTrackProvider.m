@@ -30,6 +30,10 @@
 -(void)clearAllTracks {
     [self.tracks removeAllObjects];
     [self.playlistURIs removeAllObjects];
+    
+    if (self.delegate) {
+        [self.delegate trackProviderDidClearAllTracks:self];
+    }
 }
 
 -(BOOL)addPlaylist:(SPTPlaylistSnapshot *)playlist {
@@ -50,31 +54,29 @@
     return YES;
 }
 
--(void)addPlaylistsFromUser:(NSString *)username session:(SPTSession *)session completion:(void (^)(NSError *))completion {
+-(void)addPlaylistsFromUser:(NSString *)username session:(SPTSession *)session {
     // reguest and add all playlists of the given user
     [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
         if (error) {
-            if (completion) {
-                completion(error);
+            if (self.delegate) {
+                [self.delegate trackProvider:self didAddPlaylistsFromUser:username withError:error];
             }
         }
         else {
             SPTPlaylistList* playlists = object;
             for (NSUInteger i = 0; i < playlists.items.count; ++i) {
-                [SPTRequest requestItemFromPartialObject:playlists.items[i] withSession:session callback:^(NSError *error, id object) {
+                [SPTRequest requestItemFromPartialObject:playlists.items[i] withSession:session callback:^(NSError* error, id object) {
                     if (!error) {
                         [self addPlaylist:object];
                     }
                     
-                    if (i == playlists.items.count - 1 && completion) {
-                        if (self.tracks.count != 0) {
-                            completion(nil);
+                    if (self.delegate && i == playlists.items.count - 1) {
+                        NSError* error = nil;
+                        if (self.tracks.count == 0) {
+                            error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier code:1 userInfo:nil];
                         }
-                        else {
-                            completion([NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier
-                                                           code:1
-                                                       userInfo:nil]);
-                        }
+                        
+                        [self.delegate trackProvider:self didAddPlaylistsFromUser:username withError:error];
                     }
                 }];
             }

@@ -19,6 +19,7 @@
     [super viewDidLoad];
     
     // connect switches to event handler
+    [self.includeOwnSongsSwitch addTarget:self action:@selector(toggleIncludeOwnSongsState) forControlEvents:UIControlEventValueChanged];
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState) forControlEvents:UIControlEventValueChanged];
 }
 
@@ -26,6 +27,7 @@
     [super viewWillAppear:animated];
 
     // set switches to correct states
+    [self.includeOwnSongsSwitch setOn:[[PGUserDefaults valueForKey:PGUserDefaultsIncludeOwnSongsKey] boolValue]];
     [self.advertisementSwitch setOn:[PGDiscoveryManager sharedInstance].isAdvertisingProperty];
 }
 
@@ -48,6 +50,10 @@
 }
 
 #pragma mark - Switch Actions
+
+-(void)toggleIncludeOwnSongsState {
+    [PGUserDefaults setValue:[NSNumber numberWithBool:self.includeOwnSongsSwitch.isOn] forKey:PGUserDefaultsIncludeOwnSongsKey];
+}
 
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {

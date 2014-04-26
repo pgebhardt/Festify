@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
+#import "PGDiscoveryManager.h"
 #import "PGFestifyTrackProvider.h"
 
-@interface PGAppDelegate : UIResponder <UIApplicationDelegate, SPTTrackPlayerDelegate>
+@interface PGAppDelegate : UIResponder <UIApplicationDelegate, SPTTrackPlayerDelegate,
+    PGDiscoveryManagerDelegate>
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError* error))completion;

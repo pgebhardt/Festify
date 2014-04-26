@@ -9,6 +9,7 @@
 #import "PGFestifyViewController.h"
 #import "PGFestifyTrackProvider.h"
 #import "PGAppDelegate.h"
+#import "PGUserDefaults.h"
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
 
@@ -17,11 +18,37 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // set delegates
-    [PGDiscoveryManager sharedInstance].delegate = self;
-
     // try to login to spotify api
-    [self loginToSpotifyAPI];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loginToSpotifyAPI];
+    });
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // check if playback is available and adjust play button accordingly
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate addObserver:self forKeyPath:@"trackPlayer.currentProvider" options:0 context:nil];
+    self.playButton.enabled = appDelegate.trackPlayer.currentProvider != nil;
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    // remove all observations
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate removeObserver:self forKeyPath:@"trackPlayer.currentProvider"];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    if ([keyPath isEqualToString:@"trackPlayer.currentProvider"]) {
+        self.playButton.enabled = appDelegate.trackPlayer.currentProvider != nil;
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 #pragma  mark - Actions
@@ -35,17 +62,7 @@
                                                type:TSMessageNotificationTypeError];
     }
     else {
-        // clear content of track provider and add own playlists
-        SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-        __weak PGFestifyTrackProvider* trackProvider = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider;
-        SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
-        
-        [trackProvider clearAllTracks];
-        [trackProvider addPlaylistsFromUser:session.canonicalUsername session:session completion:^(NSError *error) {
-            if (!error && trackPlayer.paused) {
-                [trackPlayer playTrackProvider:trackProvider];
-            }
-        }];
+        [((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider clearAllTracks];
     }
 }
 
@@ -59,28 +76,6 @@
         viewController.underlyingView = self.navigationController.view;
         viewController.delegate = self;
     }
-}
-
-#pragma mark - PGDiscoveryManagerDelegate
-
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
-    SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-    PGFestifyTrackProvider* trackProvider = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider;
-    
-    // extract spotify username from device property
-    NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
-    
-    // add playlist for discovered user and notify user
-    [trackProvider addPlaylistsFromUser:username session:session completion:^(NSError *error) {
-        if (!error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [TSMessage showNotificationInViewController:self.navigationController
-                                                      title:[NSString stringWithFormat:@"Discovered %@", devicename]
-                                                   subtitle:[NSString stringWithFormat:@"Added tracks for user %@", username]
-                                                       type:TSMessageNotificationTypeSuccess];
-            });
-        }
-    }];
 }
 
 #pragma mark - PGLoginViewDelegate
@@ -100,15 +95,49 @@
 #pragma mark - PGSettingsViewDelegate
 
 -(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    
+    // clear delegations
+    appDelegate.trackProvider.delegate = nil;
+    
     // stop advertisiement and discovery and return to login screen
     [[PGDiscoveryManager sharedInstance] stopDiscovering];
     [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
     
     // log out of spotify API
-    [(PGAppDelegate*)[UIApplication sharedApplication].delegate logoutOfSpotifyAPI];
+    [appDelegate logoutOfSpotifyAPI];
 
     // show login screen
     [self performSegueWithIdentifier:@"showLogin" sender:self];
+}
+
+#pragma mark - PGFestifyTrackProviderDelegate
+
+-(void)trackProvider:(PGFestifyTrackProvider *)trackProvider didAddPlaylistsFromUser:(NSString *)username withError:(NSError *)error {
+    if (!error) {
+        SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
+        
+        // start playback, if not allready playing
+        if (trackPlayer.currentProvider == nil || trackPlayer.paused) {
+            [trackPlayer playTrackProvider:trackProvider];
+        }
+        
+        // notify user about success
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [TSMessage showNotificationInViewController:self.navigationController
+                                                  title:[NSString stringWithFormat:@"Discovered %@", username]
+                                               subtitle:@"All public songs added!"
+                                                   type:TSMessageNotificationTypeSuccess];
+        });
+    }
+}
+
+-(void)trackProviderDidClearAllTracks:(PGFestifyTrackProvider *)trackProvider {
+    // add all songs from the current user to track provider
+    if ([[PGUserDefaults valueForKey:PGUserDefaultsIncludeOwnSongsKey] boolValue]) {
+        SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
+        [trackProvider addPlaylistsFromUser:session.canonicalUsername session:session];
+     };
 }
 
 #pragma mark - Helper
@@ -122,15 +151,9 @@
             [self performSegueWithIdentifier:@"showLogin" sender:self];
         }
         else {
-            // fill trackprovider with own songs
-            [appDelegate.trackProvider addPlaylistsFromUser:appDelegate.session.canonicalUsername session:appDelegate.session completion:^(NSError *error) {
-                [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-                
-                if (!error) {
-                    [appDelegate.trackPlayer playTrackProvider:appDelegate.trackProvider];
-                    [appDelegate.trackPlayer pausePlayback];
-                }
-            }];
+            [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+
+            appDelegate.trackProvider.delegate = self;
         }
     }];
 }

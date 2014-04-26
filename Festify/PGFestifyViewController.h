@@ -10,9 +10,10 @@
 #import "PGDiscoveryManager.h"
 #import "PGLoginViewController.h"
 #import "PGSettingsViewController.h"
+#import "PGFestifyTrackProvider.h"
 
-@interface PGFestifyViewController : UIViewController<PGDiscoveryManagerDelegate,
-    PGLoginViewDelegate, PGSettingsViewDelegate>
+@interface PGFestifyViewController : UIViewController<PGLoginViewDelegate, PGSettingsViewDelegate,
+    PGFestifyTrackProviderDelegate>
 
 - (IBAction)festify:(id)sender;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *playButton;

@@ -31,6 +31,9 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.trackInfoDictionary = [NSMutableDictionary dictionary];
     self.trackProvider = [[PGFestifyTrackProvider alloc] init];
     
+    // set delegates
+    [PGDiscoveryManager sharedInstance].delegate = self;
+    
     // restore application state
     [PGUserDefaults restoreApplicationState];
     
@@ -152,9 +155,30 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     
     // clear track provider
     [self.trackProvider clearAllTracks];
+    [self.trackInfoDictionary removeAllObjects];
     
     // clear user defaults
     [PGUserDefaults clear];
+}
+
+#pragma mark - PGDiscoveryManagerDelegate
+
+-(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
+    // extract spotify username from device property
+    NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
+    
+    // add playlist for discovered user and notify user
+    [self.trackProvider addPlaylistsFromUser:username session:self.session];
+/*
+        if (!error) {
+            // start playback, if not already running
+            if (weakSelf.trackPlayer.currentProvider == nil || weakSelf.trackPlayer.paused) {
+                [weakSelf.trackPlayer playTrackProvider:weakSelf.trackProvider];
+            }
+            
+        }
+    }];
+*/
 }
 
 #pragma mark - SPTTrackPlayerDelegate
