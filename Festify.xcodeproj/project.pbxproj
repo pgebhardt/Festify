@@ -20,7 +20,6 @@
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
 		5F2079A0190C1DB000AAE15A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F20799F190C1DB000AAE15A /* Social.framework */; };
 		5F2079A2190C1DB700AAE15A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2079A1190C1DB700AAE15A /* MessageUI.framework */; };
-		5F263391190165A60082F6FD /* PGFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F263390190165A60082F6FD /* PGFeedbackViewController.m */; };
 		5F28F7631901288D00A0468A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7621901288D00A0468A /* libz.dylib */; };
 		5F423A6118FC115200C3ED75 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6018FC115200C3ED75 /* Foundation.framework */; };
 		5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6218FC115200C3ED75 /* CoreGraphics.framework */; };
@@ -38,6 +37,14 @@
 		5F521D2E18FF013800B915B7 /* PGFestifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */; };
 		5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* PGDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
+		5F7DB9B6190C55530077F648 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9B5190C55530077F648 /* Accelerate.framework */; };
+		5F7DB9B8190C555B0077F648 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9B7190C555B0077F648 /* CoreData.framework */; };
+		5F7DB9BA190C55640077F648 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9B9190C55640077F648 /* CoreText.framework */; };
+		5F7DB9BC190C556E0077F648 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BB190C556E0077F648 /* CoreTelephony.framework */; };
+		5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BD190C55790077F648 /* QuartzCore.framework */; };
+		5F7DB9C0190C557F0077F648 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BF190C557F0077F648 /* StoreKit.framework */; };
+		5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */; };
+		5F7DB9C4190C55BB0077F648 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */; };
 		5F88929018FEFA6000620589 /* PGLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F88928F18FEFA6000620589 /* PGLoginViewController.m */; };
 		5F89FD5D1906339A00752072 /* PGUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F89FD5C1906339A00752072 /* PGUserDefaults.m */; };
 		5FDDCF6E190298810079F433 /* acknowledgements.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5FDDCF6D190298810079F433 /* acknowledgements.txt */; };
@@ -77,8 +84,6 @@
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5F20799F190C1DB000AAE15A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		5F2079A1190C1DB700AAE15A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		5F26338F190165A60082F6FD /* PGFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGFeedbackViewController.h; sourceTree = "<group>"; };
-		5F263390190165A60082F6FD /* PGFeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGFeedbackViewController.m; sourceTree = "<group>"; };
 		5F28F7621901288D00A0468A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		5F423A5D18FC115200C3ED75 /* Festify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Festify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F423A6018FC115200C3ED75 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -102,6 +107,14 @@
 		5F5A162118FC535100E408DC /* PGDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGDiscoveryManager.h; sourceTree = "<group>"; };
 		5F5A162218FC535100E408DC /* PGDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		5F7DB9B5190C55530077F648 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		5F7DB9B7190C555B0077F648 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		5F7DB9B9190C55640077F648 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		5F7DB9BB190C556E0077F648 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		5F7DB9BD190C55790077F648 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		5F7DB9BF190C557F0077F648 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		5F88928E18FEFA6000620589 /* PGLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGLoginViewController.h; sourceTree = "<group>"; };
 		5F88928F18FEFA6000620589 /* PGLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGLoginViewController.m; sourceTree = "<group>"; };
 		5F89FD5B1906339A00752072 /* PGUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGUserDefaults.h; sourceTree = "<group>"; };
@@ -115,6 +128,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F7DB9C4190C55BB0077F648 /* AssetsLibrary.framework in Frameworks */,
+				5F423A6118FC115200C3ED75 /* Foundation.framework in Frameworks */,
+				5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */,
+				5F7DB9C0190C557F0077F648 /* StoreKit.framework in Frameworks */,
+				5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */,
+				5F7DB9BC190C556E0077F648 /* CoreTelephony.framework in Frameworks */,
+				5F7DB9BA190C55640077F648 /* CoreText.framework in Frameworks */,
+				5F7DB9B8190C555B0077F648 /* CoreData.framework in Frameworks */,
+				5F7DB9B6190C55530077F648 /* Accelerate.framework in Frameworks */,
 				5F2079A2190C1DB700AAE15A /* MessageUI.framework in Frameworks */,
 				5F2079A0190C1DB000AAE15A /* Social.framework in Frameworks */,
 				5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */,
@@ -123,7 +145,6 @@
 				5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */,
 				5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */,
 				5F423A6518FC115200C3ED75 /* UIKit.framework in Frameworks */,
-				5F423A6118FC115200C3ED75 /* Foundation.framework in Frameworks */,
 				5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */,
 				A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */,
 			);
@@ -158,8 +179,6 @@
 		5F1E97B31902E5A20009B675 /* View Controller */ = {
 			isa = PBXGroup;
 			children = (
-				5F26338F190165A60082F6FD /* PGFeedbackViewController.h */,
-				5F263390190165A60082F6FD /* PGFeedbackViewController.m */,
 				5F521D2C18FF013800B915B7 /* PGFestifyViewController.h */,
 				5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */,
 				5F88928E18FEFA6000620589 /* PGLoginViewController.h */,
@@ -197,6 +216,14 @@
 		5F423A5F18FC115200C3ED75 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */,
+				5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */,
+				5F7DB9BF190C557F0077F648 /* StoreKit.framework */,
+				5F7DB9BD190C55790077F648 /* QuartzCore.framework */,
+				5F7DB9BB190C556E0077F648 /* CoreTelephony.framework */,
+				5F7DB9B9190C55640077F648 /* CoreText.framework */,
+				5F7DB9B7190C555B0077F648 /* CoreData.framework */,
+				5F7DB9B5190C55530077F648 /* Accelerate.framework */,
 				5F2079A1190C1DB700AAE15A /* MessageUI.framework */,
 				5F20799F190C1DB000AAE15A /* Social.framework */,
 				5F12D3291902774E00B49FCA /* MediaPlayer.framework */,
@@ -433,7 +460,6 @@
 				5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */,
 				5F1E97B11902E2D00009B675 /* UIImage+ImageEffects.m in Sources */,
 				5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */,
-				5F263391190165A60082F6FD /* PGFeedbackViewController.m in Sources */,
 				5F123CA4190025FF00E46166 /* PGPlaylistViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -560,8 +586,12 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lApptentiveConnect",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -581,8 +611,12 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lApptentiveConnect",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

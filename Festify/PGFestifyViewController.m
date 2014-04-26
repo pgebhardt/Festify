@@ -12,6 +12,7 @@
 #import "PGUserDefaults.h"
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
+#import "ATConnect.h"
 
 @interface PGFestifyViewController ()
 
@@ -37,6 +38,13 @@
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate addObserver:self forKeyPath:@"trackPlayer.currentProvider" options:0 context:nil];
     self.playButton.enabled = appDelegate.trackPlayer.currentProvider != nil;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    // apptentive event
+    [[ATConnect sharedConnection] engage:@"festifyViewDidAppear" fromViewController:self.navigationController];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -70,6 +78,9 @@
     else {
         [((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider clearAllTracks];
     }
+    
+    // apptentive event
+    [[ATConnect sharedConnection] engage:@"festifyButtonHit" fromViewController:self.navigationController];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -110,7 +121,10 @@
     
     // log out of spotify API
     [appDelegate logoutOfSpotifyAPI];
-
+    
+    // apptentive event
+    [[ATConnect sharedConnection] engage:@"didLogOut" fromViewController:self.navigationController];
+    
     // show login screen
     [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
@@ -156,8 +170,10 @@
         }
         else {
             [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-
             appDelegate.trackProvider.delegate = self;
+
+            // apptentive event
+            [[ATConnect sharedConnection] engage:@"didLogIn" fromViewController:self.navigationController];
         }
     }];
 }

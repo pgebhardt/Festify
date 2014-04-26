@@ -13,6 +13,7 @@
 #import <Spotify/Spotify.h>
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
+#import "ATConnect.h"
 
 // spotify authentication constants
 // TODO: replace with post-beta IDs and adjust the App's URL type
@@ -28,7 +29,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 @implementation PGAppDelegate
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
+    self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:[NSBundle mainBundle].bundleIdentifier
                                                            appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     self.trackInfoDictionary = [NSMutableDictionary dictionary];
     self.trackProvider = [[PGFestifyTrackProvider alloc] init];
@@ -42,9 +43,17 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     // restore application state
     [PGUserDefaults restoreApplicationState];
     
-    // show white status bar and load spotify color schema for TSMessage
+    // initialize apptentive feedback system
+    [ATConnect sharedConnection].apiKey = @"332a2ed7324aa7465ab10f63cfd79c62784a61ac97a80c83d489502f00a7b103";
+    
+    // adjust default colors to match spotify color schema
     [application setStatusBarHidden:NO];
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:130.0/255.0 green:130.0/255.0 blue:130.0/255.0 alpha:1.0]];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    [[UIButton appearance] setTintColor:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
+    [[UIProgressView appearance] setTintColor:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
     [TSMessage addCustomDesignFromFileWithName:@"spotifymessagedesign.json"];
     
     return YES;

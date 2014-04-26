@@ -12,6 +12,7 @@
 #import "PGUserDefaults.h"
 #import <Spotify/Spotify.h>
 #import "TSMessage.h"
+#import "ATConnect.h"
 
 @implementation PGSettingsViewController
 
@@ -31,8 +32,11 @@
     [self.advertisementSwitch setOn:[PGDiscoveryManager sharedInstance].isAdvertisingProperty];
 }
 
-- (IBAction)done:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    // apptentive event
+    [[ATConnect sharedConnection] engage:@"settingsViewDidAppear" fromViewController:self.navigationController];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -49,7 +53,11 @@
     }
 }
 
-#pragma mark - Switch Actions
+#pragma mark - Actions
+
+- (IBAction)done:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 -(void)toggleIncludeOwnSongsState {
     [PGUserDefaults setValue:[NSNumber numberWithBool:self.includeOwnSongsSwitch.isOn] forKey:PGUserDefaultsIncludeOwnSongsKey];
@@ -99,6 +107,9 @@
                 [self.delegate settingsViewUserDidRequestLogout:self];
             }
         }];
+    }
+    else if ([reuseIdentifier isEqualToString:@"sendFeedbackCell"]) {
+        [[ATConnect sharedConnection] presentMessageCenterFromViewController:self.navigationController];
     }
 }
 

@@ -11,6 +11,7 @@
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <Social/Social.h>
+#import "ATConnect.h"
 
 @implementation PGPlayerViewController
 
@@ -46,6 +47,13 @@
     [self updatePlayButton:appDelegate.trackPlayer.paused];
     [self updatePlaybackPosition:appDelegate.trackPlayer.currentPlaybackPosition
                      andDuration:[appDelegate.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] doubleValue]];
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    // apptentive event
+    [[ATConnect sharedConnection] engage:@"playerViewDidAppear" fromViewController:self.navigationController];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {

@@ -13,6 +13,7 @@
 #import "UIImage+ImageEffects.h"
 #import "TSMessage.h"
 #import "MBProgressHud.h"
+#import "ATConnect.h"
 
 @implementation PGLoginViewController
 
@@ -45,6 +46,9 @@
                                                type:TSMessageNotificationTypeError];
         self.loginError = nil;
     }
+    
+    // apptentive event
+    [[ATConnect sharedConnection] engage:@"loginViewDidAppear" fromViewController:self.navigationController];
 }
 
 - (IBAction)login:(id)sender {

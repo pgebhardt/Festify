@@ -9,6 +9,7 @@
 #import "PGPlaylistViewController.h"
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
+#import "ATConnect.h"
 #import "UIImage+ImageEffects.h"
 #import "UIView+ConvertToImage.h"
 
@@ -25,6 +26,13 @@
     
     self.trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     [self createBlurredBackgroundFromView:self.underlyingView];
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    // apptentive event
+    [[ATConnect sharedConnection] engage:@"playlistViewDidAppear" fromViewController:self.navigationController];
 }
 
 - (IBAction)done:(id)sender {
