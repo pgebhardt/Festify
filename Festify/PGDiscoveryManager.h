@@ -23,7 +23,7 @@ static NSString* const PGDiscoveryManagerDevicenameUUIDString = @"bebf2065-a207-
 
 @end
 
-@interface PGDiscoveryManager : NSObject<CBCentralManagerDelegate, CBPeripheralDelegate>
+@interface PGDiscoveryManager : NSObject<CBCentralManagerDelegate, CBPeripheralManagerDelegate, CBPeripheralDelegate>
 
 +(PGDiscoveryManager*)sharedInstance;
 

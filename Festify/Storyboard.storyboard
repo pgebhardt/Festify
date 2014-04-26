@@ -85,6 +85,7 @@
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="VmY-Xs-OEj">
                                 <rect key="frame" x="55" y="397" width="210" height="4"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="tintColor" red="0.5647059083" green="0.74117648599999997" blue="0.26274511220000002" alpha="1" colorSpace="deviceRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="4" id="MxH-jK-hAL"/>
                                 </constraints>
@@ -141,13 +142,7 @@
                             <constraint firstAttribute="trailing" secondItem="IEn-sz-YgL" secondAttribute="trailing" constant="20" id="wB4-r6-hwk"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Now Playing" id="Zmt-zk-YEv">
-                        <barButtonItem key="rightBarButtonItem" image="List" id="kGg-VL-XMV">
-                            <connections>
-                                <segue destination="cyM-U7-Fye" kind="modal" identifier="showPlaylist" id="yt2-Yd-W6E"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Now Playing" id="Zmt-zk-YEv"/>
                     <connections>
                         <outlet property="artistLabel" destination="IEn-sz-YgL" id="EKZ-Pf-6T7"/>
                         <outlet property="coverImage" destination="AuE-Vp-LKl" id="iD6-Dg-fZx"/>
@@ -156,6 +151,7 @@
                         <outlet property="remainingTimeView" destination="SSx-vi-10x" id="EAU-84-5Gs"/>
                         <outlet property="titleLabel" destination="wrL-am-jDI" id="dOo-gC-uKb"/>
                         <outlet property="trackPosition" destination="VmY-Xs-OEj" id="qZJ-jk-PmW"/>
+                        <segue destination="cyM-U7-Fye" kind="modal" identifier="showPlaylist" id="oqX-Mq-QcW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GRa-W3-jeO" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -402,6 +398,12 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="eRt-XQ-gGZ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="1" blue="0.9960784912109375" alpha="1" colorSpace="deviceRGB"/>
+                        <color key="barTintColor" red="0.5411764979" green="0.54509806630000002" blue="0.5411764979" alpha="1" colorSpace="deviceRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
+                            <offsetWrapper key="textShadowOffset" horizontal="0.0" vertical="0.0"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -429,17 +431,41 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="44"/>
                                 <state key="normal" title="Festify">
+                                    <color key="titleColor" red="0.56470590829849243" green="0.74117648601531982" blue="0.26274511218070984" alpha="1" colorSpace="deviceRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="festify:" destination="fyQ-f5-bAt" eventType="touchUpInside" id="aRV-5W-shG"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SpotifyLogo" translatesAutoresizingMaskIntoConstraints="NO" id="jhx-lf-ELk">
+                                <rect key="frame" x="101" y="512" width="119" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="axC-DK-Jko"/>
+                                    <constraint firstAttribute="width" constant="119" id="b8h-Gl-Lg2"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="powered by" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O8Q-I5-IEW">
+                                <rect key="frame" x="125" y="488" width="71" height="16"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="71" id="hrs-Rq-cCe"/>
+                                    <constraint firstAttribute="height" constant="16" id="yS7-kO-Eg7"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.92549026010000002" green="0.9215686917" blue="0.90196084980000002" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
                             <constraint firstAttribute="centerY" secondItem="P6e-RL-Qf1" secondAttribute="centerY" id="18x-WE-Rr9"/>
+                            <constraint firstItem="VUn-oR-idf" firstAttribute="top" secondItem="jhx-lf-ELk" secondAttribute="bottom" constant="20" id="Ncd-cj-AYO"/>
                             <constraint firstAttribute="centerX" secondItem="P6e-RL-Qf1" secondAttribute="centerX" id="Owh-zZ-LN5"/>
+                            <constraint firstAttribute="centerX" secondItem="jhx-lf-ELk" secondAttribute="centerX" id="jFl-de-QME"/>
+                            <constraint firstAttribute="centerX" secondItem="O8Q-I5-IEW" secondAttribute="centerX" constant="-0.5" id="m5F-Ft-VFx"/>
+                            <constraint firstItem="jhx-lf-ELk" firstAttribute="top" secondItem="O8Q-I5-IEW" secondAttribute="bottom" constant="8" id="pqM-wQ-VWu"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Festify" id="zxc-1E-uy0">
@@ -506,6 +532,11 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="1Hh-BX-8fC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="1" blue="0.99607849120000003" alpha="1" colorSpace="deviceRGB"/>
+                        <color key="barTintColor" red="0.5411764979" green="0.54509806630000002" blue="0.5411764979" alpha="1" colorSpace="deviceRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="1" green="1" blue="0.99607849120000003" alpha="1" colorSpace="deviceRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -624,6 +655,11 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="mtc-4d-ghg">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="1" green="1" blue="0.99607849120000003" alpha="1" colorSpace="deviceRGB"/>
+                        <color key="barTintColor" red="0.5411764979" green="0.54509806630000002" blue="0.5411764979" alpha="1" colorSpace="deviceRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="1" green="1" blue="0.99607849120000003" alpha="1" colorSpace="deviceRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -638,9 +674,9 @@
     <resources>
         <image name="Cog" width="25" height="25"/>
         <image name="Forward" width="30" height="22"/>
-        <image name="List" width="27" height="23"/>
         <image name="Pause" width="16" height="22"/>
         <image name="Rewind" width="30" height="22"/>
+        <image name="SpotifyLogo" width="119" height="36"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

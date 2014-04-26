@@ -28,8 +28,13 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 @implementation PGAppDelegate
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
+                                                           appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     self.trackInfoDictionary = [NSMutableDictionary dictionary];
     self.trackProvider = [[PGFestifyTrackProvider alloc] init];
+    
+    // enable repeat for track player to get an endless playback behaviour
+    self.trackPlayer.repeatEnabled = YES;
     
     // set delegates
     [PGDiscoveryManager sharedInstance].delegate = self;
@@ -37,19 +42,9 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     // restore application state
     [PGUserDefaults restoreApplicationState];
     
-    // init spotify objects
-    self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleIdentifierKey]
-                                                           appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
-    self.trackPlayer.repeatEnabled = YES;
-    
-    // adjust default colors to match spotify color schema
+    // show white status bar and load spotify color schema for TSMessage
     [application setStatusBarHidden:NO];
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
-    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:130.0/255.0 green:130.0/255.0 blue:130.0/255.0 alpha:1.0]];
-    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor]}];
-    [[UIButton appearance] setTintColor:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
-    [[UIProgressView appearance] setTintColor:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
     [TSMessage addCustomDesignFromFileWithName:@"spotifymessagedesign.json"];
     
     return YES;
@@ -190,6 +185,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] = [NSNumber numberWithDouble:[(SPTTrack*)provider.tracks[index] duration]];
     self.trackInfoDictionary[MPMediaItemPropertyAlbumTrackNumber] = [NSNumber numberWithInteger:index];
     self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @0.0;
+    self.trackInfoDictionary[@"spotifyURI"] = [provider.tracks[index] uri];
     
     // request complete album of track
     [SPTRequest requestItemAtURI:[[provider.tracks[index] album] uri] withSession:self.session callback:^(NSError *error, id object) {

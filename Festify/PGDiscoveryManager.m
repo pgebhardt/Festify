@@ -37,7 +37,7 @@
         dispatch_queue_t centralManagerQueue = dispatch_queue_create("com.patrikgebhardt.festify.centralManager", DISPATCH_QUEUE_SERIAL);
         dispatch_queue_t peripheralManagerQueue = dispatch_queue_create("com.patrikgebhardt.festify.peripheralManager", DISPATCH_QUEUE_SERIAL);
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:centralManagerQueue];
-        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:nil queue:peripheralManagerQueue];
+        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:peripheralManagerQueue];
         self.discovering = NO;
         
         self.discoveredPeripherals = [NSMutableArray array];
@@ -107,6 +107,12 @@
 
 -(BOOL)isDiscovering {
     return self.discovering;
+}
+
+#pragma mark - CBPeripheralManagerDelegate
+
+-(void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral {
+    
 }
 
 #pragma mark - CBCentralManagerDelegate

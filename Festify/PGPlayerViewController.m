@@ -13,6 +13,22 @@
 
 @implementation PGPlayerViewController
 
+-(void)viewDidLoad {
+    [super viewDidLoad];
+
+    // add bar buttons to navigation bar
+    UIBarButtonItem* activityButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Upload"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(showActivityView:)];
+    UIBarButtonItem* playlistButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"List"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(showPlaylistView:)];
+    
+    self.navigationItem.rightBarButtonItems = @[playlistButton, activityButton];
+}
+
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
@@ -75,6 +91,18 @@
 }
 
 #pragma mark - Actions
+
+-(void)showActivityView:(id)sender {
+    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    [SPTRequest requestItemAtURI:appDelegate.trackInfoDictionary[@"spotifyURI"] withSession:appDelegate.session callback:^(NSError *error, id object) {
+        UIActivityViewController* activityView = [[UIActivityViewController alloc] initWithActivityItems:@[[object sharingURL]] applicationActivities:nil];
+        [self.navigationController presentViewController:activityView animated:YES completion:nil];
+    }];
+}
+
+-(void)showPlaylistView:(id)sender {
+    [self performSegueWithIdentifier:@"showPlaylist" sender:self];
+}
 
 -(IBAction)rewind:(id)sender {
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
