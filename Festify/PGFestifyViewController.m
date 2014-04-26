@@ -13,6 +13,12 @@
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
 
+@interface PGFestifyViewController ()
+
+@property (nonatomic, strong) NSError* loginError;
+
+@end
+
 @implementation PGFestifyViewController
 
 - (void)viewDidLoad {
@@ -73,6 +79,8 @@
     }
     else if ([segue.identifier isEqualToString:@"showLogin"]) {
         PGLoginViewController* viewController = (PGLoginViewController*)segue.destinationViewController;
+
+        viewController.loginError = self.loginError;
         viewController.underlyingView = self.navigationController.view;
         viewController.delegate = self;
     }
@@ -81,21 +89,17 @@
 #pragma mark - PGLoginViewDelegate
 
 -(void)loginView:(PGLoginViewController *)loginView didCompleteLoginWithError:(NSError *)error {
-    if (error) {
-        [TSMessage showNotificationInViewController:loginView
-                                              title:@"Authentication Error"
-                                           subtitle:error.userInfo[NSLocalizedDescriptionKey]
-                                               type:TSMessageNotificationTypeError];
-    }
-    else {
-        [self loginToSpotifyAPI];
-    }
+    self.loginError = error;
+    [self loginToSpotifyAPI];
 }
 
 #pragma mark - PGSettingsViewDelegate
 
 -(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    
+    // cleanup UI
+    self.playButton.enabled = NO;
     
     // clear delegations
     appDelegate.trackProvider.delegate = nil;

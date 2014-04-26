@@ -34,18 +34,31 @@
     [self.view sendSubviewToBack:backgroundView];
 }
 
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    // show login error, if available
+    if (self.loginError) {
+        [TSMessage showNotificationInViewController:self
+                                              title:@"Authentication Error"
+                                           subtitle:self.loginError.userInfo[NSLocalizedDescriptionKey]
+                                               type:TSMessageNotificationTypeError];
+        self.loginError = nil;
+    }
+}
+
 - (IBAction)login:(id)sender {
     // login to spotify api
     [(PGAppDelegate*)[UIApplication sharedApplication].delegate requestSpotifySessionWithCompletionHandler:^(NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.delegate) {
-                [self.delegate loginView:self didCompleteLoginWithError:error];
-            }
+            // return to main screen
+            [self dismissViewControllerAnimated:YES completion:^{
+                if (self.delegate) {
+                    [self.delegate loginView:self didCompleteLoginWithError:error];
+                }
+            }];
         });
     }];
-    
-    // return to main screen
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
