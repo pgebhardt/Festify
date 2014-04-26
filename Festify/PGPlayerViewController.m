@@ -94,11 +94,28 @@
 #pragma mark - Actions
 
 -(void)showActivityView:(id)sender {
-    UIActionSheet* actionSheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"%@ - %@", self.artistLabel.text, self.titleLabel.text]
-                                                             delegate:self
-                                                    cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Compose Tweet", @"Open in Spotify", @"Copy URL", @"Email URL", nil];
+    // create action sheet with all available options
+    UIActionSheet* actionSheet = nil;
+    NSString* sheetTitle = [NSString stringWithFormat:@"%@ - %@", self.artistLabel.text, self.titleLabel.text];
+    
+    if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled &&
+        [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Compose Tweet", @"Open in Spotify", @"Copy URL", @"Email URL", nil];
+    }
+    else if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Open in Spotify", @"Copy URL", @"Email URL", nil];
+    }
+    else if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Compose Tweet", @"Copy URL", @"Email URL", nil];
+    }
+    else {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Copy URL", @"Email URL", nil];
+    }
+    
     [actionSheet showInView:self.navigationController.view];
 }
 
@@ -150,6 +167,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if (trackInfoDictionary) {
             self.titleLabel.text = trackInfoDictionary[MPMediaItemPropertyTitle];
+            self.trackPosition.progress = 0.0;
             self.artistLabel.text = trackInfoDictionary[MPMediaItemPropertyArtist];
             self.coverImage.image = coverArt;
         }
