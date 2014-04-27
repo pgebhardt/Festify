@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <MessageUI/MessageUI.h>
 
 @class PGPlayerViewController;
 
@@ -19,8 +18,7 @@
 
 #import "PGPlaylistViewController.h"
 
-@interface PGPlayerViewController : UIViewController<PGPlaylistViewDelegate, UIActionSheetDelegate,
-    MFMailComposeViewControllerDelegate>
+@interface PGPlayerViewController : UIViewController<PGPlaylistViewDelegate>
 
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;

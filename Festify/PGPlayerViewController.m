@@ -10,7 +10,6 @@
 #import "PGAppDelegate.h"
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
-#import <Social/Social.h>
 #import "ATConnect.h"
 
 @implementation PGPlayerViewController
@@ -18,17 +17,8 @@
 -(void)viewDidLoad {
     [super viewDidLoad];
 
-    // add bar buttons to navigation bar
-    UIBarButtonItem* activityButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Upload"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(showActivityView:)];
-    UIBarButtonItem* playlistButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"List"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(showPlaylistView:)];
-    
-    self.navigationItem.rightBarButtonItems = @[playlistButton, activityButton];
+    // set spotify logo as title view
+    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SpotifyLogoWhite"]];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -101,36 +91,6 @@
 
 #pragma mark - Actions
 
--(void)showActivityView:(id)sender {
-    // create action sheet with all available options
-    UIActionSheet* actionSheet = nil;
-    NSString* sheetTitle = [NSString stringWithFormat:@"%@ - %@", self.artistLabel.text, self.titleLabel.text];
-    
-    if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled &&
-        [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
-                                         otherButtonTitles:@"Compose Tweet", @"Open in Spotify", @"Copy URL", @"Email URL", nil];
-    }
-    else if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
-                                         otherButtonTitles:@"Open in Spotify", @"Copy URL", @"Email URL", nil];
-    }
-    else if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
-                                         otherButtonTitles:@"Compose Tweet", @"Copy URL", @"Email URL", nil];
-    }
-    else {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
-                                         otherButtonTitles:@"Copy URL", @"Email URL", nil];
-    }
-    
-    [actionSheet showInView:self.navigationController.view];
-}
-
--(void)showPlaylistView:(id)sender {
-    [self performSegueWithIdentifier:@"showPlaylist" sender:self];
-}
-
 -(IBAction)rewind:(id)sender {
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate.trackPlayer skipToPreviousTrack:NO];
@@ -188,45 +148,6 @@
 -(void)playlistViewDidEndShowing:(PGPlaylistViewController *)playlistView {
     playlistView.delegate = nil;
     self.delegate = nil;
-}
-
-#pragma mark - UIActionSheetDelegate
-
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSString* buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-
-    // request complete track object and call correct handler for selected button
-    [SPTRequest requestItemAtURI:appDelegate.trackInfoDictionary[@"spotifyURI"] withSession:appDelegate.session callback:^(NSError *error, id object) {
-        if (!error) {
-            if ([buttonTitle isEqualToString:@"Compose Tweet"]) {
-                SLComposeViewController* composer = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-                [composer addURL:[object sharingURL]];
-                [self.navigationController presentViewController:composer animated:YES completion:nil];
-            }
-            else if ([buttonTitle isEqualToString:@"Open in Spotify"]) {
-                [appDelegate.trackPlayer pausePlayback];
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"spotify://%@", [object uri].absoluteString]]];
-            }
-            else if ([buttonTitle isEqualToString:@"Copy URL"]) {
-                [[UIPasteboard generalPasteboard] setURL:[object sharingURL]];
-            }
-            else if ([buttonTitle isEqualToString:@"Email URL"]) {
-                MFMailComposeViewController* mailComposer = [[MFMailComposeViewController alloc] init];
-                [mailComposer setMessageBody:[object sharingURL].absoluteString isHTML:NO];
-                [mailComposer setSubject:[NSString stringWithFormat:@"%@ - %@", self.artistLabel.text, self.titleLabel.text]];
-                mailComposer.mailComposeDelegate = self;
-                
-                [self.navigationController presentViewController:mailComposer animated:YES completion:nil];
-            }
-        }
-    }];
-}
-
-#pragma mark - MFMailComposeViewControllerDelegate
-
--(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
-    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

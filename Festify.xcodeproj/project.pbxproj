@@ -18,8 +18,6 @@
 		5F1E97B11902E2D00009B675 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
-		5F2079A0190C1DB000AAE15A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F20799F190C1DB000AAE15A /* Social.framework */; };
-		5F2079A2190C1DB700AAE15A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2079A1190C1DB700AAE15A /* MessageUI.framework */; };
 		5F28F7631901288D00A0468A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7621901288D00A0468A /* libz.dylib */; };
 		5F423A6118FC115200C3ED75 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6018FC115200C3ED75 /* Foundation.framework */; };
 		5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6218FC115200C3ED75 /* CoreGraphics.framework */; };
@@ -137,8 +135,6 @@
 				5F7DB9BA190C55640077F648 /* CoreText.framework in Frameworks */,
 				5F7DB9B8190C555B0077F648 /* CoreData.framework in Frameworks */,
 				5F7DB9B6190C55530077F648 /* Accelerate.framework in Frameworks */,
-				5F2079A2190C1DB700AAE15A /* MessageUI.framework in Frameworks */,
-				5F2079A0190C1DB000AAE15A /* Social.framework in Frameworks */,
 				5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */,
 				5F28F7631901288D00A0468A /* libz.dylib in Frameworks */,
 				5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */,

@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Player View Controller - Now Playing-->
+        <!--Player View Controller-->
         <scene sceneID="HN1-7L-aEX">
             <objects>
                 <viewController id="EVF-cW-P26" customClass="PGPlayerViewController" sceneMemberID="viewController">
@@ -141,7 +141,13 @@
                             <constraint firstAttribute="trailing" secondItem="IEn-sz-YgL" secondAttribute="trailing" constant="20" id="wB4-r6-hwk"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Now Playing" id="Zmt-zk-YEv"/>
+                    <navigationItem key="navigationItem" id="Zmt-zk-YEv">
+                        <barButtonItem key="rightBarButtonItem" image="List" id="509-8T-7vp">
+                            <connections>
+                                <segue destination="cyM-U7-Fye" kind="modal" identifier="showPlaylist" id="AsV-op-EQk"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="artistLabel" destination="IEn-sz-YgL" id="EKZ-Pf-6T7"/>
                         <outlet property="coverImage" destination="AuE-Vp-LKl" id="iD6-Dg-fZx"/>
@@ -150,7 +156,6 @@
                         <outlet property="remainingTimeView" destination="SSx-vi-10x" id="EAU-84-5Gs"/>
                         <outlet property="titleLabel" destination="wrL-am-jDI" id="dOo-gC-uKb"/>
                         <outlet property="trackPosition" destination="VmY-Xs-OEj" id="qZJ-jk-PmW"/>
-                        <segue destination="cyM-U7-Fye" kind="modal" identifier="showPlaylist" id="oqX-Mq-QcW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GRa-W3-jeO" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -535,6 +540,7 @@
     <resources>
         <image name="Cog" width="25" height="25"/>
         <image name="Forward" width="30" height="22"/>
+        <image name="List" width="27" height="23"/>
         <image name="Pause" width="16" height="22"/>
         <image name="Rewind" width="30" height="22"/>
         <image name="SpotifyLogo" width="119" height="36"/>
