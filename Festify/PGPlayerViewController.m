@@ -17,8 +17,13 @@
 -(void)viewDidLoad {
     [super viewDidLoad];
 
-    // set spotify logo as title view
-    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SpotifyLogoWhite"]];
+    // set button with spotify logo as title view
+    UIButton* titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [titleButton setImage:[UIImage imageNamed:@"SpotifyLogoWhite"] forState:UIControlStateNormal];
+    [titleButton addTarget:self action:@selector(openInSpotify:) forControlEvents:UIControlEventTouchUpInside];
+    [titleButton sizeToFit];
+    
+    self.navigationItem.titleView = titleButton;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -90,6 +95,20 @@
 }
 
 #pragma mark - Actions
+
+-(void)openInSpotify:(id)sender {
+    // open currently played track in spotify app, if available
+    if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
+        PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+        NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"spotify://%@",
+                                           [appDelegate.trackInfoDictionary[@"spotifyURI"] absoluteString]]];
+        
+        if (!appDelegate.trackPlayer.paused) {
+            [appDelegate togglePlaybackState];
+        }
+        [[UIApplication sharedApplication] openURL:url];
+    }
+}
 
 -(IBAction)rewind:(id)sender {
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
