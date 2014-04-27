@@ -47,7 +47,6 @@
     // clear NSUserDefault storage
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:PGUserDefaultsAdvertisementStateKey];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:PGUserDefaultsSpotifySessionKey];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:PGUserDefaultsIncludeOwnSongsKey];
     
     [[NSUserDefaults standardUserDefaults] synchronize];
 }

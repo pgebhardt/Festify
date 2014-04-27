@@ -11,7 +11,6 @@
 // default application keys
 static NSString* const PGUserDefaultsSpotifySessionKey = @"spotifySession";
 static NSString* const PGUserDefaultsAdvertisementStateKey = @"advertisementState";
-static NSString* const PGUserDefaultsIncludeOwnSongsKey = @"includeOwnSongs";
 
 @interface PGUserDefaults : NSObject
 

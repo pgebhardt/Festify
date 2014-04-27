@@ -18,7 +18,6 @@
 
 @interface PGSettingsViewController : UITableViewController
 
-@property (weak, nonatomic) IBOutlet UISwitch *includeOwnSongsSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
 @property (nonatomic, weak) id<PGSettingsViewDelegate> delegate;
 
