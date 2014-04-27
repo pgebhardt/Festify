@@ -180,6 +180,9 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 #pragma mark - PGDiscoveryManagerDelegate
 
 -(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
+    NSLog(@"didDiscoverDevice: %@ withProperty: %@", devicename,
+          [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding]);
+    
     // extract spotify username from device property
     NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
     
@@ -190,6 +193,8 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 #pragma mark - SPTTrackPlayerDelegate
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didStartPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
+    NSLog(@"didStartPlaybackOfTrackAtIndex: %ld", (long)index);
+
     // fill track data dictionary
     self.trackInfoDictionary[MPMediaItemPropertyTitle] = [provider.tracks[index] name];
     self.trackInfoDictionary[MPMediaItemPropertyArtist] = [[[provider.tracks[index] artists] objectAtIndex:0] name];
@@ -215,10 +220,12 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
-    NSLog(@"didEndPlaybackOfTrachAtIndex: %ld", (long)index);
+    NSLog(@"didEndPlaybackOfTrackAtIndex: %ld", (long)index);
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
+    NSLog(@"didEndPlaybackOfProviderWithReason: %u", (unsigned)reason);
+
     if (reason == SPTPlaybackEndReasonLoggedOut) {
         // try to login again
         [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
@@ -238,6 +245,8 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
+    NSLog(@"didDidReceiveMessageForEndUser: %@", message);
+
     // show message to user
     [TSMessage showNotificationInViewController:self.window.rootViewController
                                           title:@"Message from Spotify:"
