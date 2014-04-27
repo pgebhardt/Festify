@@ -13,6 +13,7 @@
 
 @protocol PGFestifyTrackProviderDelegate <NSObject>
 
+@optional
 -(void)trackProvider:(PGFestifyTrackProvider*)trackProvider didAddPlaylistsFromUser:(NSString*)username withError:(NSError*)error;
 -(void)trackProviderDidClearAllTracks:(PGFestifyTrackProvider*)trackProvider;
 

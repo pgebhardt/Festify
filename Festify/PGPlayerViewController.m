@@ -138,12 +138,7 @@
 
 -(IBAction)playPause:(id)sender {
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-    if (appDelegate.trackPlayer.paused) {
-        [appDelegate resumePlayback];
-    }
-    else {
-        [appDelegate pausePlayback];
-    }
+    [appDelegate togglePlaybackState];
 }
 
 -(IBAction)fastForward:(id)sender {

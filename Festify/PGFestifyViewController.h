@@ -12,8 +12,7 @@
 #import "PGSettingsViewController.h"
 #import "PGFestifyTrackProvider.h"
 
-@interface PGFestifyViewController : UIViewController<PGLoginViewDelegate, PGSettingsViewDelegate,
-    PGFestifyTrackProviderDelegate>
+@interface PGFestifyViewController : UIViewController<PGLoginViewDelegate, PGSettingsViewDelegate>
 
 - (IBAction)spotifyButton:(id)sender;
 - (IBAction)festify:(id)sender;

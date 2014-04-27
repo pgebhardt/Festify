@@ -58,7 +58,7 @@
     // reguest and add all playlists of the given user
     [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
         if (error) {
-            if (self.delegate) {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(trackProvider:didAddPlaylistsFromUser:withError:)]) {
                 [self.delegate trackProvider:self didAddPlaylistsFromUser:username withError:error];
             }
             if (completion) {
@@ -79,7 +79,7 @@
                             error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier code:1 userInfo:nil];
                         }
                         
-                        if (self.delegate) {
+                        if (self.delegate && [self.delegate respondsToSelector:@selector(trackProvider:didAddPlaylistsFromUser:withError:)]) {
                             [self.delegate trackProvider:self didAddPlaylistsFromUser:username withError:error];
                         }
                         if (completion) {

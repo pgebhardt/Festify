@@ -12,14 +12,12 @@
 #import "PGFestifyTrackProvider.h"
 
 @interface PGAppDelegate : UIResponder <UIApplicationDelegate, SPTTrackPlayerDelegate,
-    PGDiscoveryManagerDelegate>
+    PGDiscoveryManagerDelegate, PGFestifyTrackProviderDelegate>
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)logoutOfSpotifyAPI;
-
--(void)resumePlayback;
--(void)pausePlayback;
+-(void)togglePlaybackState;
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) SPTSession* session;

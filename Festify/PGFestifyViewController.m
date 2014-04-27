@@ -87,9 +87,6 @@
 -(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
 
-    // clear delegations
-    appDelegate.trackProvider.delegate = nil;
-    
     // stop advertisiement and discovery and return to login screen
     [[PGDiscoveryManager sharedInstance] stopDiscovering];
     [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
@@ -104,28 +101,6 @@
     [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
-#pragma mark - PGFestifyTrackProviderDelegate
-
--(void)trackProvider:(PGFestifyTrackProvider *)trackProvider didAddPlaylistsFromUser:(NSString *)username withError:(NSError *)error {
-    if (!error) {
-        // notify user about success
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:[NSString stringWithFormat:@"Discovered %@", username]
-                                               subtitle:@"All public songs added!"
-                                                   type:TSMessageNotificationTypeSuccess];
-        });
-    }
-}
-
--(void)trackProviderDidClearAllTracks:(PGFestifyTrackProvider *)trackProvider {
-    // add all songs from the current user to track provider
-    if ([[PGUserDefaults valueForKey:PGUserDefaultsIncludeOwnSongsKey] boolValue]) {
-        SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-        [trackProvider addPlaylistsFromUser:session.canonicalUsername session:session completion:nil];
-     };
-}
-
 #pragma mark - Helper
 
 -(void)loginToSpotifyAPI {
@@ -138,8 +113,7 @@
         }
         else {
             [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-            appDelegate.trackProvider.delegate = self;
-
+            
             // apptentive event
             [[ATConnect sharedConnection] engage:@"didLogIn" fromViewController:self.navigationController];
         }
