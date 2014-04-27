@@ -104,13 +104,6 @@
 
 -(void)trackProvider:(PGFestifyTrackProvider *)trackProvider didAddPlaylistsFromUser:(NSString *)username withError:(NSError *)error {
     if (!error) {
-        SPTTrackPlayer* trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
-        
-        // start playback, if not allready playing
-        if (trackPlayer.currentProvider == nil || trackPlayer.paused) {
-            [trackPlayer playTrackProvider:trackProvider];
-        }
-        
         // notify user about success
         dispatch_async(dispatch_get_main_queue(), ^{
             [TSMessage showNotificationInViewController:self.navigationController
@@ -125,7 +118,7 @@
     // add all songs from the current user to track provider
     if ([[PGUserDefaults valueForKey:PGUserDefaultsIncludeOwnSongsKey] boolValue]) {
         SPTSession* session = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session;
-        [trackProvider addPlaylistsFromUser:session.canonicalUsername session:session];
+        [trackProvider addPlaylistsFromUser:session.canonicalUsername session:session completion:nil];
      };
 }
 

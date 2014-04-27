@@ -187,7 +187,20 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
     
     // add playlist for discovered user and notify user
-    [self.trackProvider addPlaylistsFromUser:username session:self.session];
+    __weak typeof(self) weakSelf = self;
+    [self.trackProvider addPlaylistsFromUser:username session:self.session completion:^(NSError *error) {
+        if (weakSelf.trackPlayer.paused) {
+            [weakSelf.trackPlayer resumePlayback];
+        }
+    }];
+    
+    // fire local notification, if in background
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
+        UILocalNotification* notification = [[UILocalNotification alloc] init];
+        notification.alertBody = [NSString stringWithFormat:@"Discovered %@", username];
+        
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+    }
 }
 
 #pragma mark - SPTTrackPlayerDelegate
@@ -233,9 +246,11 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
             [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
             
             // restore trackPlayer state
-            [self.trackPlayer playTrackProvider:self.trackProvider
-                                      fromIndex:[self.trackInfoDictionary[MPMediaItemPropertyAlbumTrackNumber] integerValue]];
-            [self.trackPlayer pausePlayback];
+            if (self.trackPlayer.currentProvider == nil) {
+                [self.trackPlayer playTrackProvider:self.trackProvider
+                                          fromIndex:[self.trackInfoDictionary[MPMediaItemPropertyAlbumTrackNumber] integerValue]];
+                [self.trackPlayer pausePlayback];
+            }
         }];
     }
 }
