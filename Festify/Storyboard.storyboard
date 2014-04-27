@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0cR-OO-giv">
-                                <rect key="frame" x="20" y="470" width="40" height="40"/>
+                                <rect key="frame" x="55" y="470" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="A6D-an-jcj"/>
@@ -43,7 +43,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ya8-up-srQ">
-                                <rect key="frame" x="260" y="470" width="40" height="40"/>
+                                <rect key="frame" x="225" y="470" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="ifR-2t-tkR"/>
@@ -121,7 +121,7 @@
                             <constraint firstAttribute="trailing" secondItem="AuE-Vp-LKl" secondAttribute="trailing" id="EmZ-Ts-1N7"/>
                             <constraint firstAttribute="trailing" secondItem="SSx-vi-10x" secondAttribute="trailing" id="Iuh-tW-8MV"/>
                             <constraint firstItem="AuE-Vp-LKl" firstAttribute="top" secondItem="MVI-oj-FLp" secondAttribute="bottom" priority="750" id="LXo-Va-eZp"/>
-                            <constraint firstAttribute="trailing" secondItem="ya8-up-srQ" secondAttribute="trailing" constant="20" id="RC2-Aq-Ghd"/>
+                            <constraint firstAttribute="trailing" secondItem="ya8-up-srQ" secondAttribute="trailing" constant="55" id="RC2-Aq-Ghd"/>
                             <constraint firstItem="0cR-OO-giv" firstAttribute="top" secondItem="IEn-sz-YgL" secondAttribute="bottom" constant="11" id="Rjk-ke-lRx"/>
                             <constraint firstItem="ya8-up-srQ" firstAttribute="top" secondItem="IEn-sz-YgL" secondAttribute="bottom" constant="11" id="SJd-XM-xH1"/>
                             <constraint firstItem="IEn-sz-YgL" firstAttribute="top" secondItem="wrL-am-jDI" secondAttribute="bottom" id="Tc0-dX-HFJ"/>
@@ -136,7 +136,7 @@
                             <constraint firstItem="SSx-vi-10x" firstAttribute="leading" secondItem="VmY-Xs-OEj" secondAttribute="trailing" constant="8" id="mXL-Bd-N5Y"/>
                             <constraint firstItem="SSx-vi-10x" firstAttribute="top" secondItem="AuE-Vp-LKl" secondAttribute="bottom" constant="8" id="pCP-hL-pRI"/>
                             <constraint firstItem="wrL-am-jDI" firstAttribute="top" secondItem="SSx-vi-10x" secondAttribute="bottom" constant="8" id="qvO-AG-01i"/>
-                            <constraint firstItem="0cR-OO-giv" firstAttribute="leading" secondItem="uvq-Uh-1vC" secondAttribute="leading" constant="20" id="tLQ-cx-Wpg"/>
+                            <constraint firstItem="0cR-OO-giv" firstAttribute="leading" secondItem="uvq-Uh-1vC" secondAttribute="leading" constant="55" id="tLQ-cx-Wpg"/>
                             <constraint firstItem="IEn-sz-YgL" firstAttribute="leading" secondItem="uvq-Uh-1vC" secondAttribute="leading" constant="20" id="vTu-oT-wcU"/>
                             <constraint firstAttribute="trailing" secondItem="IEn-sz-YgL" secondAttribute="trailing" constant="20" id="wB4-r6-hwk"/>
                         </constraints>
