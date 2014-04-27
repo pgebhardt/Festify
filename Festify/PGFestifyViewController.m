@@ -31,38 +31,11 @@
     });
 }
 
--(void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    // check if playback is available and adjust play button accordingly
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate addObserver:self forKeyPath:@"trackPlayer.currentProvider" options:0 context:nil];
-    self.playButton.enabled = appDelegate.trackPlayer.currentProvider != nil;
-}
-
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     // apptentive event
     [[ATConnect sharedConnection] engage:@"festifyViewDidAppear" fromViewController:self.navigationController];
-}
-
--(void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    // remove all observations
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate removeObserver:self forKeyPath:@"trackPlayer.currentProvider"];
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-    if ([keyPath isEqualToString:@"trackPlayer.currentProvider"]) {
-        self.playButton.enabled = appDelegate.trackPlayer.currentProvider != nil;
-    }
-    else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 #pragma  mark - Actions
@@ -109,10 +82,7 @@
 
 -(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
-    
-    // cleanup UI
-    self.playButton.enabled = NO;
-    
+
     // clear delegations
     appDelegate.trackProvider.delegate = nil;
     

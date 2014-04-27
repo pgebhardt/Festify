@@ -54,12 +54,15 @@
     return YES;
 }
 
--(void)addPlaylistsFromUser:(NSString *)username session:(SPTSession *)session {
+-(void)addPlaylistsFromUser:(NSString *)username session:(SPTSession *)session completion:(void (^)(NSError *))completion {
     // reguest and add all playlists of the given user
     [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
         if (error) {
             if (self.delegate) {
                 [self.delegate trackProvider:self didAddPlaylistsFromUser:username withError:error];
+            }
+            if (completion) {
+                completion(error);
             }
         }
         else {
@@ -70,13 +73,18 @@
                         [self addPlaylist:object];
                     }
                     
-                    if (self.delegate && i == playlists.items.count - 1) {
+                    if (i == playlists.items.count - 1) {
                         NSError* error = nil;
                         if (self.tracks.count == 0) {
                             error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier code:1 userInfo:nil];
                         }
                         
-                        [self.delegate trackProvider:self didAddPlaylistsFromUser:username withError:error];
+                        if (self.delegate) {
+                            [self.delegate trackProvider:self didAddPlaylistsFromUser:username withError:error];
+                        }
+                        if (completion) {
+                            completion(error);
+                        }
                     }
                 }];
             }
