@@ -217,7 +217,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.trackInfoDictionary[@"spotifyURI"] = [provider.tracks[index] uri];
     
     // request complete album of track
-    [SPTRequest requestItemAtURI:[[provider.tracks[index] album] uri] withSession:self.session callback:^(NSError *error, id object) {
+    [SPTRequest requestItemAtURI:[provider.tracks[index] album].uri withSession:self.session callback:^(NSError *error, id object) {
         if (!error) {
             // download image
             [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[object largestCover].imageURL]
@@ -242,7 +242,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     if (reason == SPTPlaybackEndReasonLoggedOut) {
         // try to login again
         [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
-        [self loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
+        [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
             [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
             
             // restore trackPlayer state
@@ -263,7 +263,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     NSLog(@"didDidReceiveMessageForEndUser: %@", message);
 
     // show message to user
-    [TSMessage showNotificationInViewController:self.window.rootViewController
+    [TSMessage showNotificationInViewController:self.window.subviews.lastObject
                                           title:@"Message from Spotify:"
                                        subtitle:message
                                            type:TSMessageNotificationTypeMessage];
