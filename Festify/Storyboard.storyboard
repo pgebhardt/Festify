@@ -405,14 +405,6 @@
                                     <action selector="festify:" destination="fyQ-f5-bAt" eventType="touchUpInside" id="aRV-5W-shG"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SpotifyLogo" translatesAutoresizingMaskIntoConstraints="NO" id="jhx-lf-ELk">
-                                <rect key="frame" x="101" y="512" width="119" height="36"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="36" id="axC-DK-Jko"/>
-                                    <constraint firstAttribute="width" constant="119" id="b8h-Gl-Lg2"/>
-                                </constraints>
-                            </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="powered by" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O8Q-I5-IEW">
                                 <rect key="frame" x="125" y="488" width="71" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -424,15 +416,29 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qJh-uw-pKw">
+                                <rect key="frame" x="101" y="512" width="119" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="aja-5C-9EF"/>
+                                    <constraint firstAttribute="width" constant="119" id="hDX-JF-uWw"/>
+                                </constraints>
+                                <state key="normal" image="SpotifyLogo">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="spotifyButton:" destination="fyQ-f5-bAt" eventType="touchUpInside" id="ZUq-Zd-xnI"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.92549026010000002" green="0.9215686917" blue="0.90196084980000002" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
                             <constraint firstAttribute="centerY" secondItem="P6e-RL-Qf1" secondAttribute="centerY" id="18x-WE-Rr9"/>
-                            <constraint firstItem="VUn-oR-idf" firstAttribute="top" secondItem="jhx-lf-ELk" secondAttribute="bottom" constant="20" id="Ncd-cj-AYO"/>
+                            <constraint firstItem="qJh-uw-pKw" firstAttribute="top" secondItem="O8Q-I5-IEW" secondAttribute="bottom" constant="8" id="1VN-v4-CXa"/>
+                            <constraint firstItem="VUn-oR-idf" firstAttribute="top" secondItem="qJh-uw-pKw" secondAttribute="bottom" constant="20" id="Bha-Mp-m2d"/>
+                            <constraint firstAttribute="centerX" secondItem="qJh-uw-pKw" secondAttribute="centerX" constant="-0.5" id="Eke-eL-ccc"/>
                             <constraint firstAttribute="centerX" secondItem="P6e-RL-Qf1" secondAttribute="centerX" id="Owh-zZ-LN5"/>
-                            <constraint firstAttribute="centerX" secondItem="jhx-lf-ELk" secondAttribute="centerX" id="jFl-de-QME"/>
                             <constraint firstAttribute="centerX" secondItem="O8Q-I5-IEW" secondAttribute="centerX" constant="-0.5" id="m5F-Ft-VFx"/>
-                            <constraint firstItem="jhx-lf-ELk" firstAttribute="top" secondItem="O8Q-I5-IEW" secondAttribute="bottom" constant="8" id="pqM-wQ-VWu"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Festify" id="zxc-1E-uy0">

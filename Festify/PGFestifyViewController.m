@@ -38,6 +38,21 @@
     [[ATConnect sharedConnection] engage:@"festifyViewDidAppear" fromViewController:self.navigationController];
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"showSettings"]) {
+        PGSettingsViewController* viewController = (PGSettingsViewController*)segue.destinationViewController;
+        
+        viewController.delegate = self;
+    }
+    else if ([segue.identifier isEqualToString:@"showLogin"]) {
+        PGLoginViewController* viewController = (PGLoginViewController*)segue.destinationViewController;
+        
+        viewController.loginError = self.loginError;
+        viewController.underlyingView = self.navigationController.view;
+        viewController.delegate = self;
+    }
+}
+
 #pragma  mark - Actions
 
 - (IBAction)festify:(id)sender {
@@ -56,19 +71,8 @@
     [[ATConnect sharedConnection] engage:@"festifyButtonHit" fromViewController:self.navigationController];
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"showSettings"]) {
-        PGSettingsViewController* viewController = (PGSettingsViewController*)segue.destinationViewController;
-        
-        viewController.delegate = self;
-    }
-    else if ([segue.identifier isEqualToString:@"showLogin"]) {
-        PGLoginViewController* viewController = (PGLoginViewController*)segue.destinationViewController;
-
-        viewController.loginError = self.loginError;
-        viewController.underlyingView = self.navigationController.view;
-        viewController.delegate = self;
-    }
+- (IBAction)spotifyButton:(id)sender {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.spotify.com"]];
 }
 
 #pragma mark - PGLoginViewDelegate

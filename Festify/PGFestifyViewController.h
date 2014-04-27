@@ -15,7 +15,9 @@
 @interface PGFestifyViewController : UIViewController<PGLoginViewDelegate, PGSettingsViewDelegate,
     PGFestifyTrackProviderDelegate>
 
+- (IBAction)spotifyButton:(id)sender;
 - (IBAction)festify:(id)sender;
+
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *playButton;
 
 @end
