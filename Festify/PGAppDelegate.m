@@ -65,7 +65,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
             [self.trackProvider addPlaylistsFromUser:self.session.canonicalUsername session:self.session completion:^(NSError *error) {
                 if (!error) {
                     [weakSelf.trackPlayer playTrackProvider:weakSelf.trackProvider];
-                    [weakSelf togglePlaybackState];
+                    [weakSelf.trackPlayer pausePlayback];
                     
                     // start receiving remote control events and delegate messages
                     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
