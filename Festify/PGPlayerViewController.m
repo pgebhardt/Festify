@@ -139,10 +139,10 @@
 -(IBAction)playPause:(id)sender {
     PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
     if (appDelegate.trackPlayer.paused) {
-        [appDelegate.trackPlayer resumePlayback];
+        [appDelegate resumePlayback];
     }
     else {
-        [appDelegate.trackPlayer pausePlayback];
+        [appDelegate pausePlayback];
     }
 }
 

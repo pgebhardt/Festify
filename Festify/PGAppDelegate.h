@@ -18,6 +18,9 @@
 -(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)logoutOfSpotifyAPI;
 
+-(void)resumePlayback;
+-(void)pausePlayback;
+
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;

@@ -95,19 +95,13 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 -(void)remoteControlReceivedWithEvent:(UIEvent *)event {
     // control track player by remote events
     if (event.type == UIEventTypeRemoteControl) {
-        if (event.subtype == UIEventSubtypeRemoteControlPause) {
-            [self.trackPlayer pausePlayback];
+        if (event.subtype == UIEventSubtypeRemoteControlPause ||
+            (event.subtype == UIEventSubtypeRemoteControlTogglePlayPause && !self.trackPlayer.paused)) {
+            [self pausePlayback];
         }
-        else if (event.subtype == UIEventSubtypeRemoteControlPlay) {
-            [self.trackPlayer resumePlayback];
-        }
-        else if (event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
-            if (self.trackPlayer.paused) {
-                [self.trackPlayer resumePlayback];
-            }
-            else {
-                [self.trackPlayer pausePlayback];
-            }
+        else if (event.subtype == UIEventSubtypeRemoteControlPlay ||
+            (event.subtype == UIEventSubtypeRemoteControlTogglePlayPause && self.trackPlayer.paused)) {
+            [self resumePlayback];
         }
         else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
             [self.trackPlayer skipToNextTrack];
@@ -177,6 +171,24 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [PGUserDefaults clear];
 }
 
+-(void)pausePlayback {
+    [self.trackPlayer pausePlayback];
+    
+    // update playback position and rate to avoid apple tv and lockscreen glitches
+    self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
+    self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
+}
+
+-(void)resumePlayback {
+    [self.trackPlayer resumePlayback];
+    
+    // update playback position and rate to avoid apple tv and lockscreen glitches
+    self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
+    self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
+}
+
 #pragma mark - PGDiscoveryManagerDelegate
 
 -(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
@@ -214,6 +226,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] = [NSNumber numberWithDouble:[(SPTTrack*)provider.tracks[index] duration]];
     self.trackInfoDictionary[MPMediaItemPropertyAlbumTrackNumber] = [NSNumber numberWithInteger:index];
     self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @0.0;
+    self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
     self.trackInfoDictionary[@"spotifyURI"] = [provider.tracks[index] uri];
     
     // request complete album of track
