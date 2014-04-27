@@ -55,10 +55,6 @@
 
 #pragma mark - Actions
 
-- (IBAction)done:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 -(void)toggleIncludeOwnSongsState {
     [PGUserDefaults setValue:[NSNumber numberWithBool:self.includeOwnSongsSwitch.isOn] forKey:PGUserDefaultsIncludeOwnSongsKey];
 }
@@ -101,12 +97,10 @@
     // handle actions for specific cell
     NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
     if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
-        // inform delegate to logout and dismiss view controller
-        [self dismissViewControllerAnimated:YES completion:^{
-            if (self.delegate) {
-                [self.delegate settingsViewUserDidRequestLogout:self];
-            }
-        }];
+        // inform delegate to logout
+        if (self.delegate) {
+            [self.delegate settingsViewUserDidRequestLogout:self];
+        }
     }
     else if ([reuseIdentifier isEqualToString:@"sendFeedbackCell"]) {
         [[ATConnect sharedConnection] presentMessageCenterFromViewController:self.navigationController];

@@ -348,13 +348,7 @@
                             <outlet property="delegate" destination="xvL-cP-knz" id="7Wr-Fd-xN1"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK">
-                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="done" id="ouA-ZH-kBR">
-                            <connections>
-                                <action selector="done:" destination="xvL-cP-knz" id="eyx-5k-GaN"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK"/>
                     <connections>
                         <outlet property="advertisementSwitch" destination="Kji-CW-VPr" id="nbg-rt-kWH"/>
                         <outlet property="includeOwnSongsSwitch" destination="xIN-HM-U3i" id="AzZ-6z-ZiO"/>
@@ -362,7 +356,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lbI-es-HbA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2456" y="-483"/>
+            <point key="canvasLocation" x="1930" y="-483"/>
         </scene>
         <!--Navigation Controller - Item-->
         <scene sceneID="hre-Oi-6Az">
@@ -444,10 +438,10 @@
                     <navigationItem key="navigationItem" title="Festify" id="zxc-1E-uy0">
                         <barButtonItem key="leftBarButtonItem" image="Cog" id="d0C-Gl-J8Q">
                             <connections>
-                                <segue destination="GXy-uy-A2Y" kind="modal" identifier="showSettings" id="QYG-rm-Jlk"/>
+                                <segue destination="xvL-cP-knz" kind="push" identifier="showSettings" id="zrd-CY-6sf"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" systemItem="play" id="wXj-3i-kV3">
+                        <barButtonItem key="rightBarButtonItem" systemItem="play" id="wXj-3i-kV3">
                             <connections>
                                 <segue destination="EVF-cW-P26" kind="push" identifier="showTrackPlayer" id="NTL-9Y-2qr"/>
                             </connections>
@@ -497,24 +491,6 @@
             </objects>
             <point key="canvasLocation" x="1930" y="1109"/>
         </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="OD5-Xk-qya">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="GXy-uy-A2Y" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="1Hh-BX-8fC">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="xvL-cP-knz" kind="relationship" relationship="rootViewController" id="gQE-bE-6xY"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="MGZ-id-oXV" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1930" y="-483"/>
-        </scene>
         <!--View Controller - Acknowledgements-->
         <scene sceneID="Aek-vK-xXh">
             <objects>
@@ -549,7 +525,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cJV-HS-49W" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2982" y="-483"/>
+            <point key="canvasLocation" x="2456" y="-483"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="8UB-bL-JO7">
