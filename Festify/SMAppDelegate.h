@@ -12,7 +12,7 @@
 #import "SMFestifyTrackProvider.h"
 
 @interface SMAppDelegate : UIResponder <UIApplicationDelegate, SPTTrackPlayerDelegate,
-    SMDiscoveryManagerDelegate, SMFestifyTrackProviderDelegate>
+    SMDiscoveryManagerDelegate>
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError* error))completion;
@@ -23,7 +23,7 @@
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
 @property (nonatomic, strong) SMFestifyTrackProvider* trackProvider;
-@property (nonatomic, strong) NSMutableDictionary* trackInfoDictionary;
+@property (nonatomic, strong) NSMutableDictionary* trackInfo;
 @property (nonatomic, strong) UIImage* coverArtOfCurrentTrack;
 
 @end

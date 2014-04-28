@@ -57,21 +57,23 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 }
 
 -(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError *))completion {
-    // login to Spotify with track player
-    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+    __weak typeof(self) weakSelf = self;
+    
+    // collect all playlists from current user and enable playback
+    [self.trackProvider addPlaylistsFromUser:self.session.canonicalUsername session:self.session completion:^(NSError *error) {
         if (!error) {
-            // initially add own songs to trackprovider
-            __weak typeof(self) weakSelf = self;
-            [self.trackProvider addPlaylistsFromUser:self.session.canonicalUsername session:self.session completion:^(NSError *error) {
+            // login to track player to Spotify
+            [weakSelf.trackPlayer enablePlaybackWithSession:weakSelf.session callback:^(NSError *error) {
                 if (!error) {
-                    [weakSelf.trackPlayer playTrackProvider:weakSelf.trackProvider];
+                    weakSelf.trackPlayer.delegate = weakSelf;
+                    [weakSelf.trackPlayer playTrackProvider:weakSelf.trackProvider
+                                                  fromIndex:[weakSelf.trackInfo[MPMediaItemPropertyAlbumTrackNumber] integerValue]];
                     [weakSelf.trackPlayer pausePlayback];
                     
-                    // start receiving remote control events and delegate messages
+                    // start receiving remote control events
                     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-                    weakSelf.trackPlayer.delegate = weakSelf;
-                    weakSelf.trackProvider.delegate = weakSelf;
                 }
+                
                 if (completion) {
                     completion(error);
                 }
@@ -84,10 +86,8 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 }
 
 -(void)logoutOfSpotifyAPI {
-    // stop receiving remote control events and delegate messages
+    // stop receiving remote control events
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
-    self.trackPlayer.delegate = nil;
-    self.trackProvider.delegate = nil;
     
     // stop audio playback
     [self.trackPlayer pausePlayback];
@@ -97,7 +97,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     
     // clear track provider
     [self.trackProvider clearAllTracks];
-    [self.trackInfoDictionary removeAllObjects];
+    [self.trackInfo removeAllObjects];
     
     // clear user defaults
     [SMUserDefaults clear];
@@ -107,15 +107,15 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     // toggle playback state and update playback position and rate to avoid apple tv and lockscreen glitches
     if (self.trackPlayer.paused) {
         [self.trackPlayer resumePlayback];
-        self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
+        self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
     }
     else {
         [self.trackPlayer pausePlayback];
-        self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
+        self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
     }
     
-    self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
-    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
+    self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
 }
 
 #pragma mark - UIApplicationDelegate
@@ -123,7 +123,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:[NSBundle mainBundle].bundleIdentifier
                                                            appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
-    self.trackInfoDictionary = [NSMutableDictionary dictionary];
+    self.trackInfo = [NSMutableDictionary dictionary];
     self.trackProvider = [[SMFestifyTrackProvider alloc] init];
     
     // enable repeat for track player to get an endless playback behaviour
@@ -230,27 +230,25 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     NSLog(@"didStartPlaybackOfTrackAtIndex: %ld", (long)index);
 
     // fill track data dictionary
-    self.trackInfoDictionary[MPMediaItemPropertyTitle] = [provider.tracks[index] name];
-    self.trackInfoDictionary[MPMediaItemPropertyArtist] = [[[provider.tracks[index] artists] objectAtIndex:0] name];
-    self.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] = [NSNumber numberWithDouble:[(SPTTrack*)provider.tracks[index] duration]];
-    self.trackInfoDictionary[MPMediaItemPropertyAlbumTrackNumber] = [NSNumber numberWithInteger:index];
-    self.trackInfoDictionary[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @0.0;
-    self.trackInfoDictionary[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
-    self.trackInfoDictionary[@"spotifyURI"] = [provider.tracks[index] uri];
+    self.trackInfo[MPMediaItemPropertyTitle] = [provider.tracks[index] name];
+    self.trackInfo[MPMediaItemPropertyArtist] = [[[provider.tracks[index] artists] objectAtIndex:0] name];
+    self.trackInfo[MPMediaItemPropertyPlaybackDuration] = [NSNumber numberWithDouble:[(SPTTrack*)provider.tracks[index] duration]];
+    self.trackInfo[MPMediaItemPropertyAlbumTrackNumber] = [NSNumber numberWithInteger:index];
+    self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @0.0;
+    self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
+    self.trackInfo[@"spotifyURI"] = [provider.tracks[index] uri];
     
     // request complete album of track
     [SPTRequest requestItemAtURI:[provider.tracks[index] album].uri withSession:self.session callback:^(NSError *error, id object) {
-        if (!error) {
-            // download image
-            [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[object largestCover].imageURL]
-                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                if (!error) {
-                    self.coverArtOfCurrentTrack = [UIImage imageWithData:data];
-                    self.trackInfoDictionary[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:self.coverArtOfCurrentTrack];
-                }
-                [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfoDictionary];
-            }] resume];
-        }
+        // download image
+        [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[object largestCover].imageURL]
+                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            if (!error) {
+                self.coverArtOfCurrentTrack = [UIImage imageWithData:data];
+                self.trackInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:self.coverArtOfCurrentTrack];
+            }
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
+        }] resume];
     }];
 }
 
@@ -259,26 +257,27 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
-    NSLog(@"didEndPlaybackOfProviderWithReason: %u", (unsigned)reason);
-
+    NSLog(@"didEndPlaybackOfProvider: %@ withReason: %u", provider, (unsigned)reason);
+    
     if (reason == SPTPlaybackEndReasonLoggedOut) {
-        // try to login again
+        UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
         [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
-        [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-            [MBProgressHUD hideHUDForView:self.window.subviews.lastObject animated:YES];
-            
-            // restore trackPlayer state
-            if (self.trackPlayer.currentProvider == nil) {
-                [self.trackPlayer playTrackProvider:self.trackProvider
-                                          fromIndex:[self.trackInfoDictionary[MPMediaItemPropertyAlbumTrackNumber] integerValue]];
-                [self.trackPlayer pausePlayback];
+        
+        // try to login again
+        [self loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
+            // restore trackPlayer state, when woke up in background
+            if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
+                [self.trackPlayer resumePlayback];
             }
+            
+            [MBProgressHUD hideAllHUDsForView:self.window.subviews.lastObject animated:YES];
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         }];
     }
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withError:(NSError *)error {
-    NSLog(@"didEndPlaybackOfProviderWithError: %@", error);
+    NSLog(@"didEndPlaybackOfProvider: %@ withError: %@", provider, error);
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
@@ -288,17 +287,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [self postNotificationWithTitle:@"Message from Spotify:"
                            subtitle:message
                                type:TSMessageNotificationTypeMessage];
-}
-
-#pragma mark - PGFestifyTrackProviderDelegate
-
--(void)trackProviderDidClearAllTracks:(SMFestifyTrackProvider *)trackProvider {
-    // add all songs from the current user to track provider
-    __weak typeof(self) weakSelf = self;
-    [self.trackProvider addPlaylistsFromUser:self.session.canonicalUsername session:self.session completion:^(NSError *error) {
-        // restart playback
-        [weakSelf togglePlaybackState];
-    }];
 }
 
 @end

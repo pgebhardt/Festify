@@ -63,9 +63,6 @@
                                            subtitle:@"Turn On Bluetooth!"
                                                type:TSMessageNotificationTypeError];
     }
-    else {
-        [((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider clearAllTracks];
-    }
     
     // apptentive event
     [[ATConnect sharedConnection] engage:@"festifyButtonHit" fromViewController:self.navigationController];

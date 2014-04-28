@@ -30,10 +30,6 @@
 -(void)clearAllTracks {
     [self.tracks removeAllObjects];
     [self.playlistURIs removeAllObjects];
-    
-    if (self.delegate) {
-        [self.delegate trackProviderDidClearAllTracks:self];
-    }
 }
 
 -(BOOL)addPlaylist:(SPTPlaylistSnapshot *)playlist {
@@ -58,9 +54,6 @@
     // reguest and add all playlists of the given user
     [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
         if (error) {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(trackProvider:didAddPlaylistsFromUser:withError:)]) {
-                [self.delegate trackProvider:self didAddPlaylistsFromUser:username withError:error];
-            }
             if (completion) {
                 completion(error);
             }
@@ -79,9 +72,6 @@
                             error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier code:1 userInfo:nil];
                         }
                         
-                        if (self.delegate && [self.delegate respondsToSelector:@selector(trackProvider:didAddPlaylistsFromUser:withError:)]) {
-                            [self.delegate trackProvider:self didAddPlaylistsFromUser:username withError:error];
-                        }
                         if (completion) {
                             completion(error);
                         }

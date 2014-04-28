@@ -38,10 +38,10 @@
     }
     
     // initialy setup UI correctly
-    [self updateTrackInfo:appDelegate.trackInfoDictionary andCoverArt:appDelegate.coverArtOfCurrentTrack];
+    [self updateTrackInfo:appDelegate.trackInfo andCoverArt:appDelegate.coverArtOfCurrentTrack];
     [self updatePlayButton:appDelegate.trackPlayer.paused];
     [self updatePlaybackPosition:appDelegate.trackPlayer.currentPlaybackPosition
-                     andDuration:[appDelegate.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] doubleValue]];
+                     andDuration:[appDelegate.trackInfo[MPMediaItemPropertyPlaybackDuration] doubleValue]];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -65,10 +65,10 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     if ([keyPath isEqualToString:@"coverArtOfCurrentTrack"]) {
-        [self updateTrackInfo:appDelegate.trackInfoDictionary andCoverArt:appDelegate.coverArtOfCurrentTrack];
+        [self updateTrackInfo:appDelegate.trackInfo andCoverArt:appDelegate.coverArtOfCurrentTrack];
         
         if (self.delegate) {
-            [self.delegate playerView:self didUpdateTrackInfo:appDelegate.trackInfoDictionary];
+            [self.delegate playerView:self didUpdateTrackInfo:appDelegate.trackInfo];
         }
     }
     else if ([keyPath isEqualToString:@"trackPlayer.paused"]) {
@@ -76,7 +76,7 @@
     }
     else if ([keyPath isEqualToString:@"trackPlayer.currentPlaybackPosition"]) {
         [self updatePlaybackPosition:appDelegate.trackPlayer.currentPlaybackPosition
-                         andDuration:[appDelegate.trackInfoDictionary[MPMediaItemPropertyPlaybackDuration] doubleValue]];
+                         andDuration:[appDelegate.trackInfo[MPMediaItemPropertyPlaybackDuration] doubleValue]];
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -101,7 +101,7 @@
     if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
         SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
         NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"spotify://%@",
-                                           [appDelegate.trackInfoDictionary[@"spotifyURI"] absoluteString]]];
+                                           [appDelegate.trackInfo[@"spotifyURI"] absoluteString]]];
         
         if (!appDelegate.trackPlayer.paused) {
             [appDelegate togglePlaybackState];
