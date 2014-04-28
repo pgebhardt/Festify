@@ -6,25 +6,25 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGPlaylistViewController.h"
-#import "PGAppDelegate.h"
+#import "SMPlaylistViewController.h"
+#import "SMAppDelegate.h"
 #import <Spotify/Spotify.h>
 #import "ATConnect.h"
 #import "UIImage+ImageEffects.h"
 #import "UIView+ConvertToImage.h"
 
-@interface PGPlaylistViewController ()
+@interface SMPlaylistViewController ()
 
 @property (nonatomic, weak) SPTTrackPlayer* trackPlayer;
 
 @end
 
-@implementation PGPlaylistViewController
+@implementation SMPlaylistViewController
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.trackPlayer = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
+    self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     [self createBlurredBackgroundFromView:self.underlyingView];
 }
 
@@ -75,7 +75,7 @@
 
 #pragma mark - PGPlayerViewDelegate
 
--(void)playerView:(PGPlayerViewController *)playerView didUpdateTrackInfo:(NSDictionary *)trackInfo {
+-(void)playerView:(SMPlayerViewController *)playerView didUpdateTrackInfo:(NSDictionary *)trackInfo {
     dispatch_async(dispatch_get_main_queue(), ^{
         // update background image
         [self createBlurredBackgroundFromView:self.underlyingView];

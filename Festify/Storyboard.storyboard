@@ -7,7 +7,7 @@
         <!--Player View Controller-->
         <scene sceneID="HN1-7L-aEX">
             <objects>
-                <viewController id="EVF-cW-P26" customClass="PGPlayerViewController" sceneMemberID="viewController">
+                <viewController id="EVF-cW-P26" customClass="SMPlayerViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MVI-oj-FLp"/>
                         <viewControllerLayoutGuide type="bottom" id="eaC-Iq-7qF"/>
@@ -165,7 +165,7 @@
         <!--Playlist View Controller - Up Next-->
         <scene sceneID="FIV-go-zyM">
             <objects>
-                <tableViewController id="Mf0-Gs-FPK" customClass="PGPlaylistViewController" sceneMemberID="viewController">
+                <tableViewController id="Mf0-Gs-FPK" customClass="SMPlaylistViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="cIJ-63-gqv">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -218,7 +218,7 @@
         <!--Settings View Controller - Settings-->
         <scene sceneID="Jei-n3-CXK">
             <objects>
-                <tableViewController id="xvL-cP-knz" customClass="PGSettingsViewController" sceneMemberID="viewController">
+                <tableViewController id="xvL-cP-knz" customClass="SMSettingsViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="ZIf-wR-0zc">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -369,7 +369,7 @@
         <!--Festify View Controller - Festify-->
         <scene sceneID="TAw-hs-D2g">
             <objects>
-                <viewController id="fyQ-f5-bAt" customClass="PGFestifyViewController" sceneMemberID="viewController">
+                <viewController id="fyQ-f5-bAt" customClass="SMFestifyViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Phf-Bt-TKc"/>
                         <viewControllerLayoutGuide type="bottom" id="VUn-oR-idf"/>
@@ -449,7 +449,7 @@
         <!--Login View Controller - Login-->
         <scene sceneID="91b-vx-QUC">
             <objects>
-                <viewController id="8Rl-HL-ow2" customClass="PGLoginViewController" sceneMemberID="viewController">
+                <viewController id="8Rl-HL-ow2" customClass="SMLoginViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="msf-Fk-Dqr"/>
                         <viewControllerLayoutGuide type="bottom" id="bJ8-rL-Zu8"/>

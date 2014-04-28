@@ -6,13 +6,13 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGPlayerViewController.h"
-#import "PGAppDelegate.h"
+#import "SMPlayerViewController.h"
+#import "SMAppDelegate.h"
 #import <Spotify/Spotify.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import "ATConnect.h"
 
-@implementation PGPlayerViewController
+@implementation SMPlayerViewController
 
 -(void)viewDidLoad {
     [super viewDidLoad];
@@ -30,7 +30,7 @@
     [super viewWillAppear:animated];
 
     // observe playback state change and track change to update UI accordingly
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
     [appDelegate addObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition" options:0 context:nil];
     if (!self.delegate) {
@@ -54,7 +54,7 @@
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate removeObserver:self forKeyPath:@"trackPlayer.paused"];
     [appDelegate removeObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition"];
     if (!self.delegate) {
@@ -63,7 +63,7 @@
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     if ([keyPath isEqualToString:@"coverArtOfCurrentTrack"]) {
         [self updateTrackInfo:appDelegate.trackInfoDictionary andCoverArt:appDelegate.coverArtOfCurrentTrack];
         
@@ -86,7 +86,7 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showPlaylist"]) {
         UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
-        PGPlaylistViewController* viewController = (PGPlaylistViewController*)navigationController.viewControllers[0];
+        SMPlaylistViewController* viewController = (SMPlaylistViewController*)navigationController.viewControllers[0];
         
         viewController.underlyingView = self.navigationController.view;
         self.delegate = viewController;
@@ -99,7 +99,7 @@
 -(void)openInSpotify:(id)sender {
     // open currently played track in spotify app, if available
     if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
-        PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+        SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
         NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"spotify://%@",
                                            [appDelegate.trackInfoDictionary[@"spotifyURI"] absoluteString]]];
         
@@ -111,17 +111,17 @@
 }
 
 -(IBAction)rewind:(id)sender {
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate.trackPlayer skipToPreviousTrack:NO];
 }
 
 -(IBAction)playPause:(id)sender {
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate togglePlaybackState];
 }
 
 -(IBAction)fastForward:(id)sender {
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate.trackPlayer skipToNextTrack];
 }
 
@@ -164,7 +164,7 @@
 
 #pragma mark - PGPlaylistViewDelegate
 
--(void)playlistViewDidEndShowing:(PGPlaylistViewController *)playlistView {
+-(void)playlistViewDidEndShowing:(SMPlaylistViewController *)playlistView {
     playlistView.delegate = nil;
     self.delegate = nil;
 }

@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGAppDelegate.h"
-#import "PGDiscoveryManager.h"
-#import "PGUserDefaults.h"
+#import "SMAppDelegate.h"
+#import "SMDiscoveryManager.h"
+#import "SMUserDefaults.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <Spotify/Spotify.h>
 #import "TSMessage.h"
@@ -20,11 +20,11 @@
 static NSString* const kClientID = @"spotify-ios-sdk-beta";
 static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 
-@interface PGAppDelegate ()
+@interface SMAppDelegate ()
 @property (nonatomic, copy) void (^loginCallback)(NSError* error);
 @end
 
-@implementation PGAppDelegate
+@implementation SMAppDelegate
 
 -(void)remoteControlReceivedWithEvent:(UIEvent *)event {
     // control track player by remote events
@@ -100,7 +100,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [self.trackInfoDictionary removeAllObjects];
     
     // clear user defaults
-    [PGUserDefaults clear];
+    [SMUserDefaults clear];
 }
 
 -(void)togglePlaybackState {
@@ -124,16 +124,16 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:[NSBundle mainBundle].bundleIdentifier
                                                            appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     self.trackInfoDictionary = [NSMutableDictionary dictionary];
-    self.trackProvider = [[PGFestifyTrackProvider alloc] init];
+    self.trackProvider = [[SMFestifyTrackProvider alloc] init];
     
     // enable repeat for track player to get an endless playback behaviour
     self.trackPlayer.repeatEnabled = YES;
     
     // set delegates
-    [PGDiscoveryManager sharedInstance].delegate = self;
+    [SMDiscoveryManager sharedInstance].delegate = self;
     
     // restore application state
-    [PGUserDefaults restoreApplicationState];
+    [SMUserDefaults restoreApplicationState];
     
     // initialize apptentive feedback system
     [ATConnect sharedConnection].apiKey = @"332a2ed7324aa7465ab10f63cfd79c62784a61ac97a80c83d489502f00a7b103";
@@ -176,17 +176,17 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 
 -(void)applicationWillTerminate:(UIApplication *)application {
     // save current application state
-    [PGUserDefaults saveApplicationState];
+    [SMUserDefaults saveApplicationState];
 }
 
 -(void)applicationWillResignActive:(UIApplication *)application {
     // save current application state
-    [PGUserDefaults saveApplicationState];    
+    [SMUserDefaults saveApplicationState];    
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
 
--(void)discoveryManager:(PGDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
+-(void)discoveryManager:(SMDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
     NSLog(@"didDiscoverDevice: %@ withProperty: %@", devicename,
           [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding]);
     
@@ -292,7 +292,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 
 #pragma mark - PGFestifyTrackProviderDelegate
 
--(void)trackProviderDidClearAllTracks:(PGFestifyTrackProvider *)trackProvider {
+-(void)trackProviderDidClearAllTracks:(SMFestifyTrackProvider *)trackProvider {
     // add all songs from the current user to track provider
     __weak typeof(self) weakSelf = self;
     [self.trackProvider addPlaylistsFromUser:self.session.canonicalUsername session:self.session completion:^(NSError *error) {

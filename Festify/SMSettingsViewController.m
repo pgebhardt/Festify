@@ -6,15 +6,15 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGSettingsViewController.h"
-#import "PGDiscoveryManager.h"
-#import "PGAppDelegate.h"
-#import "PGUserDefaults.h"
+#import "SMSettingsViewController.h"
+#import "SMDiscoveryManager.h"
+#import "SMAppDelegate.h"
+#import "SMUserDefaults.h"
 #import <Spotify/Spotify.h>
 #import "TSMessage.h"
 #import "ATConnect.h"
 
-@implementation PGSettingsViewController
+@implementation SMSettingsViewController
 
 -(void)viewDidLoad {
     [super viewDidLoad];
@@ -27,7 +27,7 @@
     [super viewWillAppear:animated];
 
     // set switches to correct states
-    [self.advertisementSwitch setOn:[PGDiscoveryManager sharedInstance].isAdvertisingProperty];
+    [self.advertisementSwitch setOn:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -55,8 +55,8 @@
 
 -(void)toggleAdvertisementState {
     if (self.advertisementSwitch.isOn) {
-        NSString* username = ((PGAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername;
-        if (![[PGDiscoveryManager sharedInstance] advertiseProperty:[username dataUsingEncoding:NSUTF8StringEncoding]]) {
+        NSString* username = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername;
+        if (![[SMDiscoveryManager sharedInstance] advertiseProperty:[username dataUsingEncoding:NSUTF8StringEncoding]]) {
             [TSMessage showNotificationInViewController:self.navigationController
                                                   title:@"Error"
                                                subtitle:@"Turn On Bluetooth!"
@@ -66,7 +66,7 @@
         }
     }
     else {
-        [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
+        [[SMDiscoveryManager sharedInstance] stopAdvertisingProperty];
     }
 }
 

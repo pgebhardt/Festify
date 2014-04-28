@@ -8,17 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@class PGPlayerViewController;
+@class SMPlayerViewController;
 
-@protocol PGPlayerViewDelegate <NSObject>
+@protocol SMPlayerViewDelegate <NSObject>
 
--(void)playerView:(PGPlayerViewController*)playerView didUpdateTrackInfo:(NSDictionary*)trackInfo;
+-(void)playerView:(SMPlayerViewController*)playerView didUpdateTrackInfo:(NSDictionary*)trackInfo;
 
 @end
 
-#import "PGPlaylistViewController.h"
+#import "SMPlaylistViewController.h"
 
-@interface PGPlayerViewController : UIViewController<PGPlaylistViewDelegate>
+@interface SMPlayerViewController : UIViewController<SMPlaylistViewDelegate>
 
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;
@@ -33,6 +33,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *currentTimeView;
 @property (weak, nonatomic) IBOutlet UILabel *remainingTimeView;
 
-@property (nonatomic, weak) id<PGPlayerViewDelegate> delegate;
+@property (nonatomic, weak) id<SMPlayerViewDelegate> delegate;
 
 @end

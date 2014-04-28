@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGDiscoveryManager.h"
+#import "SMDiscoveryManager.h"
 
-@interface PGDiscoveryManager ()
+@interface SMDiscoveryManager ()
 
 @property (nonatomic, strong) CBCentralManager* centralManager;
 @property (nonatomic, strong) CBPeripheralManager* peripheralManager;
@@ -18,14 +18,14 @@
 
 @end
 
-@implementation PGDiscoveryManager
+@implementation SMDiscoveryManager
 
 // create a singleton instance of discovery manager
-+(PGDiscoveryManager*)sharedInstance {
-    static PGDiscoveryManager* _sharedInstance;
++(SMDiscoveryManager*)sharedInstance {
+    static SMDiscoveryManager* _sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^(void) {
-        _sharedInstance = [[PGDiscoveryManager alloc] init];
+        _sharedInstance = [[SMDiscoveryManager alloc] init];
     });
     
     return _sharedInstance;
@@ -54,22 +54,22 @@
     }
     
     // init peripheral service to advertise playlist uri and device name
-    CBMutableCharacteristic* propertyCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:PGDiscoveryManagerPropertyUUIDString]
+    CBMutableCharacteristic* propertyCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:SMDiscoveryManagerPropertyUUIDString]
                                                                                      properties:CBCharacteristicPropertyRead
                                                                                           value:property
                                                                                     permissions:CBAttributePermissionsReadable];
     
-    CBMutableCharacteristic* devicenameCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:PGDiscoveryManagerDevicenameUUIDString]
+    CBMutableCharacteristic* devicenameCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:SMDiscoveryManagerDevicenameUUIDString]
                                                                                     properties:CBCharacteristicPropertyRead
                                                                                          value:[[UIDevice currentDevice].name dataUsingEncoding:NSUTF8StringEncoding]
                                                                                    permissions:CBAttributePermissionsReadable];
     
-    CBMutableService* service = [[CBMutableService alloc] initWithType:[CBUUID UUIDWithString:PGDiscoveryManagerServiceUUIDString] primary:YES];
+    CBMutableService* service = [[CBMutableService alloc] initWithType:[CBUUID UUIDWithString:SMDiscoveryManagerServiceUUIDString] primary:YES];
     service.characteristics = @[propertyCharacteristic, devicenameCharacteristic];
     [self.peripheralManager addService:service];
     
     // advertise service
-    [self.peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey: @[[CBUUID UUIDWithString:PGDiscoveryManagerServiceUUIDString]],
+    [self.peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey: @[[CBUUID UUIDWithString:SMDiscoveryManagerServiceUUIDString]],
                                                CBAdvertisementDataLocalNameKey: [UIDevice currentDevice].name}];
     
     return YES;
@@ -93,7 +93,7 @@
     }
     
     // scan for festify services
-    [self.centralManager scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:PGDiscoveryManagerServiceUUIDString]]
+    [self.centralManager scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:SMDiscoveryManagerServiceUUIDString]]
                                                 options:@{CBCentralManagerScanOptionAllowDuplicatesKey: @NO}];
     self.discovering = YES;
     
@@ -131,7 +131,7 @@
 
 -(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     // discover our service
-    [peripheral discoverServices:@[[CBUUID UUIDWithString:PGDiscoveryManagerServiceUUIDString]]];
+    [peripheral discoverServices:@[[CBUUID UUIDWithString:SMDiscoveryManagerServiceUUIDString]]];
 }
 
 -(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
@@ -151,7 +151,7 @@
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     // discover the playlist characteristic
     if (peripheral.services.count != 0) {
-        [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:PGDiscoveryManagerPropertyUUIDString], [CBUUID UUIDWithString:PGDiscoveryManagerDevicenameUUIDString]]
+        [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:SMDiscoveryManagerPropertyUUIDString], [CBUUID UUIDWithString:SMDiscoveryManagerDevicenameUUIDString]]
                                  forService:peripheral.services[0]];
     }
 }
@@ -177,8 +177,8 @@
     if ([self.peripheralData[peripheral.identifier.UUIDString] allKeys].count == 2) {
         // inform delegate about new playlist
         if (self.delegate) {
-            NSData* property = [self.peripheralData[peripheral.identifier.UUIDString] objectForKey:PGDiscoveryManagerPropertyUUIDString];
-            NSString* devicename = [[NSString alloc] initWithData:self.peripheralData[peripheral.identifier.UUIDString][PGDiscoveryManagerDevicenameUUIDString]
+            NSData* property = [self.peripheralData[peripheral.identifier.UUIDString] objectForKey:SMDiscoveryManagerPropertyUUIDString];
+            NSString* devicename = [[NSString alloc] initWithData:self.peripheralData[peripheral.identifier.UUIDString][SMDiscoveryManagerDevicenameUUIDString]
                                                          encoding:NSUTF8StringEncoding];
             [self.delegate discoveryManager:self didDiscoverDevice:devicename withProperty:property];
         }

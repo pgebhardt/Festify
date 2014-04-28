@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F089B5F18FD169B002476CB /* PGSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* PGSettingsViewController.m */; };
-		5F089B6718FD56A3002476CB /* PGFestifyTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */; };
+		5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* SMSettingsViewController.m */; };
+		5F089B6718FD56A3002476CB /* SMFestifyTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMFestifyTrackProvider.m */; };
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
 		5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */; };
 		5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */; };
-		5F123CA4190025FF00E46166 /* PGPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */; };
+		5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
-		5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */; };
+		5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */; };
 		5F1E97B11902E2D00009B675 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
@@ -24,7 +24,7 @@
 		5F423A6518FC115200C3ED75 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6418FC115200C3ED75 /* UIKit.framework */; };
 		5F423A6B18FC115200C3ED75 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A6918FC115200C3ED75 /* InfoPlist.strings */; };
 		5F423A6D18FC115200C3ED75 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A6C18FC115200C3ED75 /* main.m */; };
-		5F423A7118FC115200C3ED75 /* PGAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A7018FC115200C3ED75 /* PGAppDelegate.m */; };
+		5F423A7118FC115200C3ED75 /* SMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A7018FC115200C3ED75 /* SMAppDelegate.m */; };
 		5F423A7318FC115200C3ED75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A7218FC115200C3ED75 /* Images.xcassets */; };
 		5F423A7A18FC115200C3ED75 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A7918FC115200C3ED75 /* XCTest.framework */; };
 		5F423A7B18FC115200C3ED75 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6018FC115200C3ED75 /* Foundation.framework */; };
@@ -32,8 +32,8 @@
 		5F423A8418FC115200C3ED75 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8218FC115200C3ED75 /* InfoPlist.strings */; };
 		5F423A8618FC115200C3ED75 /* FestifyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A8518FC115200C3ED75 /* FestifyTests.m */; };
 		5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */; };
-		5F521D2E18FF013800B915B7 /* PGFestifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */; };
-		5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* PGDiscoveryManager.m */; };
+		5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */; };
+		5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* SMDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
 		5F7DB9B6190C55530077F648 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9B5190C55530077F648 /* Accelerate.framework */; };
 		5F7DB9B8190C555B0077F648 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9B7190C555B0077F648 /* CoreData.framework */; };
@@ -43,8 +43,8 @@
 		5F7DB9C0190C557F0077F648 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BF190C557F0077F648 /* StoreKit.framework */; };
 		5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */; };
 		5F7DB9C4190C55BB0077F648 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */; };
-		5F88929018FEFA6000620589 /* PGLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F88928F18FEFA6000620589 /* PGLoginViewController.m */; };
-		5F89FD5D1906339A00752072 /* PGUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F89FD5C1906339A00752072 /* PGUserDefaults.m */; };
+		5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F88928F18FEFA6000620589 /* SMLoginViewController.m */; };
+		5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F89FD5C1906339A00752072 /* SMUserDefaults.m */; };
 		5FDDCF6E190298810079F433 /* acknowledgements.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5FDDCF6D190298810079F433 /* acknowledgements.txt */; };
 		A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CEA90CA33A460DB3A7DAF3 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -61,21 +61,21 @@
 
 /* Begin PBXFileReference section */
 		15CEA90CA33A460DB3A7DAF3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		5F089B5D18FD169B002476CB /* PGSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGSettingsViewController.h; sourceTree = "<group>"; };
-		5F089B5E18FD169B002476CB /* PGSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGSettingsViewController.m; sourceTree = "<group>"; };
+		5F089B5D18FD169B002476CB /* SMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMSettingsViewController.h; sourceTree = "<group>"; };
+		5F089B5E18FD169B002476CB /* SMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSettingsViewController.m; sourceTree = "<group>"; };
 		5F089B6018FD2B5F002476CB /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
-		5F089B6518FD56A3002476CB /* PGFestifyTrackProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGFestifyTrackProvider.h; sourceTree = "<group>"; };
-		5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGFestifyTrackProvider.m; sourceTree = "<group>"; };
+		5F089B6518FD56A3002476CB /* SMFestifyTrackProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMFestifyTrackProvider.h; sourceTree = "<group>"; };
+		5F089B6618FD56A3002476CB /* SMFestifyTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMFestifyTrackProvider.m; sourceTree = "<group>"; };
 		5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Shuffling.h"; sourceTree = "<group>"; };
 		5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Shuffling.m"; sourceTree = "<group>"; };
 		5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = spotifymessagedesign.json; sourceTree = "<group>"; };
 		5F0E249F1903141200DC306D /* UIView+ConvertToImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ConvertToImage.h"; sourceTree = "<group>"; };
 		5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ConvertToImage.m"; sourceTree = "<group>"; };
-		5F123CA2190025FF00E46166 /* PGPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlaylistViewController.h; sourceTree = "<group>"; };
-		5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlaylistViewController.m; sourceTree = "<group>"; };
+		5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlaylistViewController.h; sourceTree = "<group>"; };
+		5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPlaylistViewController.m; sourceTree = "<group>"; };
 		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
-		5F1CF46118FD9782009E4791 /* PGPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGPlayerViewController.h; sourceTree = "<group>"; };
-		5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGPlayerViewController.m; sourceTree = "<group>"; };
+		5F1CF46118FD9782009E4791 /* SMPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlayerViewController.h; sourceTree = "<group>"; };
+		5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPlayerViewController.m; sourceTree = "<group>"; };
 		5F1E97AF1902E2D00009B675 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
 		5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		5F1F9BD418FC31B10030A64B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
@@ -91,8 +91,8 @@
 		5F423A6A18FC115200C3ED75 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5F423A6C18FC115200C3ED75 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5F423A6E18FC115200C3ED75 /* Festify-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Festify-Prefix.pch"; sourceTree = "<group>"; };
-		5F423A6F18FC115200C3ED75 /* PGAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PGAppDelegate.h; sourceTree = "<group>"; };
-		5F423A7018FC115200C3ED75 /* PGAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PGAppDelegate.m; sourceTree = "<group>"; };
+		5F423A6F18FC115200C3ED75 /* SMAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMAppDelegate.h; sourceTree = "<group>"; };
+		5F423A7018FC115200C3ED75 /* SMAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMAppDelegate.m; sourceTree = "<group>"; };
 		5F423A7218FC115200C3ED75 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		5F423A7818FC115200C3ED75 /* FestifyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FestifyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F423A7918FC115200C3ED75 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -100,10 +100,10 @@
 		5F423A8318FC115200C3ED75 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5F423A8518FC115200C3ED75 /* FestifyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FestifyTests.m; sourceTree = "<group>"; };
 		5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
-		5F521D2C18FF013800B915B7 /* PGFestifyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGFestifyViewController.h; sourceTree = "<group>"; };
-		5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGFestifyViewController.m; sourceTree = "<group>"; };
-		5F5A162118FC535100E408DC /* PGDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGDiscoveryManager.h; sourceTree = "<group>"; };
-		5F5A162218FC535100E408DC /* PGDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGDiscoveryManager.m; sourceTree = "<group>"; };
+		5F521D2C18FF013800B915B7 /* SMFestifyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMFestifyViewController.h; sourceTree = "<group>"; };
+		5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMFestifyViewController.m; sourceTree = "<group>"; };
+		5F5A162118FC535100E408DC /* SMDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMDiscoveryManager.h; sourceTree = "<group>"; };
+		5F5A162218FC535100E408DC /* SMDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		5F7DB9B5190C55530077F648 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		5F7DB9B7190C555B0077F648 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -113,10 +113,10 @@
 		5F7DB9BF190C557F0077F648 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		5F88928E18FEFA6000620589 /* PGLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGLoginViewController.h; sourceTree = "<group>"; };
-		5F88928F18FEFA6000620589 /* PGLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGLoginViewController.m; sourceTree = "<group>"; };
-		5F89FD5B1906339A00752072 /* PGUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGUserDefaults.h; sourceTree = "<group>"; };
-		5F89FD5C1906339A00752072 /* PGUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGUserDefaults.m; sourceTree = "<group>"; };
+		5F88928E18FEFA6000620589 /* SMLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLoginViewController.h; sourceTree = "<group>"; };
+		5F88928F18FEFA6000620589 /* SMLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLoginViewController.m; sourceTree = "<group>"; };
+		5F89FD5B1906339A00752072 /* SMUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUserDefaults.h; sourceTree = "<group>"; };
+		5F89FD5C1906339A00752072 /* SMUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMUserDefaults.m; sourceTree = "<group>"; };
 		5FDDCF6D190298810079F433 /* acknowledgements.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = acknowledgements.txt; sourceTree = "<group>"; };
 		A413B68A804A40FDB5EB7BFA /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -175,16 +175,16 @@
 		5F1E97B31902E5A20009B675 /* View Controller */ = {
 			isa = PBXGroup;
 			children = (
-				5F521D2C18FF013800B915B7 /* PGFestifyViewController.h */,
-				5F521D2D18FF013800B915B7 /* PGFestifyViewController.m */,
-				5F88928E18FEFA6000620589 /* PGLoginViewController.h */,
-				5F88928F18FEFA6000620589 /* PGLoginViewController.m */,
-				5F1CF46118FD9782009E4791 /* PGPlayerViewController.h */,
-				5F1CF46218FD9782009E4791 /* PGPlayerViewController.m */,
-				5F123CA2190025FF00E46166 /* PGPlaylistViewController.h */,
-				5F123CA3190025FF00E46166 /* PGPlaylistViewController.m */,
-				5F089B5D18FD169B002476CB /* PGSettingsViewController.h */,
-				5F089B5E18FD169B002476CB /* PGSettingsViewController.m */,
+				5F521D2C18FF013800B915B7 /* SMFestifyViewController.h */,
+				5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */,
+				5F88928E18FEFA6000620589 /* SMLoginViewController.h */,
+				5F88928F18FEFA6000620589 /* SMLoginViewController.m */,
+				5F1CF46118FD9782009E4791 /* SMPlayerViewController.h */,
+				5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */,
+				5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */,
+				5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */,
+				5F089B5D18FD169B002476CB /* SMSettingsViewController.h */,
+				5F089B5E18FD169B002476CB /* SMSettingsViewController.m */,
 			);
 			name = "View Controller";
 			sourceTree = "<group>";
@@ -242,14 +242,14 @@
 			children = (
 				5F1E97B21902E5880009B675 /* Extensions */,
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
-				5F423A6F18FC115200C3ED75 /* PGAppDelegate.h */,
-				5F423A7018FC115200C3ED75 /* PGAppDelegate.m */,
-				5F5A162118FC535100E408DC /* PGDiscoveryManager.h */,
-				5F5A162218FC535100E408DC /* PGDiscoveryManager.m */,
-				5F089B6518FD56A3002476CB /* PGFestifyTrackProvider.h */,
-				5F089B6618FD56A3002476CB /* PGFestifyTrackProvider.m */,
-				5F89FD5B1906339A00752072 /* PGUserDefaults.h */,
-				5F89FD5C1906339A00752072 /* PGUserDefaults.m */,
+				5F423A6F18FC115200C3ED75 /* SMAppDelegate.h */,
+				5F423A7018FC115200C3ED75 /* SMAppDelegate.m */,
+				5F5A162118FC535100E408DC /* SMDiscoveryManager.h */,
+				5F5A162218FC535100E408DC /* SMDiscoveryManager.m */,
+				5F089B6518FD56A3002476CB /* SMFestifyTrackProvider.h */,
+				5F089B6618FD56A3002476CB /* SMFestifyTrackProvider.m */,
+				5F89FD5B1906339A00752072 /* SMUserDefaults.h */,
+				5F89FD5C1906339A00752072 /* SMUserDefaults.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 				5F1E97B31902E5A20009B675 /* View Controller */,
@@ -445,18 +445,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */,
-				5F089B6718FD56A3002476CB /* PGFestifyTrackProvider.m in Sources */,
-				5F88929018FEFA6000620589 /* PGLoginViewController.m in Sources */,
-				5F89FD5D1906339A00752072 /* PGUserDefaults.m in Sources */,
-				5F089B5F18FD169B002476CB /* PGSettingsViewController.m in Sources */,
-				5F5A162318FC535100E408DC /* PGDiscoveryManager.m in Sources */,
+				5F089B6718FD56A3002476CB /* SMFestifyTrackProvider.m in Sources */,
+				5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */,
+				5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */,
+				5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */,
+				5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */,
 				5F423A6D18FC115200C3ED75 /* main.m in Sources */,
-				5F521D2E18FF013800B915B7 /* PGFestifyViewController.m in Sources */,
-				5F423A7118FC115200C3ED75 /* PGAppDelegate.m in Sources */,
+				5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */,
+				5F423A7118FC115200C3ED75 /* SMAppDelegate.m in Sources */,
 				5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */,
 				5F1E97B11902E2D00009B675 /* UIImage+ImageEffects.m in Sources */,
-				5F1CF46318FD9782009E4791 /* PGPlayerViewController.m in Sources */,
-				5F123CA4190025FF00E46166 /* PGPlaylistViewController.m in Sources */,
+				5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */,
+				5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

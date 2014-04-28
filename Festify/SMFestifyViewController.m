@@ -6,21 +6,21 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGFestifyViewController.h"
-#import "PGFestifyTrackProvider.h"
-#import "PGAppDelegate.h"
-#import "PGUserDefaults.h"
+#import "SMFestifyViewController.h"
+#import "SMFestifyTrackProvider.h"
+#import "SMAppDelegate.h"
+#import "SMUserDefaults.h"
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
 #import "ATConnect.h"
 
-@interface PGFestifyViewController ()
+@interface SMFestifyViewController ()
 
 @property (nonatomic, strong) NSError* loginError;
 
 @end
 
-@implementation PGFestifyViewController
+@implementation SMFestifyViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -40,12 +40,12 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showSettings"]) {
-        PGSettingsViewController* viewController = (PGSettingsViewController*)segue.destinationViewController;
+        SMSettingsViewController* viewController = (SMSettingsViewController*)segue.destinationViewController;
         
         viewController.delegate = self;
     }
     else if ([segue.identifier isEqualToString:@"showLogin"]) {
-        PGLoginViewController* viewController = (PGLoginViewController*)segue.destinationViewController;
+        SMLoginViewController* viewController = (SMLoginViewController*)segue.destinationViewController;
         
         viewController.loginError = self.loginError;
         viewController.underlyingView = self.navigationController.view;
@@ -57,14 +57,14 @@
 
 - (IBAction)festify:(id)sender {
     // start discovering playlists
-    if (![[PGDiscoveryManager sharedInstance] startDiscovering]) {
+    if (![[SMDiscoveryManager sharedInstance] startDiscovering]) {
         [TSMessage showNotificationInViewController:self.navigationController
                                               title:@"Error"
                                            subtitle:@"Turn On Bluetooth!"
                                                type:TSMessageNotificationTypeError];
     }
     else {
-        [((PGAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider clearAllTracks];
+        [((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackProvider clearAllTracks];
     }
     
     // apptentive event
@@ -77,19 +77,19 @@
 
 #pragma mark - PGLoginViewDelegate
 
--(void)loginView:(PGLoginViewController *)loginView didCompleteLoginWithError:(NSError *)error {
+-(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithError:(NSError *)error {
     self.loginError = error;
     [self loginToSpotifyAPI];
 }
 
 #pragma mark - PGSettingsViewDelegate
 
--(void)settingsViewUserDidRequestLogout:(PGSettingsViewController *)settingsView {
-    PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+-(void)settingsViewUserDidRequestLogout:(SMSettingsViewController *)settingsView {
+    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
 
     // stop advertisiement and discovery and return to login screen
-    [[PGDiscoveryManager sharedInstance] stopDiscovering];
-    [[PGDiscoveryManager sharedInstance] stopAdvertisingProperty];
+    [[SMDiscoveryManager sharedInstance] stopDiscovering];
+    [[SMDiscoveryManager sharedInstance] stopAdvertisingProperty];
     
     // log out of spotify API
     [appDelegate logoutOfSpotifyAPI];
@@ -106,7 +106,7 @@
 -(void)loginToSpotifyAPI {
     [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     
-    __weak PGAppDelegate* appDelegate = (PGAppDelegate*)[UIApplication sharedApplication].delegate;
+    __weak SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
         if (error) {
             [self performSegueWithIdentifier:@"showLogin" sender:self];

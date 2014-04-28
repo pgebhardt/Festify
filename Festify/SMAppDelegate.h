@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
-#import "PGDiscoveryManager.h"
-#import "PGFestifyTrackProvider.h"
+#import "SMDiscoveryManager.h"
+#import "SMFestifyTrackProvider.h"
 
-@interface PGAppDelegate : UIResponder <UIApplicationDelegate, SPTTrackPlayerDelegate,
-    PGDiscoveryManagerDelegate, PGFestifyTrackProviderDelegate>
+@interface SMAppDelegate : UIResponder <UIApplicationDelegate, SPTTrackPlayerDelegate,
+    SMDiscoveryManagerDelegate, SMFestifyTrackProviderDelegate>
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError* error))completion;
@@ -22,7 +22,7 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
-@property (nonatomic, strong) PGFestifyTrackProvider* trackProvider;
+@property (nonatomic, strong) SMFestifyTrackProvider* trackProvider;
 @property (nonatomic, strong) NSMutableDictionary* trackInfoDictionary;
 @property (nonatomic, strong) UIImage* coverArtOfCurrentTrack;
 

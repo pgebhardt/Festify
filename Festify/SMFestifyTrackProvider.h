@@ -9,23 +9,23 @@
 #import <Foundation/Foundation.h>
 #import <Spotify/Spotify.h>
 
-@class PGFestifyTrackProvider;
+@class SMFestifyTrackProvider;
 
-@protocol PGFestifyTrackProviderDelegate <NSObject>
+@protocol SMFestifyTrackProviderDelegate <NSObject>
 
 @optional
--(void)trackProvider:(PGFestifyTrackProvider*)trackProvider didAddPlaylistsFromUser:(NSString*)username withError:(NSError*)error;
--(void)trackProviderDidClearAllTracks:(PGFestifyTrackProvider*)trackProvider;
+-(void)trackProvider:(SMFestifyTrackProvider*)trackProvider didAddPlaylistsFromUser:(NSString*)username withError:(NSError*)error;
+-(void)trackProviderDidClearAllTracks:(SMFestifyTrackProvider*)trackProvider;
 
 @end
 
-@interface PGFestifyTrackProvider : NSObject<SPTTrackProvider>
+@interface SMFestifyTrackProvider : NSObject<SPTTrackProvider>
 
 -(id)init;
 -(BOOL)addPlaylist:(SPTPlaylistSnapshot*)playlist;
 -(void)addPlaylistsFromUser:(NSString*)username session:(SPTSession*)session completion:(void (^)(NSError* error))completion;
 -(void)clearAllTracks;
 
-@property id<PGFestifyTrackProviderDelegate> delegate;
+@property id<SMFestifyTrackProviderDelegate> delegate;
 
 @end

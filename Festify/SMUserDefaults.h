@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 
 // default application keys
-static NSString* const PGUserDefaultsSpotifySessionKey = @"spotifySession";
-static NSString* const PGUserDefaultsAdvertisementStateKey = @"advertisementState";
+static NSString* const SMUserDefaultsSpotifySessionKey = @"spotifySession";
+static NSString* const SMUserDefaultsAdvertisementStateKey = @"advertisementState";
 
-@interface PGUserDefaults : NSObject
+@interface SMUserDefaults : NSObject
 
 +(void)restoreApplicationState;
 +(void)saveApplicationState;

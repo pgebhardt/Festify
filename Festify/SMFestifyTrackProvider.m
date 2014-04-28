@@ -6,17 +6,17 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGFestifyTrackProvider.h"
+#import "SMFestifyTrackProvider.h"
 #import "NSMutableArray+Shuffling.h"
 
-@interface PGFestifyTrackProvider ()
+@interface SMFestifyTrackProvider ()
 
 @property (nonatomic, strong) NSMutableArray* playlistURIs;
 @property (nonatomic, strong) NSMutableArray* tracks;
 
 @end
 
-@implementation PGFestifyTrackProvider
+@implementation SMFestifyTrackProvider
 
 -(id)init {
     if (self = [super init]) {

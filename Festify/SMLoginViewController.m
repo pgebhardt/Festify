@@ -6,16 +6,16 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "PGLoginViewController.h"
-#import "PGFestifyViewController.h"
-#import "PGAppDelegate.h"
+#import "SMLoginViewController.h"
+#import "SMFestifyViewController.h"
+#import "SMAppDelegate.h"
 #import "UIView+ConvertToImage.h"
 #import "UIImage+ImageEffects.h"
 #import "TSMessage.h"
 #import "MBProgressHud.h"
 #import "ATConnect.h"
 
-@implementation PGLoginViewController
+@implementation SMLoginViewController
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -53,7 +53,7 @@
 
 - (IBAction)login:(id)sender {
     // login to spotify api
-    [(PGAppDelegate*)[UIApplication sharedApplication].delegate requestSpotifySessionWithCompletionHandler:^(NSError *error) {
+    [(SMAppDelegate*)[UIApplication sharedApplication].delegate requestSpotifySessionWithCompletionHandler:^(NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             // return to main screen
             [self dismissViewControllerAnimated:YES completion:^{
