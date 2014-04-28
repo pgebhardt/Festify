@@ -60,15 +60,16 @@
         }
         else {
             SPTPlaylistList* playlists = object;
+            __block BOOL newPlaylistAdded = YES;
             for (NSUInteger i = 0; i < playlists.items.count; ++i) {
                 [SPTRequest requestItemFromPartialObject:playlists.items[i] withSession:session callback:^(NSError* error, id object) {
                     if (!error) {
-                        [self addPlaylist:object];
+                        newPlaylistAdded &= [self addPlaylist:object];
                     }
                     
                     if (i == playlists.items.count - 1) {
                         NSError* error = nil;
-                        if (self.tracks.count == 0) {
+                        if (self.tracks.count == 0 || !newPlaylistAdded) {
                             error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier code:1 userInfo:nil];
                         }
                         

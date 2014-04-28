@@ -167,8 +167,8 @@
             [invokation setArgument:&_indexOfCurrentTrack atIndex:2];
             [invokation invoke];
             
-            // restore trackPlayer state, when woke up in background
-            if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
+            // restore trackPlayer state
+            if (self.playing) {
                 [self play];
             }
             
