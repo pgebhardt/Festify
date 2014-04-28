@@ -8,9 +8,15 @@
 
 #import "SMPlayerViewController.h"
 #import "SMAppDelegate.h"
-#import <Spotify/Spotify.h>
+#import "SMTrackPlayer.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "ATConnect.h"
+
+@interface SMPlayerViewController ()
+
+@property (nonatomic, weak) SMTrackPlayer* trackPlayer;
+
+@end
 
 @implementation SMPlayerViewController
 
@@ -30,18 +36,18 @@
     [super viewWillAppear:animated];
 
     // observe playback state change and track change to update UI accordingly
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate addObserver:self forKeyPath:@"trackPlayer.paused" options:0 context:nil];
-    [appDelegate addObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition" options:0 context:nil];
+    self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
+    [self.trackPlayer addObserver:self forKeyPath:@"playing" options:0 context:nil];
+    [self.trackPlayer addObserver:self forKeyPath:@"currentPlaybackPosition" options:0 context:nil];
     if (!self.delegate) {
-        [appDelegate addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
+        [self.trackPlayer addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
     }
     
     // initialy setup UI correctly
-    [self updateTrackInfo:appDelegate.trackInfo andCoverArt:appDelegate.coverArtOfCurrentTrack];
-    [self updatePlayButton:appDelegate.trackPlayer.paused];
-    [self updatePlaybackPosition:appDelegate.trackPlayer.currentPlaybackPosition
-                     andDuration:[appDelegate.trackInfo[MPMediaItemPropertyPlaybackDuration] doubleValue]];
+    [self updateTrackInfo:self.trackPlayer.currentTrack andCoverArt:self.trackPlayer.coverArtOfCurrentTrack];
+    [self updatePlayButton:self.trackPlayer.playing];
+    [self updatePlaybackPosition:self.trackPlayer.currentPlaybackPosition
+                     andDuration:self.trackPlayer.currentTrack.duration];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -54,29 +60,28 @@
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate removeObserver:self forKeyPath:@"trackPlayer.paused"];
-    [appDelegate removeObserver:self forKeyPath:@"trackPlayer.currentPlaybackPosition"];
+    // remove observers
+    [self.trackPlayer removeObserver:self forKeyPath:@"playing"];
+    [self.trackPlayer removeObserver:self forKeyPath:@"currentPlaybackPosition"];
     if (!self.delegate) {
-        [appDelegate removeObserver:self forKeyPath:@"coverArtOfCurrentTrack"];
+        [self.trackPlayer removeObserver:self forKeyPath:@"coverArtOfCurrentTrack"];
     }
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     if ([keyPath isEqualToString:@"coverArtOfCurrentTrack"]) {
-        [self updateTrackInfo:appDelegate.trackInfo andCoverArt:appDelegate.coverArtOfCurrentTrack];
+        [self updateTrackInfo:self.trackPlayer.currentTrack andCoverArt:self.trackPlayer.coverArtOfCurrentTrack];
         
         if (self.delegate) {
-            [self.delegate playerView:self didUpdateTrackInfo:appDelegate.trackInfo];
+            [self.delegate playerViewDidUpdateTrackInfo:self];
         }
     }
-    else if ([keyPath isEqualToString:@"trackPlayer.paused"]) {
-        [self updatePlayButton:appDelegate.trackPlayer.paused];
+    else if ([keyPath isEqualToString:@"playing"]) {
+        [self updatePlayButton:self.trackPlayer.playing];
     }
-    else if ([keyPath isEqualToString:@"trackPlayer.currentPlaybackPosition"]) {
-        [self updatePlaybackPosition:appDelegate.trackPlayer.currentPlaybackPosition
-                         andDuration:[appDelegate.trackInfo[MPMediaItemPropertyPlaybackDuration] doubleValue]];
+    else if ([keyPath isEqualToString:@"currentPlaybackPosition"]) {
+        [self updatePlaybackPosition:self.trackPlayer.currentPlaybackPosition
+                         andDuration:self.trackPlayer.currentTrack.duration];
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -99,40 +104,39 @@
 -(void)openInSpotify:(id)sender {
     // open currently played track in spotify app, if available
     if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
-        SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
         NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"spotify://%@",
-                                           [appDelegate.trackInfo[@"spotifyURI"] absoluteString]]];
+                                           self.trackPlayer.currentTrack.uri.absoluteString]];
         
-        if (!appDelegate.trackPlayer.paused) {
-            [appDelegate togglePlaybackState];
-        }
+        [self.trackPlayer pause];
         [[UIApplication sharedApplication] openURL:url];
     }
 }
 
 -(IBAction)rewind:(id)sender {
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.trackPlayer skipToPreviousTrack:NO];
+    [self.trackPlayer skipBackward];
 }
 
 -(IBAction)playPause:(id)sender {
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate togglePlaybackState];
+    if (self.trackPlayer.playing) {
+        [self.trackPlayer pause];
+    }
+    else {
+        [self.trackPlayer play];
+    }
 }
 
 -(IBAction)fastForward:(id)sender {
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.trackPlayer skipToNextTrack];
+    [self.trackPlayer skipForward];
 }
 
 #pragma mark - Logic
 
--(void)updatePlayButton:(BOOL)paused {
-    if (paused) {
-        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Play"];
+-(void)updatePlayButton:(BOOL)playing {
+    if (playing) {
+        [self.playPauseButton setImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
     }
     else {
-        self.playPauseButton.imageView.image = [UIImage imageNamed:@"Pause"];
+        [self.playPauseButton setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
     }
 }
 
@@ -145,20 +149,12 @@
                                    (int)(duration - playbackPosition) % 60];
 }
 
--(void)updateTrackInfo:(NSDictionary*)trackInfoDictionary andCoverArt:(UIImage*)coverArt {
+-(void)updateTrackInfo:(SPTTrack*)track andCoverArt:(UIImage*)coverArt {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (trackInfoDictionary) {
-            self.titleLabel.text = trackInfoDictionary[MPMediaItemPropertyTitle];
-            self.trackPosition.progress = 0.0;
-            self.artistLabel.text = trackInfoDictionary[MPMediaItemPropertyArtist];
-            self.coverImage.image = coverArt;
-        }
-        else {
-            self.titleLabel.text = @"Nothing Playing";
-            self.trackPosition.progress = 0.0;
-            self.artistLabel.text = @"";
-            self.coverImage.image = nil;
-        }
+        self.titleLabel.text = track.name;
+        self.trackPosition.progress = 0.0;
+        self.artistLabel.text = [track.artists[0] name];
+        self.coverImage.image = coverArt;
     });
 }
 

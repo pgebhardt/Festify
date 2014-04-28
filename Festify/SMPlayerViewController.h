@@ -12,7 +12,7 @@
 
 @protocol SMPlayerViewDelegate <NSObject>
 
--(void)playerView:(SMPlayerViewController*)playerView didUpdateTrackInfo:(NSDictionary*)trackInfo;
+-(void)playerViewDidUpdateTrackInfo:(SMPlayerViewController*)playerView;
 
 @end
 

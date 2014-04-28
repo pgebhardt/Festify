@@ -9,21 +9,18 @@
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
 #import "SMDiscoveryManager.h"
+#import "SMTrackPlayer.h"
 #import "SMFestifyTrackProvider.h"
 
-@interface SMAppDelegate : UIResponder <UIApplicationDelegate, SPTTrackPlayerDelegate,
-    SMDiscoveryManagerDelegate>
+@interface SMAppDelegate : UIResponder <UIApplicationDelegate, SMDiscoveryManagerDelegate>
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)logoutOfSpotifyAPI;
--(void)togglePlaybackState;
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) SPTSession* session;
-@property (nonatomic, strong) SPTTrackPlayer* trackPlayer;
+@property (nonatomic, strong) SMTrackPlayer* trackPlayer;
 @property (nonatomic, strong) SMFestifyTrackProvider* trackProvider;
-@property (nonatomic, strong) NSMutableDictionary* trackInfo;
-@property (nonatomic, strong) UIImage* coverArtOfCurrentTrack;
 
 @end

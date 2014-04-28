@@ -11,6 +11,7 @@
 		5F089B6718FD56A3002476CB /* SMFestifyTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMFestifyTrackProvider.m */; };
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
 		5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */; };
+		5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */; };
 		5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */; };
 		5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
@@ -69,6 +70,8 @@
 		5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Shuffling.h"; sourceTree = "<group>"; };
 		5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Shuffling.m"; sourceTree = "<group>"; };
 		5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = spotifymessagedesign.json; sourceTree = "<group>"; };
+		5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackPlayer.h; sourceTree = "<group>"; };
+		5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackPlayer.m; sourceTree = "<group>"; };
 		5F0E249F1903141200DC306D /* UIView+ConvertToImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ConvertToImage.h"; sourceTree = "<group>"; };
 		5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ConvertToImage.m"; sourceTree = "<group>"; };
 		5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlaylistViewController.h; sourceTree = "<group>"; };
@@ -248,6 +251,8 @@
 				5F5A162218FC535100E408DC /* SMDiscoveryManager.m */,
 				5F089B6518FD56A3002476CB /* SMFestifyTrackProvider.h */,
 				5F089B6618FD56A3002476CB /* SMFestifyTrackProvider.m */,
+				5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */,
+				5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */,
 				5F89FD5B1906339A00752072 /* SMUserDefaults.h */,
 				5F89FD5C1906339A00752072 /* SMUserDefaults.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
@@ -448,6 +453,7 @@
 				5F089B6718FD56A3002476CB /* SMFestifyTrackProvider.m in Sources */,
 				5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */,
 				5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */,
+				5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */,
 				5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */,
 				5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */,
 				5F423A6D18FC115200C3ED75 /* main.m in Sources */,

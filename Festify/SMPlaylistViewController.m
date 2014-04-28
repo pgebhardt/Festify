@@ -15,7 +15,7 @@
 
 @interface SMPlaylistViewController ()
 
-@property (nonatomic, weak) SPTTrackPlayer* trackPlayer;
+@property (nonatomic, weak) SMTrackPlayer* trackPlayer;
 
 @end
 
@@ -75,7 +75,7 @@
 
 #pragma mark - PGPlayerViewDelegate
 
--(void)playerView:(SMPlayerViewController *)playerView didUpdateTrackInfo:(NSDictionary *)trackInfo {
+-(void)playerViewDidUpdateTrackInfo:(SMPlayerViewController *)playerView {
     dispatch_async(dispatch_get_main_queue(), ^{
         // update background image
         [self createBlurredBackgroundFromView:self.underlyingView];
