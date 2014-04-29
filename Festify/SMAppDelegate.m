@@ -7,11 +7,9 @@
 //
 
 #import "SMAppDelegate.h"
-#import "SMDiscoveryManager.h"
 #import "SMUserDefaults.h"
 #import <Spotify/Spotify.h>
 #import "TSMessage.h"
-#import "MBProgressHUD.h"
 #import "ATConnect.h"
 
 // spotify authentication constants
@@ -95,9 +93,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [self.trackPlayer pause];
     [self.trackProvider clearAllTracks];
     self.session = nil;
-    
-    // clear user defaults
-    [SMUserDefaults clear];
 }
 
 #pragma mark - UIApplicationDelegate
@@ -106,12 +101,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.trackPlayer = [SMTrackPlayer trackPlayerWithCompanyName:[NSBundle mainBundle].bundleIdentifier
                                                          appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     self.trackProvider = [[SMFestifyTrackProvider alloc] init];
-    
-    // set delegates
-    [SMDiscoveryManager sharedInstance].delegate = self;
-    
-    // restore application state
-    [SMUserDefaults restoreApplicationState];
     
     // initialize apptentive feedback system
     [ATConnect sharedConnection].apiKey = @"332a2ed7324aa7465ab10f63cfd79c62784a61ac97a80c83d489502f00a7b103";
@@ -160,41 +149,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 -(void)applicationWillResignActive:(UIApplication *)application {
     // save current application state
     [SMUserDefaults saveApplicationState];    
-}
-
-#pragma mark - PGDiscoveryManagerDelegate
-
--(void)discoveryManager:(SMDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
-    NSLog(@"didDiscoverDevice: %@ withProperty: %@", devicename,
-          [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding]);
-    
-    // extract spotify username from device property
-    NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
-    
-    // add playlist for discovered user and notify user
-    [self.trackProvider addPlaylistsFromUser:username session:self.session completion:nil];
-
-    // notify user
-    [self postNotificationWithTitle:[NSString stringWithFormat:@"Discovered %@", username]
-                           subtitle:@"All public songs added!"
-                               type:TSMessageNotificationTypeSuccess];
-}
-
-#pragma mark - Helper
-
--(void)postNotificationWithTitle:(NSString*)title subtitle:(NSString*)subtitle type:(TSMessageNotificationType)type {
-    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [TSMessage showNotificationInViewController:self.window.rootViewController title:title
-                                               subtitle:subtitle type:type];
-        });
-    }
-    else {
-        UILocalNotification* notification = [[UILocalNotification alloc] init];
-        notification.alertBody = [NSString stringWithFormat:@"%@\n%@", title, subtitle];
-        
-        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-    }
 }
 
 @end

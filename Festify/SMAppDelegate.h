@@ -8,11 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
-#import "SMDiscoveryManager.h"
 #import "SMTrackPlayer.h"
 #import "SMFestifyTrackProvider.h"
 
-@interface SMAppDelegate : UIResponder <UIApplicationDelegate, SMDiscoveryManagerDelegate>
+@interface SMAppDelegate : UIResponder <UIApplicationDelegate>
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(NSError* error))completion;
 -(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError* error))completion;

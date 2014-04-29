@@ -7,7 +7,6 @@
 //
 
 #import "SMFestifyViewController.h"
-#import "SMFestifyTrackProvider.h"
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
 #import "TSMessage.h"
@@ -25,7 +24,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // try to login to spotify api
+    [SMDiscoveryManager sharedInstance].delegate = self;
+    [SMUserDefaults restoreApplicationState];
+    
+    // try to login to spotify api after some time, to avoid UI glitches
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self loginToSpotifyAPI];
     });
@@ -72,6 +74,26 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.spotify.com"]];
 }
 
+#pragma mark - PGDiscoveryManagerDelegate
+
+-(void)discoveryManager:(SMDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
+    NSLog(@"didDiscoverDevice: %@ withProperty: %@", devicename,
+          [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding]);
+    
+    // extract spotify username from device property
+    NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
+    
+    // add playlist for discovered user and notify user
+    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.trackProvider addPlaylistsFromUser:username session:appDelegate.session completion:nil];
+    
+    // notify user
+    [TSMessage showNotificationInViewController:self.navigationController
+                                          title:[NSString stringWithFormat:@"Discovered %@!", username]
+                                       subtitle:@"All public songs added!"
+                                           type:TSMessageNotificationTypeSuccess];
+}
+
 #pragma mark - PGLoginViewDelegate
 
 -(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithError:(NSError *)error {
@@ -90,6 +112,7 @@
     
     // log out of spotify API
     [appDelegate logoutOfSpotifyAPI];
+    [SMUserDefaults clear];
     
     // apptentive event
     [[ATConnect sharedConnection] engage:@"didLogOut" fromViewController:self.navigationController];

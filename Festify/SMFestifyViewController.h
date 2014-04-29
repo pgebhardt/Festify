@@ -11,7 +11,8 @@
 #import "SMLoginViewController.h"
 #import "SMSettingsViewController.h"
 
-@interface SMFestifyViewController : UIViewController<SMLoginViewDelegate, SMSettingsViewDelegate>
+@interface SMFestifyViewController : UIViewController<SMDiscoveryManagerDelegate,
+    SMLoginViewDelegate, SMSettingsViewDelegate>
 
 - (IBAction)spotifyButton:(id)sender;
 - (IBAction)festify:(id)sender;
