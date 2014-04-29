@@ -123,6 +123,8 @@
 #pragma mark - SPTTrackPlayerDelegate
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didStartPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
+    NSLog(@"trackPlayer:%@ didStartPlaybackOfTrackAtIndex:%ld ofProvider:%@", player, (long)index, provider);
+
     // update properties
     self.currentTrack = provider.tracks[index];
     self.indexOfCurrentTrack = index;
@@ -150,16 +152,26 @@
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
+    NSLog(@"trackPlayer:%@ didEndPlaybackOfTrackAtIndex:%ld ofProvider:%@", player, (long)index, provider);
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
+    NSLog(@"trackPlayer:%@ didEndPlaybackOfProvider:%@ withReason:%u", player, provider, (unsigned)reason);
+    
     if (reason == SPTPlaybackEndReasonLoggedOut) {
-        // try to login again
         UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+
+        // try to login again
         [player enablePlaybackWithSession:self.session callback:^(NSError *error) {
+            // restore trackPlayer state
+            if (self.playing) {
+                [self play];
+            }
+
             // do a little vodoo to get the track player right again
             [player performSelector:NSSelectorFromString(@"setCurrentProvider:") withObject:provider];
             
+            // restore correct track index
             NSMethodSignature* signature = [[SPTTrackPlayer class] instanceMethodSignatureForSelector:NSSelectorFromString(@"setIndexOfCurrentTrack:")];
             NSInvocation* invokation = [NSInvocation invocationWithMethodSignature:signature];
             invokation.target = self.trackPlayer;
@@ -167,21 +179,17 @@
             [invokation setArgument:&_indexOfCurrentTrack atIndex:2];
             [invokation invoke];
             
-            // restore trackPlayer state
-            if (self.playing) {
-                [self play];
-            }
-            
             [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         }];
     }
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withError:(NSError *)error {
+    NSLog(@"trackPlayer:%@ didEndPlaybackOfProvider:%@ withError:%@", player, provider, error);
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
-    NSLog(@"didDidReceiveMessageForEndUser: %@", message);
+    NSLog(@"trackPlayer:%@ didDidReceiveMessageForEndUser: %@", player, message);
 }
 
 @end
