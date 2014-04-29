@@ -75,7 +75,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AuE-Vp-LKl">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DefaultCoverArt" translatesAutoresizingMaskIntoConstraints="NO" id="AuE-Vp-LKl">
                                 <rect key="frame" x="0.0" y="64" width="320" height="320"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -539,6 +539,7 @@
     </scenes>
     <resources>
         <image name="Cog" width="25" height="25"/>
+        <image name="DefaultCoverArt" width="320" height="320"/>
         <image name="Forward" width="30" height="22"/>
         <image name="List" width="27" height="23"/>
         <image name="Pause" width="16" height="22"/>

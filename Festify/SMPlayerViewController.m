@@ -161,7 +161,12 @@
 }
 
 -(void)updateCoverArt:(UIImage*)coverArt {
-    self.coverImage.image = coverArt;
+    if (coverArt) {
+        self.coverImage.image = coverArt;
+    }
+    else {
+        self.coverImage.image = [UIImage imageNamed:@"DefaultCoverArt"];
+    }
 }
 
 #pragma mark - PGPlaylistViewDelegate
