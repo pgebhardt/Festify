@@ -154,15 +154,24 @@
     }
 }
 
+-(void)skipToTrack:(NSInteger)index {
+    if (self.currentProvider) {
+        [self.trackPlayer playTrackProvider:self.currentProvider fromIndex:index];
+        [self play];
+    }
+}
+
 -(void)skipForward {
     if (self.currentProvider) {
         [self.trackPlayer skipToNextTrack];
+        [self play];
     }
 }
 
 -(void)skipBackward {
     if (self.currentProvider) {
         [self.trackPlayer skipToPreviousTrack:NO];
+        [self play];
     }
 }
 
@@ -189,8 +198,9 @@
         // download image
         [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[object largestCover].imageURL]
                                          completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            self.coverArtOfCurrentTrack = [UIImage imageWithData:data];
+            
             if (!error) {
-                self.coverArtOfCurrentTrack = [UIImage imageWithData:data];
                 self.trackInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:self.coverArtOfCurrentTrack];
                 [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
             }

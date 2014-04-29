@@ -68,7 +68,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
-    [self.trackPlayer playTrackProvider:self.trackPlayer.currentProvider fromIndex:trackIndex];
+    [self.trackPlayer skipToTrack:trackIndex];
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

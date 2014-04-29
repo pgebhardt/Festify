@@ -21,6 +21,7 @@
 
 -(void)play;
 -(void)pause;
+-(void)skipToTrack:(NSInteger)index;
 -(void)skipForward;
 -(void)skipBackward;
 
