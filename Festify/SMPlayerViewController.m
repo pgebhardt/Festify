@@ -39,12 +39,14 @@
     self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     [self.trackPlayer addObserver:self forKeyPath:@"playing" options:0 context:nil];
     [self.trackPlayer addObserver:self forKeyPath:@"currentPlaybackPosition" options:0 context:nil];
+    [self.trackPlayer addObserver:self forKeyPath:@"currentTrack" options:0 context:nil];
     if (!self.delegate) {
         [self.trackPlayer addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
     }
     
     // initialy setup UI correctly
-    [self updateTrackInfo:self.trackPlayer.currentTrack andCoverArt:self.trackPlayer.coverArtOfCurrentTrack];
+    [self updateTrackInfo:self.trackPlayer.currentTrack];
+    [self updateCoverArt:self.trackPlayer.coverArtOfCurrentTrack];
     [self updatePlayButton:self.trackPlayer.playing];
     [self updatePlaybackPosition:self.trackPlayer.currentPlaybackPosition
                      andDuration:self.trackPlayer.currentTrack.duration];
@@ -63,6 +65,7 @@
     // remove observers
     [self.trackPlayer removeObserver:self forKeyPath:@"playing"];
     [self.trackPlayer removeObserver:self forKeyPath:@"currentPlaybackPosition"];
+    [self.trackPlayer removeObserver:self forKeyPath:@"currentTrack"];
     if (!self.delegate) {
         [self.trackPlayer removeObserver:self forKeyPath:@"coverArtOfCurrentTrack"];
     }
@@ -70,11 +73,14 @@
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"coverArtOfCurrentTrack"]) {
-        [self updateTrackInfo:self.trackPlayer.currentTrack andCoverArt:self.trackPlayer.coverArtOfCurrentTrack];
+        [self updateCoverArt:self.trackPlayer.coverArtOfCurrentTrack];
         
         if (self.delegate) {
             [self.delegate playerViewDidUpdateTrackInfo:self];
         }
+    }
+    else if ([keyPath isEqualToString:@"currentTrack"]) {
+        [self updateTrackInfo:self.trackPlayer.currentTrack];
     }
     else if ([keyPath isEqualToString:@"playing"]) {
         [self updatePlayButton:self.trackPlayer.playing];
@@ -149,13 +155,13 @@
                                    (int)(duration - playbackPosition) % 60];
 }
 
--(void)updateTrackInfo:(SPTTrack*)track andCoverArt:(UIImage*)coverArt {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.titleLabel.text = track.name;
-        self.trackPosition.progress = 0.0;
-        self.artistLabel.text = [track.artists[0] name];
-        self.coverImage.image = coverArt;
-    });
+-(void)updateTrackInfo:(SPTTrack*)track {
+    self.titleLabel.text = track.name;
+    self.artistLabel.text = [track.artists[0] name];
+}
+
+-(void)updateCoverArt:(UIImage*)coverArt {
+    self.coverImage.image = coverArt;
 }
 
 #pragma mark - PGPlaylistViewDelegate

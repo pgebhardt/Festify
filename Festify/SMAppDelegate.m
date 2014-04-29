@@ -10,6 +10,7 @@
 #import "SMUserDefaults.h"
 #import <Spotify/Spotify.h>
 #import "TSMessage.h"
+#import "MBProgressHUD.h"
 #import "ATConnect.h"
 
 // spotify authentication constants
@@ -24,25 +25,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 @implementation SMAppDelegate
 
 -(void)remoteControlReceivedWithEvent:(UIEvent *)event {
-    // control track player by remote events
-    if (event.type == UIEventTypeRemoteControl) {
-        if (event.subtype == UIEventSubtypeRemoteControlPlay ||
-            event.subtype == UIEventSubtypeRemoteControlPause ||
-            event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
-            if (self.trackPlayer.playing) {
-                [self.trackPlayer pause];
-            }
-            else {
-                [self.trackPlayer play];
-            }
-        }
-        else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
-            [self.trackPlayer skipForward];
-        }
-        else if (event.subtype == UIEventSubtypeRemoteControlPreviousTrack) {
-            [self.trackPlayer skipBackward];
-        }
-    }
+    [self.trackPlayer handleRemoteEvent:event];
 }
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(NSError *))completion {
@@ -151,4 +134,13 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [SMUserDefaults saveApplicationState];    
 }
 
+-(void)applicationWillEnterForeground:(UIApplication *)application {
+    // assume spotify did logout when player is not playing
+    if (!self.trackPlayer.playing) {
+        [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
+        [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+            [MBProgressHUD hideAllHUDsForView:self.window.subviews.lastObject animated:YES];
+        }];
+    }
+}
 @end

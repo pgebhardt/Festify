@@ -51,6 +51,15 @@
             self.session = session;
         }
         
+        // restore track player state in a very ugly, but neccessary way
+        NSMethodSignature* signature = [[SPTTrackPlayer class] instanceMethodSignatureForSelector:NSSelectorFromString(@"setIndexOfCurrentTrack:")];
+        NSInvocation* invokation = [NSInvocation invocationWithMethodSignature:signature];
+        invokation.target = self.trackPlayer;
+        invokation.selector = NSSelectorFromString(@"setIndexOfCurrentTrack:");
+        [invokation setArgument:&_indexOfCurrentTrack atIndex:2];
+        [invokation invoke];
+        [self.trackPlayer performSelector:NSSelectorFromString(@"setCurrentProvider:") withObject:self.currentProvider];
+
         if (block) {
             block(error);
         }
@@ -80,6 +89,40 @@
 -(void)dealloc {
     // cleanup observers
     [self.trackPlayer removeObserver:self forKeyPath:@"currentPlaybackPosition"];
+}
+
+-(void)handleRemoteEvent:(UIEvent *)event {
+    void (^handler)(void) = ^{
+        // control track player by remote events
+        if (event.type == UIEventTypeRemoteControl) {
+            if (event.subtype == UIEventSubtypeRemoteControlPlay ||
+                event.subtype == UIEventSubtypeRemoteControlPause ||
+                event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
+                if (self.playing) {
+                    [self pause];
+                }
+                else {
+                    [self play];
+                }
+            }
+            else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
+                [self skipForward];
+            }
+            else if (event.subtype == UIEventSubtypeRemoteControlPreviousTrack) {
+                [self skipBackward];
+            }
+        }
+    };
+    
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive
+        && !self.playing) {
+        [self enablePlaybackWithSession:self.session callback:^(NSError *error) {
+            handler();
+        }];
+    }
+    else {
+        handler();
+    }
 }
 
 #pragma mark - playback contols
@@ -129,25 +172,26 @@
     self.currentTrack = provider.tracks[index];
     self.indexOfCurrentTrack = index;
     
-    // fill track data dictionary
+    // update track info dictionary and NowPlayingCenter
+    self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @0.0;
+    self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
     self.trackInfo[MPMediaItemPropertyTitle] = self.currentTrack.name;
     self.trackInfo[MPMediaItemPropertyAlbumTitle] = self.currentTrack.album.name;
     self.trackInfo[MPMediaItemPropertyArtist] = [self.currentTrack.artists[0] name];
     self.trackInfo[MPMediaItemPropertyPlaybackDuration] = [NSNumber numberWithDouble:self.currentTrack.duration];
-    self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @0.0;
-    self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
     
     // request complete album of track
-    [SPTRequest requestItemAtURI:self.currentTrack.album.uri withSession:self.session callback:^(NSError *error, id object) {
+    [SPTRequest requestItemFromPartialObject:self.currentTrack.album withSession:self.session callback:^(NSError *error, id object) {
         // download image
         [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[object largestCover].imageURL]
                                          completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-             if (!error) {
-                 self.coverArtOfCurrentTrack = [UIImage imageWithData:data];
-                 self.trackInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:self.coverArtOfCurrentTrack];
-             }
-             [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
-         }] resume];
+            if (!error) {
+                self.coverArtOfCurrentTrack = [UIImage imageWithData:data];
+                self.trackInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:self.coverArtOfCurrentTrack];
+                [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
+            }
+        }] resume];
     }];
 }
 
@@ -157,31 +201,6 @@
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
     NSLog(@"trackPlayer:%@ didEndPlaybackOfProvider:%@ withReason:%u", player, provider, (unsigned)reason);
-    
-    if (reason == SPTPlaybackEndReasonLoggedOut) {
-        UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
-
-        // try to login again
-        [player enablePlaybackWithSession:self.session callback:^(NSError *error) {
-            // restore trackPlayer state
-            if (self.playing) {
-                [self play];
-            }
-
-            // do a little vodoo to get the track player right again
-            [player performSelector:NSSelectorFromString(@"setCurrentProvider:") withObject:provider];
-            
-            // restore correct track index
-            NSMethodSignature* signature = [[SPTTrackPlayer class] instanceMethodSignatureForSelector:NSSelectorFromString(@"setIndexOfCurrentTrack:")];
-            NSInvocation* invokation = [NSInvocation invocationWithMethodSignature:signature];
-            invokation.target = self.trackPlayer;
-            invokation.selector = NSSelectorFromString(@"setIndexOfCurrentTrack:");
-            [invokation setArgument:&_indexOfCurrentTrack atIndex:2];
-            [invokation invoke];
-            
-            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
-        }];
-    }
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withError:(NSError *)error {
