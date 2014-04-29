@@ -85,13 +85,15 @@
     
     // add playlist for discovered user and notify user
     SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.trackProvider addPlaylistsFromUser:username session:appDelegate.session completion:nil];
-    
-    // notify user
-    [TSMessage showNotificationInViewController:self.navigationController
-                                          title:[NSString stringWithFormat:@"Discovered %@!", username]
-                                       subtitle:@"All public songs added!"
-                                           type:TSMessageNotificationTypeSuccess];
+    [appDelegate.trackProvider addPlaylistsFromUser:username session:appDelegate.session completion:^(NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // notify user
+            [TSMessage showNotificationInViewController:self.navigationController
+                                                  title:[NSString stringWithFormat:@"Discovered %@!", username]
+                                               subtitle:@"All public songs added!"
+                                                   type:TSMessageNotificationTypeSuccess];
+        });
+    }];
 }
 
 #pragma mark - PGLoginViewDelegate
