@@ -9,6 +9,14 @@
 #import "SMTrackPlayer.h"
 #import <MediaPlayer/MediaPlayer.h>
 
+// define private api accessors for SPTTrackPlayer to restore its state correctly
+@interface SPTTrackPlayer ()
+
+-(void)setCurrentProvider:(id<SPTTrackProvider>)provider;
+-(void)setIndexOfCurrentTrack:(NSInteger)index;
+
+@end
+
 @interface SMTrackPlayer ()
 
 @property (nonatomic, strong) id<SPTTrackProvider> currentProvider;
@@ -50,16 +58,11 @@
         if (!error) {
             self.session = session;
         }
-        
-        // restore track player state in a very ugly, but neccessary way
-        NSMethodSignature* signature = [[SPTTrackPlayer class] instanceMethodSignatureForSelector:NSSelectorFromString(@"setIndexOfCurrentTrack:")];
-        NSInvocation* invokation = [NSInvocation invocationWithMethodSignature:signature];
-        invokation.target = self.trackPlayer;
-        invokation.selector = NSSelectorFromString(@"setIndexOfCurrentTrack:");
-        [invokation setArgument:&_indexOfCurrentTrack atIndex:2];
-        [invokation invoke];
-        [self.trackPlayer performSelector:NSSelectorFromString(@"setCurrentProvider:") withObject:self.currentProvider];
 
+        // restore trackPlayer state
+        [self.trackPlayer setCurrentProvider:self.currentProvider];
+        [self.trackPlayer setIndexOfCurrentTrack:self.indexOfCurrentTrack];
+        
         if (block) {
             block(error);
         }
