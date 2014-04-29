@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* SMSettingsViewController.m */; };
-		5F089B6718FD56A3002476CB /* SMFestifyTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMFestifyTrackProvider.m */; };
+		5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMTrackProvider.m */; };
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
 		5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */; };
 		5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */; };
@@ -65,8 +65,8 @@
 		5F089B5D18FD169B002476CB /* SMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMSettingsViewController.h; sourceTree = "<group>"; };
 		5F089B5E18FD169B002476CB /* SMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSettingsViewController.m; sourceTree = "<group>"; };
 		5F089B6018FD2B5F002476CB /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
-		5F089B6518FD56A3002476CB /* SMFestifyTrackProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMFestifyTrackProvider.h; sourceTree = "<group>"; };
-		5F089B6618FD56A3002476CB /* SMFestifyTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMFestifyTrackProvider.m; sourceTree = "<group>"; };
+		5F089B6518FD56A3002476CB /* SMTrackProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackProvider.h; sourceTree = "<group>"; };
+		5F089B6618FD56A3002476CB /* SMTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackProvider.m; sourceTree = "<group>"; };
 		5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Shuffling.h"; sourceTree = "<group>"; };
 		5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Shuffling.m"; sourceTree = "<group>"; };
 		5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = spotifymessagedesign.json; sourceTree = "<group>"; };
@@ -249,8 +249,8 @@
 				5F423A7018FC115200C3ED75 /* SMAppDelegate.m */,
 				5F5A162118FC535100E408DC /* SMDiscoveryManager.h */,
 				5F5A162218FC535100E408DC /* SMDiscoveryManager.m */,
-				5F089B6518FD56A3002476CB /* SMFestifyTrackProvider.h */,
-				5F089B6618FD56A3002476CB /* SMFestifyTrackProvider.m */,
+				5F089B6518FD56A3002476CB /* SMTrackProvider.h */,
+				5F089B6618FD56A3002476CB /* SMTrackProvider.m */,
 				5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */,
 				5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */,
 				5F89FD5B1906339A00752072 /* SMUserDefaults.h */,
@@ -450,7 +450,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */,
-				5F089B6718FD56A3002476CB /* SMFestifyTrackProvider.m in Sources */,
+				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
 				5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */,
 				5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */,
 				5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */,

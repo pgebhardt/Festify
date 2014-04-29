@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <Spotify/Spotify.h>
 
-@interface SMFestifyTrackProvider : NSObject<SPTTrackProvider>
+@interface SMTrackProvider : NSObject<SPTTrackProvider>
 
 -(id)init;
 -(BOOL)addPlaylist:(SPTPlaylistSnapshot*)playlist;

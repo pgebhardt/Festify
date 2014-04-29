@@ -100,7 +100,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.trackPlayer = [SMTrackPlayer trackPlayerWithCompanyName:[NSBundle mainBundle].bundleIdentifier
                                                          appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
-    self.trackProvider = [[SMFestifyTrackProvider alloc] init];
+    self.trackProvider = [[SMTrackProvider alloc] init];
     
     // initialize apptentive feedback system
     [ATConnect sharedConnection].apiKey = @"332a2ed7324aa7465ab10f63cfd79c62784a61ac97a80c83d489502f00a7b103";

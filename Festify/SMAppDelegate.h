@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
 #import "SMTrackPlayer.h"
-#import "SMFestifyTrackProvider.h"
+#import "SMTrackProvider.h"
 
 @interface SMAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -20,6 +20,6 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SMTrackPlayer* trackPlayer;
-@property (nonatomic, strong) SMFestifyTrackProvider* trackProvider;
+@property (nonatomic, strong) SMTrackProvider* trackProvider;
 
 @end
