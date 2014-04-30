@@ -39,7 +39,7 @@
 		5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */; };
 		5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F88928F18FEFA6000620589 /* SMLoginViewController.m */; };
 		5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F89FD5C1906339A00752072 /* SMUserDefaults.m */; };
-		5FDDCF6E190298810079F433 /* acknowledgements.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5FDDCF6D190298810079F433 /* acknowledgements.txt */; };
+		5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2079A1190C1DB700AAE15A /* MessageUI.framework */; };
 		A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CEA90CA33A460DB3A7DAF3 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -113,7 +113,6 @@
 		5F88928F18FEFA6000620589 /* SMLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLoginViewController.m; sourceTree = "<group>"; };
 		5F89FD5B1906339A00752072 /* SMUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUserDefaults.h; sourceTree = "<group>"; };
 		5F89FD5C1906339A00752072 /* SMUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMUserDefaults.m; sourceTree = "<group>"; };
-		5FDDCF6D190298810079F433 /* acknowledgements.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = acknowledgements.txt; sourceTree = "<group>"; };
 		A413B68A804A40FDB5EB7BFA /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -122,6 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */,
 				5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */,
 				5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */,
 				5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */,
@@ -256,7 +256,6 @@
 				5F423A6918FC115200C3ED75 /* InfoPlist.strings */,
 				5F423A6C18FC115200C3ED75 /* main.m */,
 				5F423A6E18FC115200C3ED75 /* Festify-Prefix.pch */,
-				5FDDCF6D190298810079F433 /* acknowledgements.txt */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -370,7 +369,6 @@
 				5F423A7318FC115200C3ED75 /* Images.xcassets in Resources */,
 				5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */,
 				5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */,
-				5FDDCF6E190298810079F433 /* acknowledgements.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

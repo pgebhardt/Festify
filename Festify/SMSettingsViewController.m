@@ -6,17 +6,27 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#import <Spotify/Spotify.h>
 #import "SMSettingsViewController.h"
 #import "SMDiscoveryManager.h"
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
-#import <Spotify/Spotify.h>
 #import "TSMessage.h"
+
+@interface SMSettingsViewController ()
+@property (nonatomic, strong) MFMailComposeViewController* mailComposer;
+@end
 
 @implementation SMSettingsViewController
 
 -(void)viewDidLoad {
     [super viewDidLoad];
+
+    // init properties
+    self.mailComposer = [[MFMailComposeViewController alloc] init];
+    self.mailComposer.mailComposeDelegate = self;
     
     // connect switches to event handler
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState) forControlEvents:UIControlEventValueChanged];
@@ -27,21 +37,6 @@
 
     // set switches to correct states
     [self.advertisementSwitch setOn:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
-}
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"showAcknowledgements"]) {
-        // load acknowledgements text from resource file
-        UITextView* textView = (UITextView*)[[[segue.destinationViewController view] subviews] objectAtIndex:0];
-        textView.text = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"acknowledgements" ofType:@"txt"]
-                                                  encoding:NSUTF8StringEncoding
-                                                     error:nil];
-        
-        // adjust style of text view to match iOS settings app
-        textView.textContainerInset = UIEdgeInsetsMake(40.0, 10.0, 12.0, 10.0);
-        textView.font = [UIFont systemFontOfSize:14.0];
-        textView.textColor = [UIColor darkGrayColor];
-    }
 }
 
 #pragma mark - Actions
@@ -65,12 +60,11 @@
 
 #pragma mark - UITableViewDelegate
 
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (section == 0) {
-        return [NSString stringWithFormat:@"%@ %@ (%@)",
+-(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (section == 2) {
+        return [NSString stringWithFormat:@"©2014 Schnuffmade. %@ %@",
                 [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey],
-                [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
-                [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleVersionKey]];
+                [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"]];
     }
     else {
         return @"";
@@ -80,15 +74,52 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // deselect cell
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+
     // handle actions for specific cell
     NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
-    if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
+    if ([reuseIdentifier isEqualToString:@"contactCell"]) {
+        // show mail composer with some debug infos included
+        [self.mailComposer setSubject:@"Support"];
+        [self.mailComposer setToRecipients:@[@"support+festify@schnuffmade.com"]];
+        [self.mailComposer setMessageBody:[NSString stringWithFormat:@"\n\n-----\nApp: %@ %@ (%@)\nDevice: %@ (%@)",
+                                           [NSBundle mainBundle].bundleIdentifier,
+                                           [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
+                                           [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleVersionKey],
+                                           [SMSettingsViewController deviceString],
+                                           [UIDevice currentDevice].systemVersion] isHTML:NO];
+        
+        // apply missing style properties and show mail composer
+        self.mailComposer.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+        [self presentViewController:self.mailComposer animated:YES completion:^{
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        }];
+    }
+    else if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
         // inform delegate to logout
         if (self.delegate) {
-            [self.delegate settingsViewUserDidRequestLogout:self];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.delegate settingsViewUserDidRequestLogout:self];
+            });
         }
     }
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+
+-(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Helper
+
++(NSString*)deviceString {
+    size_t size;
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *machine = malloc(size);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+    NSString *platform = [NSString stringWithUTF8String:machine];
+    free(machine);
+    return platform;
 }
 
 @end

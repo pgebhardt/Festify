@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
 
 @class SMSettingsViewController;
 
@@ -16,7 +17,7 @@
 
 @end
 
-@interface SMSettingsViewController : UITableViewController
+@interface SMSettingsViewController : UITableViewController<MFMailComposeViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
 @property (nonatomic, weak) id<SMSettingsViewDelegate> delegate;
