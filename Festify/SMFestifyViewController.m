@@ -11,12 +11,9 @@
 #import "SMUserDefaults.h"
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
-#import "ATConnect.h"
 
 @interface SMFestifyViewController ()
-
 @property (nonatomic, strong) NSError* loginError;
-
 @end
 
 @implementation SMFestifyViewController
@@ -31,13 +28,6 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self loginToSpotifyAPI];
     });
-}
-
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    // apptentive event
-    [[ATConnect sharedConnection] engage:@"festifyViewDidAppear" fromViewController:self.navigationController];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -65,9 +55,6 @@
                                            subtitle:@"Turn On Bluetooth!"
                                                type:TSMessageNotificationTypeError];
     }
-    
-    // apptentive event
-    [[ATConnect sharedConnection] engage:@"festifyButtonHit" fromViewController:self.navigationController];
 }
 
 - (IBAction)spotifyButton:(id)sender {
@@ -116,9 +103,6 @@
     [appDelegate logoutOfSpotifyAPI];
     [SMUserDefaults clear];
     
-    // apptentive event
-    [[ATConnect sharedConnection] engage:@"didLogOut" fromViewController:self.navigationController];
-    
     // show login screen
     [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
@@ -135,9 +119,6 @@
         }
         else {
             [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-            
-            // apptentive event
-            [[ATConnect sharedConnection] engage:@"didLogIn" fromViewController:self.navigationController];
         }
     }];
 }

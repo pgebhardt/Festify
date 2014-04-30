@@ -6,10 +6,9 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
+#import <Spotify/Spotify.h>
 #import "SMPlaylistViewController.h"
 #import "SMAppDelegate.h"
-#import <Spotify/Spotify.h>
-#import "ATConnect.h"
 #import "UIImage+ImageEffects.h"
 #import "UIView+ConvertToImage.h"
 
@@ -26,13 +25,6 @@
     
     self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     [self createBlurredBackgroundFromView:self.underlyingView];
-}
-
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    // apptentive event
-    [[ATConnect sharedConnection] engage:@"playlistViewDidAppear" fromViewController:self.navigationController];
 }
 
 - (IBAction)done:(id)sender {

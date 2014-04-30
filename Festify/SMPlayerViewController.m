@@ -6,11 +6,10 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
+#import <MediaPlayer/MediaPlayer.h>
 #import "SMPlayerViewController.h"
 #import "SMAppDelegate.h"
 #import "SMTrackPlayer.h"
-#import <MediaPlayer/MediaPlayer.h>
-#import "ATConnect.h"
 
 @interface SMPlayerViewController ()
 
@@ -50,13 +49,6 @@
     [self updatePlayButton:self.trackPlayer.playing];
     [self updatePlaybackPosition:self.trackPlayer.currentPlaybackPosition
                      andDuration:self.trackPlayer.currentTrack.duration];
-}
-
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    // apptentive event
-    [[ATConnect sharedConnection] engage:@"playerViewDidAppear" fromViewController:self.navigationController];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {

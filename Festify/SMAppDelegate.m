@@ -8,10 +8,8 @@
 
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
-#import <Spotify/Spotify.h>
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
-#import "ATConnect.h"
 
 // spotify authentication constants
 // TODO: replace with post-beta IDs and adjust the App's URL type
@@ -84,9 +82,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.trackPlayer = [SMTrackPlayer trackPlayerWithCompanyName:[NSBundle mainBundle].bundleIdentifier
                                                          appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     self.trackProvider = [[SMTrackProvider alloc] init];
-    
-    // initialize apptentive feedback system
-    [ATConnect sharedConnection].apiKey = @"332a2ed7324aa7465ab10f63cfd79c62784a61ac97a80c83d489502f00a7b103";
     
     // adjust default colors to match spotify color schema
     [application setStatusBarHidden:NO];
