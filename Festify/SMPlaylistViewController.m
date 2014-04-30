@@ -42,7 +42,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.trackPlayer.currentProvider.tracks.count;
+    return self.trackPlayer.currentProvider.tracks.count <= 20 ? self.trackPlayer.currentProvider.tracks.count : 20;
 }
 
 #pragma mark - Table view delegate
