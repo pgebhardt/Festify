@@ -40,27 +40,14 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 }
 
 -(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError *))completion {
-    __weak typeof(self) weakSelf = self;
-    
-    // collect all playlists from current user and enable playback
-    [self.trackProvider addPlaylistsFromUser:self.session.canonicalUsername session:self.session completion:^(NSError *error) {
+    // login to track player to Spotify
+    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
         if (!error) {
-            // login to track player to Spotify
-            [weakSelf.trackPlayer enablePlaybackWithSession:weakSelf.session callback:^(NSError *error) {
-                if (!error) {
-                    [weakSelf.trackPlayer playTrackProvider:weakSelf.trackProvider];
-                    [weakSelf.trackPlayer pause];
-                    
-                    // start receiving remote control events
-                    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-                }
-                
-                if (completion) {
-                    completion(error);
-                }
-            }];
+            // start receiving remote control events
+            [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
         }
-        else if (completion) {
+        
+        if (completion) {
             completion(error);
         }
     }];
