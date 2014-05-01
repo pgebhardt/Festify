@@ -130,9 +130,6 @@
 
 -(void)settingsSelectionView:(SMSettingSelectionViewController *)settingsSelectionView didChangeIndicesOfSelectedItems:(NSArray *)indicesOfSelectedItems {
     self.indicesOfSelectedPlaylists = [indicesOfSelectedItems mutableCopy];
-    if (self.delegate) {
-        [self.delegate settingsView:self didChangeAdvertisedPlaylistSelection:self.indicesOfSelectedPlaylists];
-    }
     
     // update UI
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -144,6 +141,11 @@
             cell.detailTextLabel.text = @"Off";
         }
     });
+    
+    // inform delegate
+    if (self.delegate) {
+        [self.delegate settingsView:self didChangeAdvertisedPlaylistSelection:self.indicesOfSelectedPlaylists];
+    }
 }
 
 #pragma mark - MFMailComposeViewControllerDelegate

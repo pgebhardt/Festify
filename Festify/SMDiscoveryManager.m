@@ -53,6 +53,9 @@
         return NO;
     }
     
+    // stop advertisement, if already running to clear all services
+    [self stopAdvertisingProperty];
+    
     // init peripheral service to advertise playlist uri and device name
     CBMutableCharacteristic* propertyCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:SMDiscoveryManagerPropertyUUIDString]
                                                                                      properties:CBCharacteristicPropertyRead
