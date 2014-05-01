@@ -11,6 +11,7 @@
 #import "SMUserDefaults.h"
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
+#import "MWLogging.h"
 
 @interface SMFestifyViewController ()
 @property (nonatomic, strong) NSError* loginError;
@@ -64,7 +65,11 @@
         
         // add own selected songs, if advertising is turned on
         if ([SMDiscoveryManager sharedInstance].isAdvertisingProperty) {
-            [self addPlaylistsForUser:appDelegate.session.canonicalUsername indicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists callback:nil];
+            [self addPlaylistsForUser:appDelegate.session.canonicalUsername indicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists callback:^(NSError *error) {
+                if (error) {
+                    MWLogWarning(@"%@", error);
+                }
+            }];
         }
     }
 }
@@ -91,6 +96,9 @@
                                                        type:TSMessageNotificationTypeSuccess];
             });
         }
+        else {
+            MWLogWarning(@"%@", error);
+        }
     }];
 }
 
@@ -112,7 +120,13 @@
                 
                 [SMUserDefaults setIndicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists];
             }
+            else {
+                MWLogWarning(@"%@", error);
+            }
         }];
+    }
+    else {
+        MWLogWarning(@"%@", error);
     }
 }
 
@@ -147,6 +161,9 @@
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisedPlaylistSelection:(NSArray *)indicesOfSelectedPlaylists {
     self.indicesOfSelectedPlaylists = [indicesOfSelectedPlaylists mutableCopy];
     [SMUserDefaults setIndicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists];
+    
+    // restart adverisement
+    [self setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
 }
 
 #pragma mark - Helper
@@ -157,6 +174,7 @@
     __weak SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
         if (error) {
+            MWLogWarning(@"%@", error);
             [self performSegueWithIdentifier:@"showLogin" sender:self];
         }
         else {
@@ -198,6 +216,8 @@
 
 -(void)addPlaylistsForUser:(NSString*)username indicesOfSelectedPlaylists:(NSArray*)indices callback:(void (^)(NSError* error))callback {
     SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
+    
+    // download list of playlists from given user and add all selected playlists to track provider
     [SPTRequest playlistsForUser:username withSession:appDelegate.session callback:^(NSError *error, id object) {
         if (!error) {
             SPTPlaylistList* playlists = object;

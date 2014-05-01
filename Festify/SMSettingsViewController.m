@@ -14,6 +14,7 @@
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
 #import "TSMessage.h"
+#import "MWLogging.h"
 
 @interface SMSettingsViewController ()
 @property (nonatomic, strong) MFMailComposeViewController* mailComposer;
@@ -53,6 +54,9 @@
                 }
             });
         }
+        else {
+            MWLogWarning(@"%@", error);
+        }
     }];
     
     // set switches to correct states
@@ -83,7 +87,7 @@
 #pragma mark - UITableViewDelegate
 
 -(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (section == 2) {
+    if (section == 3) {
         return [NSString stringWithFormat:@"©2014 Schnuffmade. %@ %@",
                 [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey],
                 [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"]];

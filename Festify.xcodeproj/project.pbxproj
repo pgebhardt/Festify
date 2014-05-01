@@ -15,6 +15,7 @@
 		5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */; };
 		5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
+		5F14581119127DAE00F5A80C /* MWLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F14581019127DAE00F5A80C /* MWLogging.m */; };
 		5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */; };
 		5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */; };
 		5F1E97B11902E2D00009B675 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */; };
@@ -71,6 +72,8 @@
 		5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlaylistViewController.h; sourceTree = "<group>"; };
 		5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPlaylistViewController.m; sourceTree = "<group>"; };
 		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		5F14580F19127DAE00F5A80C /* MWLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWLogging.h; sourceTree = "<group>"; };
+		5F14581019127DAE00F5A80C /* MWLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWLogging.m; sourceTree = "<group>"; };
 		5F15E0B719124BC8006CDDBF /* SMSettingSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMSettingSelectionViewController.h; sourceTree = "<group>"; };
 		5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSettingSelectionViewController.m; sourceTree = "<group>"; };
 		5F1CF46118FD9782009E4791 /* SMPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlayerViewController.h; sourceTree = "<group>"; };
@@ -236,14 +239,16 @@
 			children = (
 				5F1E97B21902E5880009B675 /* Extensions */,
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
+				5F14580F19127DAE00F5A80C /* MWLogging.h */,
+				5F14581019127DAE00F5A80C /* MWLogging.m */,
 				5F423A6F18FC115200C3ED75 /* SMAppDelegate.h */,
 				5F423A7018FC115200C3ED75 /* SMAppDelegate.m */,
 				5F5A162118FC535100E408DC /* SMDiscoveryManager.h */,
 				5F5A162218FC535100E408DC /* SMDiscoveryManager.m */,
-				5F089B6518FD56A3002476CB /* SMTrackProvider.h */,
-				5F089B6618FD56A3002476CB /* SMTrackProvider.m */,
 				5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */,
 				5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */,
+				5F089B6518FD56A3002476CB /* SMTrackProvider.h */,
+				5F089B6618FD56A3002476CB /* SMTrackProvider.m */,
 				5F89FD5B1906339A00752072 /* SMUserDefaults.h */,
 				5F89FD5C1906339A00752072 /* SMUserDefaults.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
@@ -439,6 +444,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */,
+				5F14581119127DAE00F5A80C /* MWLogging.m in Sources */,
 				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
 				5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */,
 				5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */,

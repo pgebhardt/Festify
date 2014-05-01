@@ -7,6 +7,7 @@
 //
 
 #import "SMDiscoveryManager.h"
+#import "MWLogging.h"
 
 @interface SMDiscoveryManager ()
 
@@ -138,12 +139,20 @@
 }
 
 -(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+    if (error) {
+        MWLogError(@"%@", error);
+    }
+    
     // remove peripheral from list
     [self.discoveredPeripherals removeObject:peripheral];
     [self.peripheralData removeObjectForKey:peripheral.identifier.UUIDString];
 }
 
 -(void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+    if (error) {
+        MWLogError(@"%@", error);
+    }
+    
     // remove peripheral from list
     [self.discoveredPeripherals removeObject:peripheral];
     [self.peripheralData removeObjectForKey:peripheral.identifier.UUIDString];
@@ -152,6 +161,13 @@
 #pragma mark - CBPeripheralDelegate
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
+    if (error) {
+        MWLogError(@"%@", error);
+        
+        [self.centralManager cancelPeripheralConnection:peripheral];
+        return;
+    }
+    
     // discover the playlist characteristic
     if (peripheral.services.count != 0) {
         [peripheral discoverCharacteristics:@[[CBUUID UUIDWithString:SMDiscoveryManagerPropertyUUIDString], [CBUUID UUIDWithString:SMDiscoveryManagerDevicenameUUIDString]]
@@ -160,6 +176,13 @@
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
+    if (error) {
+        MWLogError(@"%@", error);
+        
+        [self.centralManager cancelPeripheralConnection:peripheral];
+        return;
+    }
+    
     // read playlist value of the characteristic
     for (CBCharacteristic* characteristic in service.characteristics) {
         [peripheral readValueForCharacteristic:characteristic];
@@ -167,6 +190,13 @@
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    if (error) {
+        MWLogError(@"%@", error);
+
+        [self.centralManager cancelPeripheralConnection:peripheral];
+        return;
+    }
+    
     // add dictionary for current peripheral
     if (!self.peripheralData[peripheral.identifier.UUIDString]) {
         self.peripheralData[peripheral.identifier.UUIDString] = [NSMutableDictionary dictionary];

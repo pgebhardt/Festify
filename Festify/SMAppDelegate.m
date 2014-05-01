@@ -10,6 +10,7 @@
 #import "SMUserDefaults.h"
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
+#import "MWLogging.h"
 
 // spotify authentication constants
 // TODO: replace with post-beta IDs and adjust the App's URL type
@@ -122,6 +123,10 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
         [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
         [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
             [MBProgressHUD hideAllHUDsForView:self.window.subviews.lastObject animated:YES];
+            
+            if (error) {
+                MWLogError(@"%@", error);
+            }
         }];
     }
 }

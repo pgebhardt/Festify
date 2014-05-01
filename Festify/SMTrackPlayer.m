@@ -6,8 +6,9 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
-#import "SMTrackPlayer.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "SMTrackPlayer.h"
+#import "MWLogging.h"
 
 // define private api accessors for SPTTrackPlayer to restore its state correctly
 @interface SPTTrackPlayer ()
@@ -121,7 +122,12 @@
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive
         && !self.playing) {
         [self enablePlaybackWithSession:self.session callback:^(NSError *error) {
-            handler();
+            if (!error) {
+                handler();
+            }
+            else {
+                MWLogError(@"%@", error);
+            }
         }];
     }
     else {
@@ -179,8 +185,6 @@
 #pragma mark - SPTTrackPlayerDelegate
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didStartPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
-    NSLog(@"trackPlayer:%@ didStartPlaybackOfTrackAtIndex:%ld ofProvider:%@", player, (long)index, provider);
-
     // update properties
     self.currentTrack = provider.tracks[index];
     self.indexOfCurrentTrack = index;
@@ -200,29 +204,23 @@
         [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[object largestCover].imageURL]
                                          completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             self.coverArtOfCurrentTrack = [UIImage imageWithData:data];
-            
             if (!error) {
                 self.trackInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:self.coverArtOfCurrentTrack];
                 [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
+            }
+            else {
+                MWLogWarning(@"%@", error);
             }
         }] resume];
     }];
 }
 
--(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
-    NSLog(@"trackPlayer:%@ didEndPlaybackOfTrackAtIndex:%ld ofProvider:%@", player, (long)index, provider);
-}
-
--(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withReason:(SPTPlaybackEndReason)reason {
-    NSLog(@"trackPlayer:%@ didEndPlaybackOfProvider:%@ withReason:%u", player, provider, (unsigned)reason);
-}
-
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withError:(NSError *)error {
-    NSLog(@"trackPlayer:%@ didEndPlaybackOfProvider:%@ withError:%@", player, provider, error);
+    MWLogWarning(@"%@", error);
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
-    NSLog(@"trackPlayer:%@ didDidReceiveMessageForEndUser: %@", player, message);
+    MWLogDebug(@"%@", message);
 }
 
 @end

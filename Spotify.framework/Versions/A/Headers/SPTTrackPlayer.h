@@ -181,7 +181,7 @@ typedef NS_ENUM(NSUInteger, SPTPlaybackEndReason) {
 
 /** This protocol defines methods used by `SPTTrackPlayer` to inform delegates of playback events. */
 @protocol SPTTrackPlayerDelegate <NSObject>
-
+@optional
 /** Called when a new track started playing.
  
  @param player The player that sent the message. 
