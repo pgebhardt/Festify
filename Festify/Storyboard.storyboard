@@ -144,7 +144,7 @@
                     <navigationItem key="navigationItem" id="Zmt-zk-YEv">
                         <barButtonItem key="rightBarButtonItem" image="List" id="509-8T-7vp">
                             <connections>
-                                <segue destination="cyM-U7-Fye" kind="modal" identifier="showPlaylist" id="AsV-op-EQk"/>
+                                <segue destination="cyM-U7-Fye" kind="modal" identifier="showPlaylist" modalTransitionStyle="crossDissolve" id="AsV-op-EQk"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
