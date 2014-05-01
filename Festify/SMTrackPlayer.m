@@ -62,7 +62,6 @@
         // restore trackPlayer state
         [self.trackPlayer setCurrentProvider:self.currentProvider];
         [self.trackPlayer setIndexOfCurrentTrack:self.indexOfCurrentTrack];
-        self.currentTrack = self.currentProvider.tracks[self.indexOfCurrentTrack];
         
         if (block) {
             block(error);

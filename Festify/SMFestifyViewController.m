@@ -206,11 +206,16 @@
                 [SPTRequest requestItemFromPartialObject:playlists.items[[playlistIndex integerValue]] withSession:appDelegate.session callback:^(NSError *error, id object) {
                     if (!error) {
                         [appDelegate.trackProvider addPlaylist:object];
-                        
-                        // initialize track player, if neccessary
-                        if (appDelegate.trackPlayer.currentProvider == nil) {
-                            [appDelegate.trackPlayer playTrackProvider:appDelegate.trackProvider];
-                        }
+                    }
+                    else {
+                        MWLogDebug(@"%@", error);
+                    }
+                    
+                    // set track provider, if not already set and provider not empty
+                    if (appDelegate.trackPlayer.currentProvider == nil &&
+                        appDelegate.trackProvider.tracks.count != 0 &&
+                        [playlistIndex integerValue] == [indices.lastObject integerValue]) {
+                        [appDelegate.trackPlayer playTrackProvider:appDelegate.trackProvider];
                     }
                 }];
             }
