@@ -77,6 +77,7 @@
     [self.trackPlayer playTrackProvider:provider fromIndex:index];
     [self.trackPlayer pausePlayback];
     
+    self.indexOfCurrentTrack = index;
     self.currentProvider = provider;
 }
 
