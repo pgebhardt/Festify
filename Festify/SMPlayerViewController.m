@@ -130,35 +130,43 @@
 #pragma mark - Logic
 
 -(void)updatePlayButton:(BOOL)playing {
-    if (playing) {
-        [self.playPauseButton setImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
-    }
-    else {
-        [self.playPauseButton setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (playing) {
+            [self.playPauseButton setImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
+        }
+        else {
+            [self.playPauseButton setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
+        }
+    });
 }
 
 -(void)updatePlaybackPosition:(NSTimeInterval)playbackPosition andDuration:(NSTimeInterval)duration {
-    self.trackPosition.progress = playbackPosition / duration;
-    self.currentTimeView.text = [NSString stringWithFormat:@"%d:%02d",
-                                 (int)playbackPosition / 60, (int)playbackPosition % 60];
-    self.remainingTimeView.text = [NSString stringWithFormat:@"%d:%02d",
-                                   (int)(playbackPosition - duration) / 60,
-                                   (int)(duration - playbackPosition) % 60];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.trackPosition.progress = playbackPosition / duration;
+        self.currentTimeView.text = [NSString stringWithFormat:@"%d:%02d",
+                                     (int)playbackPosition / 60, (int)playbackPosition % 60];
+        self.remainingTimeView.text = [NSString stringWithFormat:@"%d:%02d",
+                                       (int)(playbackPosition - duration) / 60,
+                                       (int)(duration - playbackPosition) % 60];
+    });
 }
 
 -(void)updateTrackInfo:(SPTTrack*)track {
-    self.titleLabel.text = track.name;
-    self.artistLabel.text = [track.artists[0] name];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.titleLabel.text = track.name;
+        self.artistLabel.text = [track.artists[0] name];
+    });
 }
 
 -(void)updateCoverArt:(UIImage*)coverArt {
-    if (coverArt) {
-        self.coverImage.image = coverArt;
-    }
-    else {
-        self.coverImage.image = [UIImage imageNamed:@"DefaultCoverArt"];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (coverArt) {
+            self.coverImage.image = coverArt;
+        }
+        else {
+            self.coverImage.image = [UIImage imageNamed:@"DefaultCoverArt"];
+        }
+    });
 }
 
 #pragma mark - PGPlaylistViewDelegate
