@@ -246,7 +246,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="mDz-hY-dyl" detailTextLabel="H8a-hV-qpM" style="IBUITableViewCellStyleValue1" id="jKf-2c-ERv">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="limitPlaylistsCell" textLabel="mDz-hY-dyl" detailTextLabel="H8a-hV-qpM" style="IBUITableViewCellStyleValue1" id="jKf-2c-ERv">
                                         <rect key="frame" x="0.0" y="163" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jKf-2c-ERv" id="P3J-ig-IEK">
@@ -491,10 +491,10 @@
             </objects>
             <point key="canvasLocation" x="2456" y="-483"/>
         </scene>
-        <!--Table View Controller - Limit Playlists-->
+        <!--Setting Selection View Controller - Limit Playlists-->
         <scene sceneID="sCp-T7-ctI">
             <objects>
-                <tableViewController id="sGx-az-QSk" sceneMemberID="viewController">
+                <tableViewController id="sGx-az-QSk" customClass="SMSettingSelectionViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="tqz-Sy-YKH">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

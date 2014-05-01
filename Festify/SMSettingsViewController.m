@@ -17,6 +17,7 @@
 
 @interface SMSettingsViewController ()
 @property (nonatomic, strong) MFMailComposeViewController* mailComposer;
+@property (nonatomic, strong) NSArray* playlists;
 @end
 
 @implementation SMSettingsViewController
@@ -35,26 +36,47 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    // collect all playlists
+    SPTSession* session = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session;
+    [SPTRequest playlistsForUser:session.canonicalUsername withSession:session callback:^(NSError *error, id object) {
+        if (!error) {
+            self.playlists = [object items];
+            
+            // update UI
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+                if (self.playlists.count != self.indicesOfSelectedPlaylists.count) {
+                    cell.detailTextLabel.text = @"On";
+                }
+                else {
+                    cell.detailTextLabel.text = @"Off";
+                }
+            });
+        }
+    }];
+    
     // set switches to correct states
     [self.advertisementSwitch setOn:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"showLimitPlaylists"]) {
+        SMSettingSelectionViewController* viewController = (SMSettingSelectionViewController*)segue.destinationViewController;
+        
+        viewController.data = self.playlists;
+        viewController.indicesOfSelectedItems = self.indicesOfSelectedPlaylists;
+        viewController.dataAccessor = ^NSString*(id item) {
+            return [item name];
+        };
+        viewController.delegate = self;
+    }
 }
 
 #pragma mark - Actions
 
 -(void)toggleAdvertisementState {
-    if (self.advertisementSwitch.isOn) {
-        NSString* username = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername;
-        if (![[SMDiscoveryManager sharedInstance] advertiseProperty:[username dataUsingEncoding:NSUTF8StringEncoding]]) {
-            [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:@"Error"
-                                               subtitle:@"Turn On Bluetooth!"
-                                                   type:TSMessageNotificationTypeError];
-            
-            [self.advertisementSwitch setOn:NO animated:YES];
-        }
-    }
-    else {
-        [[SMDiscoveryManager sharedInstance] stopAdvertisingProperty];
+    if (self.delegate) {
+        [self.delegate settingsView:self didChangeAdvertisementState:self.advertisementSwitch.isOn];
     }
 }
 
@@ -102,6 +124,26 @@
             });
         }
     }
+}
+
+#pragma mark - SMSettingsSelectionViewDelegate
+
+-(void)settingsSelectionView:(SMSettingSelectionViewController *)settingsSelectionView didChangeIndicesOfSelectedItems:(NSArray *)indicesOfSelectedItems {
+    self.indicesOfSelectedPlaylists = [indicesOfSelectedItems mutableCopy];
+    if (self.delegate) {
+        [self.delegate settingsView:self didChangeAdvertisedPlaylistSelection:self.indicesOfSelectedPlaylists];
+    }
+    
+    // update UI
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+        if (self.playlists.count != self.indicesOfSelectedPlaylists.count) {
+            cell.detailTextLabel.text = @"On";
+        }
+        else {
+            cell.detailTextLabel.text = @"Off";
+        }
+    });
 }
 
 #pragma mark - MFMailComposeViewControllerDelegate

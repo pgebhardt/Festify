@@ -13,33 +13,8 @@
 
 @implementation SMUserDefaults
 
-+(void)restoreApplicationState {
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    
-    // load spotify session
-    id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsSpotifySessionKey];
-    appDelegate.session = [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
-    
-    // load advertisement state of discovery manager
-    NSNumber* advertisementState = [[NSUserDefaults standardUserDefaults] valueForKeyPath:SMUserDefaultsAdvertisementStateKey];
-    if ([advertisementState boolValue]) {
-        [[SMDiscoveryManager sharedInstance] advertiseProperty:[appDelegate.session.canonicalUsername dataUsingEncoding:NSUTF8StringEncoding]];
-    }
-    else {
-        [[SMDiscoveryManager sharedInstance] stopAdvertisingProperty];
-    }
-}
-
 +(void)saveApplicationState {
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-
-    // save current spotify session
-    [[NSUserDefaults standardUserDefaults] setValue:appDelegate.session.propertyListRepresentation
-                                         forKeyPath:SMUserDefaultsSpotifySessionKey];
-    
-    // save current discovery manager state
-    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:[SMDiscoveryManager sharedInstance].isAdvertisingProperty]
-                                         forKeyPath:SMUserDefaultsAdvertisementStateKey];
+    // force synchronization
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -47,16 +22,36 @@
     // clear NSUserDefault storage
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsAdvertisementStateKey];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsSpotifySessionKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsIndicesOfSelectedPlaylistsKey];
     
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+(void)setValue:(id)value forKey:(NSString *)key {
-    [[NSUserDefaults standardUserDefaults] setValue:value forKey:key];
++(SPTSession *)session {
+    id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsSpotifySessionKey];
+    return [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
 }
 
-+(id)valueForKey:(NSString *)key {
-    return [[NSUserDefaults standardUserDefaults] valueForKey:key];
++(void)setSession:(SPTSession *)session {
+    [[NSUserDefaults standardUserDefaults] setValue:session.propertyListRepresentation
+                                             forKey:SMUserDefaultsSpotifySessionKey];
+}
+
++(BOOL)advertisementState {
+    return [[[NSUserDefaults standardUserDefaults] valueForKeyPath:SMUserDefaultsAdvertisementStateKey] boolValue];
+}
+
++(void)setAdvertisementState:(BOOL)state {
+    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:state]
+                                             forKey:SMUserDefaultsAdvertisementStateKey];
+}
+
++(NSArray *)indicesOfSelectedPlaylists {
+    return [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsIndicesOfSelectedPlaylistsKey];
+}
+
++(void)setIndicesOfSelectedPlaylists:(NSArray *)indices {
+    [[NSUserDefaults standardUserDefaults] setValue:indices forKey:SMUserDefaultsIndicesOfSelectedPlaylistsKey];
 }
 
 @end

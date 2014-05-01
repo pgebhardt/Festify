@@ -14,17 +14,17 @@
 
 @interface SMFestifyViewController ()
 @property (nonatomic, strong) NSError* loginError;
+@property (nonatomic, strong) NSMutableArray* indicesOfSelectedPlaylists;
 @end
 
 @implementation SMFestifyViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [SMDiscoveryManager sharedInstance].delegate = self;
-    [SMUserDefaults restoreApplicationState];
     
-    // try to login to spotify api after some time, to avoid UI glitches
+    // load session from user defaults and try to login, but wait a bit to avoid UI glitches
+    ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session = [SMUserDefaults session];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self loginToSpotifyAPI];
     });
@@ -34,6 +34,7 @@
     if ([segue.identifier isEqualToString:@"showSettings"]) {
         SMSettingsViewController* viewController = (SMSettingsViewController*)segue.destinationViewController;
         
+        viewController.indicesOfSelectedPlaylists = self.indicesOfSelectedPlaylists;
         viewController.delegate = self;
     }
     else if ([segue.identifier isEqualToString:@"showLogin"]) {
@@ -55,6 +56,17 @@
                                            subtitle:@"Turn On Bluetooth!"
                                                type:TSMessageNotificationTypeError];
     }
+    else {
+        SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
+        
+        // initially clear playlists
+        [appDelegate.trackProvider clearAllTracks];
+        
+        // add own selected songs, if advertising is turned on
+        if ([SMDiscoveryManager sharedInstance].isAdvertisingProperty) {
+            [self addPlaylistsForUser:appDelegate.session.canonicalUsername indicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists callback:nil];
+        }
+    }
 }
 
 - (IBAction)spotifyButton:(id)sender {
@@ -64,22 +76,21 @@
 #pragma mark - PGDiscoveryManagerDelegate
 
 -(void)discoveryManager:(SMDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
-    NSLog(@"didDiscoverDevice: %@ withProperty: %@", devicename,
-          [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding]);
-    
-    // extract spotify username from device property
-    NSString* username = [[NSString alloc] initWithData:property encoding:NSUTF8StringEncoding];
+    // extract spotify username and indicesOfSelectedPlaylists from device property
+    NSDictionary* advertisedData = [NSJSONSerialization JSONObjectWithData:property options:0 error:nil];
     
     // add playlist for discovered user and notify user
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.trackProvider addPlaylistsFromUser:username session:appDelegate.session completion:^(NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+    __weak typeof(self) weakSelf = self;
+    [self addPlaylistsForUser:advertisedData[@"username"] indicesOfSelectedPlaylists:advertisedData[@"indicesOfSelectedPlaylists"] callback:^(NSError *error) {
+        if (!error) {
             // notify user
-            [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:[NSString stringWithFormat:@"Discovered %@!", username]
-                                               subtitle:@"All public songs added!"
-                                                   type:TSMessageNotificationTypeSuccess];
-        });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [TSMessage showNotificationInViewController:weakSelf
+                                                      title:[NSString stringWithFormat:@"Discovered %@!", advertisedData[@"username"]]
+                                                   subtitle:@"All public songs added!"
+                                                       type:TSMessageNotificationTypeSuccess];
+            });
+        }
     }];
 }
 
@@ -88,6 +99,21 @@
 -(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithError:(NSError *)error {
     self.loginError = error;
     [self loginToSpotifyAPI];
+
+    // initially fill list with selected playlists
+    if (!error) {
+        SPTSession* session = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session;
+        [SPTRequest playlistsForUser:session.canonicalUsername withSession:session callback:^(NSError *error, id object) {
+            if (!error) {
+                self.indicesOfSelectedPlaylists = [NSMutableArray array];
+                for (NSUInteger i = 0; i < [object items].count; ++i) {
+                    self.indicesOfSelectedPlaylists[i] = [NSNumber numberWithInteger:i];
+                }
+                
+                [SMUserDefaults setIndicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists];
+            }
+        }];
+    }
 }
 
 #pragma mark - PGSettingsViewDelegate
@@ -107,6 +133,22 @@
     [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
+-(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
+    if (![self setAdvertisementState:advertising]) {
+        [TSMessage showNotificationInViewController:settingsView
+                                              title:@"Error"
+                                           subtitle:@"Turn On Bluetooth!"
+                                               type:TSMessageNotificationTypeError];
+        
+        [settingsView.advertisementSwitch setOn:NO animated:YES];
+    }
+}
+
+-(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisedPlaylistSelection:(NSArray *)indicesOfSelectedPlaylists {
+    self.indicesOfSelectedPlaylists = [indicesOfSelectedPlaylists mutableCopy];
+    [SMUserDefaults setIndicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists];
+}
+
 #pragma mark - Helper
 
 -(void)loginToSpotifyAPI {
@@ -119,6 +161,63 @@
         }
         else {
             [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+            
+            // save new session
+            [SMUserDefaults setSession:appDelegate.session];
+
+            // restore saved user settings
+            self.indicesOfSelectedPlaylists = [[SMUserDefaults indicesOfSelectedPlaylists] mutableCopy];
+            [self setAdvertisementState:[SMUserDefaults advertisementState]];
+        }
+    }];
+}
+
+-(BOOL)setAdvertisementState:(BOOL)advertising {
+    BOOL success = YES;
+    
+    if (advertising) {
+        // create dictionary with advertisement data
+        NSDictionary* advertisedData = @{
+            @"username": ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername,
+            @"indicesOfSelectedPlaylists": self.indicesOfSelectedPlaylists
+            };
+        
+        // broadcast data
+        NSData* jsonString = [NSJSONSerialization dataWithJSONObject:advertisedData options:0 error:nil];
+        success = [[SMDiscoveryManager sharedInstance] advertiseProperty:jsonString];
+    }
+    else {
+        [[SMDiscoveryManager sharedInstance] stopAdvertisingProperty];
+    }
+    
+    // store advertisement state
+    [SMUserDefaults setAdvertisementState:(advertising && success)];
+    
+    return success;
+}
+
+-(void)addPlaylistsForUser:(NSString*)username indicesOfSelectedPlaylists:(NSArray*)indices callback:(void (^)(NSError* error))callback {
+    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
+    [SPTRequest playlistsForUser:username withSession:appDelegate.session callback:^(NSError *error, id object) {
+        if (!error) {
+            SPTPlaylistList* playlists = object;
+            
+            for (NSNumber* playlistIndex in indices) {
+                [SPTRequest requestItemFromPartialObject:playlists.items[[playlistIndex integerValue]] withSession:appDelegate.session callback:^(NSError *error, id object) {
+                    if (!error) {
+                        [appDelegate.trackProvider addPlaylist:object];
+                        
+                        // initialize track player, if neccessary
+                        if (appDelegate.trackPlayer.currentProvider == nil) {
+                            [appDelegate.trackPlayer playTrackProvider:appDelegate.trackProvider];
+                        }
+                    }
+                }];
+            }
+        }
+        
+        if (callback) {
+            callback(error);
         }
     }];
 }

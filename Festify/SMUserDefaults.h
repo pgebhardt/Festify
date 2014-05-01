@@ -7,18 +7,25 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Spotify/Spotify.h>
 
 // default application keys
 static NSString* const SMUserDefaultsSpotifySessionKey = @"spotifySession";
 static NSString* const SMUserDefaultsAdvertisementStateKey = @"advertisementState";
+static NSString* const SMUserDefaultsIndicesOfSelectedPlaylistsKey = @"indicesOfSelectedPlaylists";
 
 @interface SMUserDefaults : NSObject
 
-+(void)restoreApplicationState;
 +(void)saveApplicationState;
 +(void)clear;
 
-+(id)valueForKey:(NSString*)key;
-+(void)setValue:(id)value forKey:(NSString*)key;
++(SPTSession*)session;
++(void)setSession:(SPTSession*)session;
+
++(BOOL)advertisementState;
++(void)setAdvertisementState:(BOOL)state;
+
++(NSArray*)indicesOfSelectedPlaylists;
++(void)setIndicesOfSelectedPlaylists:(NSArray*)indices;
 
 @end
