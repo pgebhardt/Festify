@@ -33,8 +33,10 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showSettings"]) {
-        SMSettingsViewController* viewController = (SMSettingsViewController*)segue.destinationViewController;
+        UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
+        SMSettingsViewController* viewController = (SMSettingsViewController*)navigationController.viewControllers[0];
         
+        viewController.underlyingView = self.navigationController.view;
         viewController.indicesOfSelectedPlaylists = self.indicesOfSelectedPlaylists;
         viewController.delegate = self;
     }

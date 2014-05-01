@@ -349,14 +349,20 @@
                             <outlet property="delegate" destination="xvL-cP-knz" id="7Wr-Fd-xN1"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK"/>
+                    <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK">
+                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="done" id="cnL-ZN-5Lm">
+                            <connections>
+                                <action selector="done:" destination="xvL-cP-knz" id="4wm-5D-zqF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="advertisementSwitch" destination="Kji-CW-VPr" id="nbg-rt-kWH"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lbI-es-HbA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1930" y="-483"/>
+            <point key="canvasLocation" x="2456" y="-483"/>
         </scene>
         <!--Table View Controller - About-->
         <scene sceneID="o7n-oH-giH">
@@ -489,7 +495,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wrm-bD-9lc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2456" y="-483"/>
+            <point key="canvasLocation" x="2982" y="-483"/>
         </scene>
         <!--Setting Selection View Controller - Limit Playlists-->
         <scene sceneID="sCp-T7-ctI">
@@ -518,7 +524,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YI7-6u-tf6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2456" y="-1285"/>
+            <point key="canvasLocation" x="2982" y="-1301"/>
         </scene>
         <!--Navigation Controller - Item-->
         <scene sceneID="hre-Oi-6Az">
@@ -605,7 +611,7 @@
                     <navigationItem key="navigationItem" title="Festify" id="zxc-1E-uy0">
                         <barButtonItem key="leftBarButtonItem" image="Cog" id="d0C-Gl-J8Q">
                             <connections>
-                                <segue destination="xvL-cP-knz" kind="push" identifier="showSettings" id="zrd-CY-6sf"/>
+                                <segue destination="Gql-XW-kdF" kind="modal" identifier="showSettings" modalTransitionStyle="crossDissolve" id="zrd-CY-6sf"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="play" id="wXj-3i-kV3">
@@ -676,6 +682,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nxd-0R-nLg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2456" y="348"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="YHb-av-Mrk">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Gql-XW-kdF" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="GO9-rB-eQP"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="OD6-SX-qvR">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="xvL-cP-knz" kind="relationship" relationship="rootViewController" id="lqH-QO-AFP"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jDp-Zl-tSF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1930" y="-483"/>
         </scene>
     </scenes>
     <resources>

@@ -15,6 +15,8 @@
 #import "SMUserDefaults.h"
 #import "TSMessage.h"
 #import "MWLogging.h"
+#import "UIImage+ImageEffects.h"
+#import "UIView+ConvertToImage.h"
 
 @interface SMSettingsViewController ()
 @property (nonatomic, strong) MFMailComposeViewController* mailComposer;
@@ -61,6 +63,7 @@
     
     // set switches to correct states
     [self.advertisementSwitch setOn:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
+    [self createBlurredBackgroundFromView:self.underlyingView];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -82,6 +85,10 @@
     if (self.delegate) {
         [self.delegate settingsView:self didChangeAdvertisementState:self.advertisementSwitch.isOn];
     }
+}
+
+- (IBAction)done:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UITableViewDelegate
@@ -159,6 +166,19 @@
 }
 
 #pragma mark - Helper
+
+-(void)createBlurredBackgroundFromView:(UIView*)view {
+    // create image view containing a blured image of the current view controller.
+    // This makes the effect of a transparent playlist view
+    UIImage* image = [view convertToImage];
+    image = [image applyBlurWithRadius:15
+                             tintColor:[UIColor colorWithRed:236.0/255.0 green:235.0/255.0 blue:232.0/255.0 alpha:0.7]
+                 saturationDeltaFactor:1.3
+                             maskImage:nil];
+    
+    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:self.view.frame];
+    [(UIImageView*)self.tableView.backgroundView setImage:image];
+}
 
 +(NSString*)deviceString {
     size_t size;
