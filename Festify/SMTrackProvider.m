@@ -50,40 +50,6 @@
     return YES;
 }
 
--(void)addPlaylistsFromUser:(NSString *)username session:(SPTSession *)session completion:(void (^)(NSError *))completion {
-    // reguest and add all playlists of the given user
-    [SPTRequest playlistsForUser:username withSession:session callback:^(NSError *error, id object) {
-        if (error) {
-            if (completion) {
-                completion(error);
-            }
-        }
-        else {
-            SPTPlaylistList* playlists = object;
-            __block BOOL newPlaylistAdded = YES;
-            for (NSUInteger i = 0; i < playlists.items.count; ++i) {
-                [SPTRequest requestItemFromPartialObject:playlists.items[i] withSession:session callback:^(NSError* error, id object) {
-                    if (!error) {
-                        newPlaylistAdded &= [self addPlaylist:object];
-                    }
-                    
-                    if (i == playlists.items.count - 1) {
-                        NSError* error = nil;
-                        if (self.tracks.count == 0 || !newPlaylistAdded) {
-                            error = [NSError errorWithDomain:[NSBundle mainBundle].bundleIdentifier code:1 userInfo:nil];
-                        }
-                        
-                        if (completion) {
-                            completion(error);
-                        }
-                    }
-                }];
-            }
-        }
-    }];
-}
-
-
 #pragma mark - SPTTrackProvider
 
 -(NSArray *)tracks {
