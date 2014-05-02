@@ -17,10 +17,7 @@
 #import "MWLogging.h"
 
 @interface SMSettingsViewController ()
-
-@property (nonatomic, strong) MFMailComposeViewController* mailComposer;
 @property (nonatomic, strong) NSArray* playlists;
-
 @end
 
 @implementation SMSettingsViewController
@@ -28,10 +25,6 @@
 -(void)viewDidLoad {
     [super viewDidLoad];
 
-    // init properties
-    self.mailComposer = [[MFMailComposeViewController alloc] init];
-    self.mailComposer.mailComposeDelegate = self;
-    
     // connect switches to event handler and set them to correct state
     [self.advertisementSwitch setOn:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState) forControlEvents:UIControlEventValueChanged];
@@ -85,7 +78,7 @@
 #pragma mark - UITableViewDelegate
 
 -(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (section == 3) {
+    if (section == 4) {
         return [NSString stringWithFormat:@"©2014 Schnuffmade. %@ %@",
                 [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey],
                 [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"]];
@@ -102,18 +95,21 @@
     // handle actions for specific cell
     NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
     if ([reuseIdentifier isEqualToString:@"contactCell"]) {
+        MFMailComposeViewController* mailComposer = [[MFMailComposeViewController alloc] init];
+        mailComposer.mailComposeDelegate = self;
+        
         // show mail composer with some debug infos included
-        [self.mailComposer setSubject:@"Support"];
-        [self.mailComposer setToRecipients:@[@"support+festify@schnuffmade.com"]];
-        [self.mailComposer setMessageBody:[NSString stringWithFormat:@"\n\n-----\nApp: %@ %@ (%@)\nDevice: %@ (%@)",
-                                           [NSBundle mainBundle].bundleIdentifier,
-                                           [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
-                                           [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleVersionKey],
-                                           [SMSettingsViewController deviceString],
-                                           [UIDevice currentDevice].systemVersion] isHTML:NO];
+        [mailComposer setSubject:@"Support"];
+        [mailComposer setToRecipients:@[@"support+festify@schnuffmade.com"]];
+        [mailComposer setMessageBody:[NSString stringWithFormat:@"\n\n-----\nApp: %@ %@ (%@)\nDevice: %@ (%@)",
+                                      [NSBundle mainBundle].bundleIdentifier,
+                                      [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
+                                      [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleVersionKey],
+                                      [SMSettingsViewController deviceString],
+                                      [UIDevice currentDevice].systemVersion] isHTML:NO];
         
         // apply missing style properties and show mail composer
-        [self presentViewController:self.mailComposer animated:YES completion:nil];
+        [self presentViewController:mailComposer animated:YES completion:nil];
     }
     else if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
         // inform delegate to logout
