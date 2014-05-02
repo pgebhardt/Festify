@@ -130,18 +130,18 @@
 #pragma mark - PGLoginViewDelegate
 
 -(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithError:(NSError *)error {
+    // save current error object for possible handling by loginView and try to login to API
     self.loginError = error;
     [self loginToSpotifyAPI];
 
-    // initially fill list with selected playlists
+    // initially fill indicesOfSelectedPlaylists list with all playlists
     if (!error) {
         [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
             if (!error) {
-                self.indicesOfSelectedPlaylists = [NSMutableArray array];
+                self.indicesOfSelectedPlaylists = [NSMutableArray arrayWithCapacity:[object items].count];
                 for (NSUInteger i = 0; i < [object items].count; ++i) {
                     self.indicesOfSelectedPlaylists[i] = [NSNumber numberWithInteger:i];
                 }
-                
                 [SMUserDefaults setIndicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists];
             }
             else {
@@ -159,15 +159,13 @@
 -(void)settingsViewDidRequestLogout:(SMSettingsViewController *)settingsView {
     SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
 
-    // stop advertisiement and discovery and return to login screen
+    // stop advertisiement and discovery and clear all settings
     [[SMDiscoveryManager sharedInstance] stopDiscovering];
     [[SMDiscoveryManager sharedInstance] stopAdvertisingProperty];
-    
-    // log out of spotify API
-    [appDelegate logoutOfSpotifyAPI];
     [SMUserDefaults clear];
     
-    // show login screen
+    // log out of spotify API and show login screen
+    [appDelegate logoutOfSpotifyAPI];
     [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
@@ -179,6 +177,14 @@
                                                type:TSMessageNotificationTypeError];
         
         [settingsView.advertisementSwitch setOn:NO animated:YES];
+    }
+    else if ([SMDiscoveryManager sharedInstance].isDiscovering) {
+        // add own selected songs, if discovering is turned on
+        [self addPlaylistsForUser:self.session.canonicalUsername indicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists callback:^(NSError *error) {
+            if (error) {
+                MWLogWarning(@"%@", error);
+            }
+        }];
     }
 }
 
@@ -202,13 +208,13 @@
     
     __weak SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     [appDelegate loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
+        [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+        
         if (error) {
             MWLogWarning(@"%@", error);
             [self performSegueWithIdentifier:@"showLogin" sender:self];
         }
         else {
-            [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-            
             // save new session
             [SMUserDefaults setSession:appDelegate.session];
             self.session = appDelegate.session;
