@@ -7,6 +7,7 @@
 //
 
 #import "SMSettingSelectionViewController.h"
+#import "MSCellAccessory.h"
 
 @interface SMSettingSelectionViewController ()
 @property (nonatomic, strong) NSMutableArray* itemIsSelected;
@@ -63,10 +64,11 @@
         cell.textLabel.text = [self.data[indexPath.row] description];
     }
     if ([self.itemIsSelected[indexPath.row] boolValue]) {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        cell.accessoryView = [MSCellAccessory accessoryWithType:FLAT_CHECKMARK
+                                                          color:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
     }
     else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.accessoryView = nil;
     }
     
     return cell;
@@ -81,10 +83,11 @@
     self.itemIsSelected[indexPath.row] = [self.itemIsSelected[indexPath.row] boolValue] ? @NO : @YES;
     UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
     if ([self.itemIsSelected[indexPath.row] boolValue]) {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        cell.accessoryView = [MSCellAccessory accessoryWithType:FLAT_CHECKMARK
+                                                          color:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
     }
     else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.accessoryView = nil;
     }
 }
 

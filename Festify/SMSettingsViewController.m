@@ -15,12 +15,12 @@
 #import "SMUserDefaults.h"
 #import "TSMessage.h"
 #import "MWLogging.h"
-#import "UIImage+ImageEffects.h"
-#import "UIView+ConvertToImage.h"
 
 @interface SMSettingsViewController ()
+
 @property (nonatomic, strong) MFMailComposeViewController* mailComposer;
 @property (nonatomic, strong) NSArray* playlists;
+
 @end
 
 @implementation SMSettingsViewController
@@ -63,7 +63,6 @@
     
     // set switches to correct states
     [self.advertisementSwitch setOn:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
-    [self createBlurredBackgroundFromView:self.underlyingView];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -122,10 +121,7 @@
                                            [UIDevice currentDevice].systemVersion] isHTML:NO];
         
         // apply missing style properties and show mail composer
-        self.mailComposer.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
-        [self presentViewController:self.mailComposer animated:YES completion:^{
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-        }];
+        [self presentViewController:self.mailComposer animated:YES completion:nil];
     }
     else if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
         // inform delegate to logout
@@ -166,19 +162,6 @@
 }
 
 #pragma mark - Helper
-
--(void)createBlurredBackgroundFromView:(UIView*)view {
-    // create image view containing a blured image of the current view controller.
-    // This makes the effect of a transparent playlist view
-    UIImage* image = [view convertToImage];
-    image = [image applyBlurWithRadius:15
-                             tintColor:[UIColor colorWithRed:236.0/255.0 green:235.0/255.0 blue:232.0/255.0 alpha:0.7]
-                 saturationDeltaFactor:1.3
-                             maskImage:nil];
-    
-    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:self.view.frame];
-    [(UIImageView*)self.tableView.backgroundView setImage:image];
-}
 
 +(NSString*)deviceString {
     size_t size;

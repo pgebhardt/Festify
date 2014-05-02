@@ -24,7 +24,6 @@
 
 - (IBAction)done:(id)sender;
 
-@property (nonatomic, strong) UIView* underlyingView;
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
 @property (nonatomic, strong) NSMutableArray* indicesOfSelectedPlaylists;
 @property (nonatomic, weak) id<SMSettingsViewDelegate> delegate;

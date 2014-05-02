@@ -13,9 +13,7 @@
 #import "UIView+ConvertToImage.h"
 
 @interface SMPlaylistViewController ()
-
 @property (nonatomic, weak) SMTrackPlayer* trackPlayer;
-
 @end
 
 @implementation SMPlaylistViewController
@@ -86,7 +84,7 @@
     // This makes the effect of a transparent playlist view
     UIImage* image = [view convertToImage];
     image = [image applyBlurWithRadius:15
-                             tintColor:[UIColor colorWithRed:236.0/255.0 green:235.0/255.0 blue:232.0/255.0 alpha:0.7]
+                             tintColor:[UIColor colorWithRed:26.0/255.0 green:26.0/255.0 blue:26.0/255.0 alpha:0.7]
                  saturationDeltaFactor:1.3
                              maskImage:nil];
     

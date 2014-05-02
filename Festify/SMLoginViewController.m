@@ -23,7 +23,7 @@
     // This makes the effect of a transparent playlist view
     UIImage* image = [self.underlyingView convertToImage];
     image = [image applyBlurWithRadius:10
-                             tintColor:[UIColor colorWithRed:130.0/255.0 green:130.0/255.0 blue:130.0/255.0 alpha:0.5]
+                             tintColor:[UIColor colorWithRed:26.0/255.0 green:26.0/255.0 blue:26.0/255.0 alpha:0.5]
                  saturationDeltaFactor:1.3
                              maskImage:nil];
     

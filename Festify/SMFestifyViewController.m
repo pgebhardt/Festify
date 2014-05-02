@@ -36,7 +36,6 @@
         UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
         SMSettingsViewController* viewController = (SMSettingsViewController*)navigationController.viewControllers[0];
         
-        viewController.underlyingView = self.navigationController.view;
         viewController.indicesOfSelectedPlaylists = self.indicesOfSelectedPlaylists;
         viewController.delegate = self;
     }
@@ -146,7 +145,9 @@
     [SMUserDefaults clear];
     
     // show login screen
-    [self performSegueWithIdentifier:@"showLogin" sender:self];
+    [settingsView dismissViewControllerAnimated:YES completion:^{
+        [self performSegueWithIdentifier:@"showLogin" sender:self];
+    }];
 }
 
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
