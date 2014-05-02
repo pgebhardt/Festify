@@ -32,13 +32,10 @@
     self.mailComposer = [[MFMailComposeViewController alloc] init];
     self.mailComposer.mailComposeDelegate = self;
     
-    // connect switches to event handler
+    // connect switches to event handler and set them to correct state
+    [self.advertisementSwitch setOn:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState) forControlEvents:UIControlEventValueChanged];
-}
-
--(void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
+    
     // collect all playlists
     SPTSession* session = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session;
     [SPTRequest playlistsForUser:session.canonicalUsername withSession:session callback:^(NSError *error, id object) {
@@ -60,9 +57,6 @@
             MWLogWarning(@"%@", error);
         }
     }];
-    
-    // set switches to correct states
-    [self.advertisementSwitch setOn:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
