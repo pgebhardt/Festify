@@ -17,6 +17,7 @@
 @end
 
 #import "SMPlaylistViewController.h"
+#import "SMTrackPlayer.h"
 
 @interface SMPlayerViewController : UIViewController<SMPlaylistViewDelegate>
 
@@ -33,6 +34,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *currentTimeView;
 @property (weak, nonatomic) IBOutlet UILabel *remainingTimeView;
 
+@property (nonatomic, weak) SMTrackPlayer* trackPlayer;
 @property (nonatomic, weak) id<SMPlayerViewDelegate> delegate;
 
 @end

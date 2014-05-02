@@ -18,11 +18,13 @@
 @end
 
 #import "SMPlayerViewController.h"
+#import "SMTrackPlayer.h"
 
 @interface SMPlaylistViewController : UITableViewController<SMPlayerViewDelegate>
 
 - (IBAction)done:(id)sender;
 @property (nonatomic, strong) UIView* underlyingView;
+@property (nonatomic, weak) SMTrackPlayer* trackPlayer;
 @property (nonatomic, weak) id<SMPlaylistViewDelegate> delegate;
 
 @end

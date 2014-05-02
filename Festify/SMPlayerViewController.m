@@ -8,14 +8,6 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 #import "SMPlayerViewController.h"
-#import "SMAppDelegate.h"
-#import "SMTrackPlayer.h"
-
-@interface SMPlayerViewController ()
-
-@property (nonatomic, weak) SMTrackPlayer* trackPlayer;
-
-@end
 
 @implementation SMPlayerViewController
 
@@ -35,7 +27,6 @@
     [super viewWillAppear:animated];
 
     // observe playback state change and track change to update UI accordingly
-    self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     [self.trackPlayer addObserver:self forKeyPath:@"playing" options:0 context:nil];
     [self.trackPlayer addObserver:self forKeyPath:@"currentPlaybackPosition" options:0 context:nil];
     [self.trackPlayer addObserver:self forKeyPath:@"currentTrack" options:0 context:nil];
@@ -91,6 +82,7 @@
         UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
         SMPlaylistViewController* viewController = (SMPlaylistViewController*)navigationController.viewControllers[0];
         
+        viewController.trackPlayer = self.trackPlayer;
         viewController.underlyingView = self.navigationController.view;
         self.delegate = viewController;
         viewController.delegate = self;

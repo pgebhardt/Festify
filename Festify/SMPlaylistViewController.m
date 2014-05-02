@@ -8,12 +8,10 @@
 
 #import <Spotify/Spotify.h>
 #import "SMPlaylistViewController.h"
-#import "SMAppDelegate.h"
 #import "UIImage+ImageEffects.h"
 #import "UIView+ConvertToImage.h"
 
 @interface SMPlaylistViewController ()
-@property (nonatomic, weak) SMTrackPlayer* trackPlayer;
 @end
 
 @implementation SMPlaylistViewController
@@ -21,7 +19,6 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     [self createBlurredBackgroundFromView:self.underlyingView];
 }
 
