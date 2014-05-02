@@ -135,6 +135,16 @@
     }
 }
 
+-(void)clear {
+    // stop playback and cleanup track provider
+    [self pause];
+    
+    self.currentProvider = nil;
+    self.currentTrack = nil;
+    self.indexOfCurrentTrack = -1;
+    self.currentPlaybackPosition = 0.0;
+}
+
 #pragma mark - playback contols
 
 -(void)play {

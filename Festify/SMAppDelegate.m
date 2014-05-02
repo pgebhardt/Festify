@@ -59,7 +59,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
     
     // cleanup spotify
-    [self.trackPlayer pause];
+    [self.trackPlayer clear];
     [self.trackProvider clearAllTracks];
     self.session = nil;
 }
