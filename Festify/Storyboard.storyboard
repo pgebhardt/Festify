@@ -756,7 +756,15 @@
                                 <action selector="done:" destination="aqi-hv-qKh" id="Gf6-Ic-Gcp"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Select All" id="Qqd-u1-Xyk">
+                            <connections>
+                                <action selector="toggleSelection:" destination="aqi-hv-qKh" id="9q8-nn-bEo"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="selectionButton" destination="Qqd-u1-Xyk" id="bWY-tD-Nvx"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zHf-ya-4kX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

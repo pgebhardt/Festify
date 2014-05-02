@@ -29,7 +29,8 @@
         self.itemIsSelected[[selectedItem integerValue]] = @YES;
     }
     
-    // blur background
+    // update UI
+    self.selectionButton.title = self.indicesOfSelectedItems.count == self.data.count ? @"Clear All" : @"Select All";
     [self createBlurredBackgroundFromView:self.underlyingView];
 }
 
@@ -50,6 +51,23 @@
 
 - (IBAction)done:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)toggleSelection:(id)sender {
+    if ([self.selectionButton.title isEqualToString:@"Select All"]) {
+        self.selectionButton.title = @"Clear All";
+        for (NSUInteger i = 0; i < self.data.count; ++i) {
+            self.itemIsSelected[i] = @YES;
+        }
+    }
+    else {
+        self.selectionButton.title = @"Select All";
+        for (NSUInteger i = 0; i < self.data.count; ++i) {
+            self.itemIsSelected[i] = @NO;
+        }
+    }
+    
+    [self.tableView reloadData];
 }
 
 
@@ -95,9 +113,17 @@
     if ([self.itemIsSelected[indexPath.row] boolValue]) {
         cell.accessoryView = [MSCellAccessory accessoryWithType:FLAT_CHECKMARK
                                                           color:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
+        
+        // check if all items are selected
+        BOOL allItemsSelected = YES;
+        for (NSNumber* itemIsSelected in self.itemIsSelected) {
+            allItemsSelected &= itemIsSelected.boolValue;
+        }
+        self.selectionButton.title = allItemsSelected ? @"Clear All" : @"Select All";
     }
     else {
         cell.accessoryView = nil;
+        self.selectionButton.title = @"Select All";
     }
 }
 
