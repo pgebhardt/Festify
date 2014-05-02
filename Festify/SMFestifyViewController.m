@@ -144,9 +144,7 @@
     [SMUserDefaults clear];
     
     // show login screen
-    [settingsView dismissViewControllerAnimated:YES completion:^{
-        [self performSegueWithIdentifier:@"showLogin" sender:self];
-    }];
+    [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {

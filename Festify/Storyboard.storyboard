@@ -539,7 +539,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Limit Playlists" id="XKP-wi-3W4">
-                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="GXn-xz-1pR">
+                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="done" id="GXn-xz-1pR">
                             <connections>
                                 <action selector="done:" destination="sGx-az-QSk" id="njn-Gu-p5X"/>
                             </connections>
