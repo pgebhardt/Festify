@@ -8,6 +8,8 @@
 
 #import "SMSettingSelectionViewController.h"
 #import "MSCellAccessory.h"
+#import "UIImage+ImageEffects.h"
+#import "UIView+ConvertToImage.h"
 
 @interface SMSettingSelectionViewController ()
 @property (nonatomic, strong) NSMutableArray* itemIsSelected;
@@ -26,6 +28,9 @@
     for (NSNumber* selectedItem in self.indicesOfSelectedItems) {
         self.itemIsSelected[[selectedItem integerValue]] = @YES;
     }
+    
+    // blur background
+    [self createBlurredBackgroundFromView:self.underlyingView];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -42,6 +47,11 @@
         [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:[indicesOfSelectedItems copy]];
     }
 }
+
+- (IBAction)done:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 #pragma mark - Table view data source
 
@@ -89,6 +99,21 @@
     else {
         cell.accessoryView = nil;
     }
+}
+
+#pragma mark - Helper
+
+-(void)createBlurredBackgroundFromView:(UIView*)view {
+    // create image view containing a blured image of the current view controller.
+    // This makes the effect of a transparent playlist view
+    UIImage* image = [view convertToImage];
+    image = [image applyBlurWithRadius:15
+                             tintColor:[UIColor colorWithRed:26.0/255.0 green:26.0/255.0 blue:26.0/255.0 alpha:0.7]
+                 saturationDeltaFactor:1.3
+                             maskImage:nil];
+    
+    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:self.view.frame];
+    [(UIImageView*)self.tableView.backgroundView setImage:image];
 }
 
 @end

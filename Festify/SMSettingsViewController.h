@@ -22,8 +22,6 @@
 
 @interface SMSettingsViewController : UITableViewController<SMSettinsSelectionViewDelegate ,MFMailComposeViewControllerDelegate>
 
-- (IBAction)done:(id)sender;
-
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
 @property (nonatomic, strong) NSMutableArray* indicesOfSelectedPlaylists;
 @property (nonatomic, weak) id<SMSettingsViewDelegate> delegate;

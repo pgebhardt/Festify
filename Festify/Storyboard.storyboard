@@ -278,7 +278,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.20000001789999999" green="0.20000001789999999" blue="0.20000001789999999" alpha="1" colorSpace="deviceRGB"/>
                                         <connections>
-                                            <segue destination="sGx-az-QSk" kind="push" identifier="showLimitPlaylists" id="k2P-C3-v2V"/>
+                                            <segue destination="fWJ-us-MGe" kind="modal" identifier="showLimitPlaylists" modalTransitionStyle="crossDissolve" id="k2P-C3-v2V"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -358,20 +358,14 @@
                             <outlet property="delegate" destination="xvL-cP-knz" id="7Wr-Fd-xN1"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK">
-                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="done" id="cnL-ZN-5Lm">
-                            <connections>
-                                <action selector="done:" destination="xvL-cP-knz" id="4wm-5D-zqF"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK"/>
                     <connections>
                         <outlet property="advertisementSwitch" destination="Kji-CW-VPr" id="nbg-rt-kWH"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lbI-es-HbA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2456" y="-483"/>
+            <point key="canvasLocation" x="1930" y="-491"/>
         </scene>
         <!--Table View Controller - About-->
         <scene sceneID="o7n-oH-giH">
@@ -504,7 +498,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wrm-bD-9lc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2982" y="-483"/>
+            <point key="canvasLocation" x="2456" y="-1252"/>
         </scene>
         <!--Setting Selection View Controller - Limit Playlists-->
         <scene sceneID="sCp-T7-ctI">
@@ -532,7 +526,7 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
-                                <color key="backgroundColor" red="0.20000001788139343" green="0.20000001788139343" blue="0.20000001788139343" alpha="1" colorSpace="deviceRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -540,11 +534,17 @@
                             <outlet property="delegate" destination="sGx-az-QSk" id="6zJ-p3-48P"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Limit Playlists" id="XKP-wi-3W4"/>
+                    <navigationItem key="navigationItem" title="Limit Playlists" id="XKP-wi-3W4">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="GXn-xz-1pR">
+                            <connections>
+                                <action selector="done:" destination="sGx-az-QSk" id="njn-Gu-p5X"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YI7-6u-tf6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2982" y="-1301"/>
+            <point key="canvasLocation" x="2982" y="-491"/>
         </scene>
         <!--Navigation Controller - Item-->
         <scene sceneID="hre-Oi-6Az">
@@ -635,7 +635,7 @@
                     <navigationItem key="navigationItem" title="Festify" id="zxc-1E-uy0">
                         <barButtonItem key="leftBarButtonItem" image="Cog" id="d0C-Gl-J8Q">
                             <connections>
-                                <segue destination="Gql-XW-kdF" kind="modal" identifier="showSettings" modalTransitionStyle="crossDissolve" id="zrd-CY-6sf"/>
+                                <segue destination="xvL-cP-knz" kind="push" identifier="showSettings" id="LMi-0D-3iI"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="play" id="wXj-3i-kV3">
@@ -713,13 +713,12 @@
             <point key="canvasLocation" x="2456" y="348"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="YHb-av-Mrk">
+        <scene sceneID="Ss2-Mh-gRr">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Gql-XW-kdF" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fWJ-us-MGe" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="GO9-rB-eQP"/>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="OD6-SX-qvR">
+                    <navigationItem key="navigationItem" id="LQy-dc-PHV"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="UPq-Vd-0HR">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.5647059083" green="0.74117648599999997" blue="0.26274511220000002" alpha="1" colorSpace="deviceRGB"/>
@@ -730,12 +729,12 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="xvL-cP-knz" kind="relationship" relationship="rootViewController" id="lqH-QO-AFP"/>
+                        <segue destination="sGx-az-QSk" kind="relationship" relationship="rootViewController" id="n4j-rp-Z89"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jDp-Zl-tSF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dPe-2s-Oup" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1930" y="-483"/>
+            <point key="canvasLocation" x="2456" y="-491"/>
         </scene>
     </scenes>
     <resources>

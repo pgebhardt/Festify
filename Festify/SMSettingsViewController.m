@@ -67,8 +67,10 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showLimitPlaylists"]) {
-        SMSettingSelectionViewController* viewController = (SMSettingSelectionViewController*)segue.destinationViewController;
+        UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
+        SMSettingSelectionViewController* viewController = (SMSettingSelectionViewController*)navigationController.viewControllers[0];
         
+        viewController.underlyingView = self.navigationController.view;
         viewController.data = self.playlists;
         viewController.indicesOfSelectedItems = self.indicesOfSelectedPlaylists;
         viewController.dataAccessor = ^NSString*(id item) {
@@ -84,10 +86,6 @@
     if (self.delegate) {
         [self.delegate settingsView:self didChangeAdvertisementState:self.advertisementSwitch.isOn];
     }
-}
-
-- (IBAction)done:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UITableViewDelegate

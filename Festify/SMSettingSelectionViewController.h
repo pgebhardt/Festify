@@ -18,6 +18,9 @@
 
 @interface SMSettingSelectionViewController : UITableViewController
 
+- (IBAction)done:(id)sender;
+
+@property (nonatomic, strong) UIView* underlyingView;
 @property (nonatomic, strong) NSArray* data;
 @property (nonatomic, strong) NSArray* indicesOfSelectedItems;
 @property (nonatomic, copy) NSString* (^dataAccessor)(id item);
