@@ -11,6 +11,7 @@
 #import "TSMessage.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
+#import "Appirater.h"
 
 // spotify authentication constants
 // TODO: replace with post-beta IDs and adjust the App's URL type
@@ -75,7 +76,20 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
     [TSMessage addCustomDesignFromFileWithName:@"spotifymessagedesign.json"];
 
-     return YES;
+    // config appirater rating request system
+    // TODO: [Appirater setAppId:@"123456789"];
+#ifdef DEBUG
+    [Appirater setDebug:YES];
+#else
+    [Appirater setDebug:NO];
+#endif
+    [Appirater setDaysUntilPrompt:7];
+    [Appirater setUsesUntilPrompt:5];
+    [Appirater setSignificantEventsUntilPrompt:-1];
+    [Appirater setTimeBeforeReminding:2];
+    [Appirater appLaunched:YES];
+    
+    return YES;
 }
 
 -(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
@@ -123,5 +137,8 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
             }
         }];
     }
+    
+    [Appirater appEnteredForeground:YES];
 }
+
 @end

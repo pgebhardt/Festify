@@ -79,7 +79,7 @@
 
 -(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (section == self.tableView.numberOfSections - 1) {
-        return [NSString stringWithFormat:@"©2014 Schnuffmade. %@ %@",
+        return [NSString stringWithFormat:@"©2014 SchnuffMade. %@ %@",
                 [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey],
                 [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"]];
     }
