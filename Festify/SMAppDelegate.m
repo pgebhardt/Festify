@@ -123,7 +123,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 
 -(void)applicationWillEnterForeground:(UIApplication *)application {
     // assume spotify did logout when player is not playing
-    if (!self.trackPlayer.playing) {
+    if (!self.trackPlayer.playing && self.session) {
         [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
         [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
             [MBProgressHUD hideAllHUDsForView:self.window.subviews.lastObject animated:YES];
