@@ -72,7 +72,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.trackProvider = [[SMTrackProvider alloc] init];
 
     // adjust default colors to match spotify color schema
-    [application setStatusBarHidden:NO];
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
     [TSMessage addCustomDesignFromFileWithName:@"spotifymessagedesign.json"];
 

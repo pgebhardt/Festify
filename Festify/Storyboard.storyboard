@@ -533,6 +533,7 @@
                     <tabBarItem key="tabBarItem" title="Item" id="bCQ-hQ-GZP"/>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="0Pt-9o-Eir"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="eRt-XQ-gGZ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
