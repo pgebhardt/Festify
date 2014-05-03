@@ -30,8 +30,7 @@
     [self updateAdvertisiementSwitch];
     
     // collect all playlists
-    SPTSession* session = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session;
-    [SPTRequest playlistsForUser:session.canonicalUsername withSession:session callback:^(NSError *error, id object) {
+    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
         if (!error) {
             self.playlists = [object items];
             

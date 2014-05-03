@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
+#import <SPotify/Spotify.h>
 #import "SMSettingSelectionViewController.h"
 
 @class SMSettingsViewController;
@@ -25,6 +26,7 @@
 
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
 @property (nonatomic, strong) NSMutableArray* indicesOfSelectedPlaylists;
+@property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, weak) id<SMSettingsViewDelegate> delegate;
 
 @end

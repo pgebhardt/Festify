@@ -53,6 +53,7 @@
     if ([segue.identifier isEqualToString:@"showSettings"]) {
         SMSettingsViewController* viewController = (SMSettingsViewController*)segue.destinationViewController;
         
+        viewController.session = self.session;
         viewController.indicesOfSelectedPlaylists = self.indicesOfSelectedPlaylists;
         viewController.delegate = self;
     }
