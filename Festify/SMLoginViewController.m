@@ -19,6 +19,9 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    // hide status bar
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    
     // create image view containing a blured image of the current view controller.
     // This makes the effect of a transparent playlist view
     UIImage* image = [self.underlyingView convertToImage];
@@ -45,6 +48,12 @@
                                                type:TSMessageNotificationTypeError];
         self.loginError = nil;
     }
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 - (IBAction)login:(id)sender {
