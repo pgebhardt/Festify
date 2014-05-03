@@ -42,6 +42,7 @@
 		5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F88928F18FEFA6000620589 /* SMLoginViewController.m */; };
 		5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F89FD5C1906339A00752072 /* SMUserDefaults.m */; };
 		5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2079A1190C1DB700AAE15A /* MessageUI.framework */; };
+		5FB66E0A19152CBC0061A5FE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BF190C557F0077F648 /* StoreKit.framework */; };
 		A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CEA90CA33A460DB3A7DAF3 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -127,6 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FB66E0A19152CBC0061A5FE /* StoreKit.framework in Frameworks */,
 				5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */,
 				5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */,
 				5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */,
