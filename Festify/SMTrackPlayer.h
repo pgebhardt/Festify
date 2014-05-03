@@ -32,5 +32,6 @@
 @property (nonatomic, readonly) BOOL playing;
 @property (nonatomic, readonly) SPTTrack* currentTrack;
 @property (nonatomic, readonly) UIImage* coverArtOfCurrentTrack;
+@property (nonatomic, readonly) SPTSession* session;
 
 @end
