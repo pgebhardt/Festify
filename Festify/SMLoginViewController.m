@@ -58,12 +58,12 @@
 
 - (IBAction)login:(id)sender {
     // login to spotify api
-    [(SMAppDelegate*)[UIApplication sharedApplication].delegate requestSpotifySessionWithCompletionHandler:^(NSError *error) {
+    [(SMAppDelegate*)[UIApplication sharedApplication].delegate requestSpotifySessionWithCompletionHandler:^(SPTSession* session, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             // return to main screen
             [self dismissViewControllerAnimated:YES completion:^{
                 if (self.delegate) {
-                    [self.delegate loginView:self didCompleteLoginWithError:error];
+                    [self.delegate loginView:self didCompleteLoginWithSession:session error:error];
                 }
             }];
         });

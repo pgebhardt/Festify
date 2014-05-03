@@ -13,7 +13,7 @@
 
 @protocol SMLoginViewDelegate <NSObject>
 
--(void)loginView:(SMLoginViewController*)loginView didCompleteLoginWithError:(NSError*)error;
+-(void)loginView:(SMLoginViewController*)loginView didCompleteLoginWithSession:(SPTSession*)session error:(NSError*)error;
 
 @end
 

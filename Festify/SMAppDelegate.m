@@ -19,7 +19,7 @@ static NSString* const kClientID = @"spotify-ios-sdk-beta";
 static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 
 @interface SMAppDelegate ()
-@property (nonatomic, copy) void (^loginCallback)(NSError* error);
+@property (nonatomic, copy) void (^loginCallback)(SPTSession* session, NSError* error);
 @end
 
 @implementation SMAppDelegate
@@ -28,7 +28,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [self.trackPlayer handleRemoteEvent:event];
 }
 
--(void)requestSpotifySessionWithCompletionHandler:(void (^)(NSError *))completion {
+-(void)requestSpotifySessionWithCompletionHandler:(void (^)(SPTSession*, NSError *))completion {
     // set login callback
     self.loginCallback = completion;
     
@@ -41,36 +41,14 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [[UIApplication sharedApplication] openURL:loginURL];
 }
 
--(void)loginToSpotifyAPIWithCompletionHandler:(void (^)(NSError *))completion {
-    // login to track player to Spotify
-    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-        if (!error) {
-            // start receiving remote control events
-            [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-        }
-        
-        if (completion) {
-            completion(error);
-        }
-    }];
-}
-
--(void)logoutOfSpotifyAPI {
-    // stop receiving remote control events
-    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
-    
-    // cleanup spotify
-    [self.trackPlayer clear];
-    [self.trackProvider clearAllTracks];
-    self.session = nil;
-}
-
 #pragma mark - UIApplicationDelegate
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.trackPlayer = [SMTrackPlayer trackPlayerWithCompanyName:[NSBundle mainBundle].bundleIdentifier
                                                          appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
-    self.trackProvider = [[SMTrackProvider alloc] init];
+
+    // start receiving remote control events
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 
     // adjust default colors to match spotify color schema
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -95,13 +73,9 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
         [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url
                                             tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://192.168.178.28:1234/swap"]
                                                                  callback:^(NSError *error, SPTSession *session) {
-            if (!error) {
-                self.session = session;
-            }
-
             // call callback to inform about completed session request
             if (self.loginCallback) {
-                self.loginCallback(error);
+                self.loginCallback(session, error);
             }
         }];
         
@@ -123,9 +97,9 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 
 -(void)applicationWillEnterForeground:(UIApplication *)application {
     // assume spotify did logout when player is not playing
-    if (!self.trackPlayer.playing && self.session) {
+    if (!self.trackPlayer.playing && self.trackPlayer.session) {
         [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
-        [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+        [self.trackPlayer enablePlaybackWithSession:self.trackPlayer.session callback:^(NSError *error) {
             [MBProgressHUD hideAllHUDsForView:self.window.subviews.lastObject animated:YES];
             
             if (error) {

@@ -30,10 +30,10 @@
     [super viewDidLoad];
     [SMDiscoveryManager sharedInstance].delegate = self;
     
-    // obtain track handling objects from app delegate
+    // init properties
     SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     self.trackPlayer = appDelegate.trackPlayer;
-    self.trackProvider = appDelegate.trackProvider;
+    self.trackProvider = [[SMTrackProvider alloc] init];
     
     // observe currently played track provider, to activate play button
     [self.trackPlayer addObserver:self forKeyPath:@"currentProvider" options:0 context:nil];
@@ -42,9 +42,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStopDiscovering object:nil];
     
-    // load session from user defaults and try to login, but wait a bit to avoid UI glitches
-    appDelegate.session = [SMUserDefaults session];
+    // load saved user defaults
+    self.session = [SMUserDefaults session];
+    self.indicesOfSelectedPlaylists = [[SMUserDefaults indicesOfSelectedPlaylists] mutableCopy];
+    // restore advertisement state and try to login, but wait a bit to avoid UI and bluetooth glitches
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self setAdvertisementState:[SMUserDefaults advertisementState]];
         [self loginToSpotifyAPI];
     });
 }
@@ -126,7 +129,6 @@
         if ([SMDiscoveryManager sharedInstance].isDiscovering) {
             [self.festifyButton setTitleColor:[UIColor colorWithRed:206.0/255.0 green:0.0 blue:0.0 alpha:1.0]
                                      forState:UIControlStateNormal];
-            
         }
         else {
             [self.festifyButton setTitleColor:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]
@@ -161,18 +163,18 @@
 
 #pragma mark - PGLoginViewDelegate
 
--(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithError:(NSError *)error {
-    // save current error object for possible handling by loginView and try to login to API
-    self.loginError = error;
-    [self loginToSpotifyAPI];
-
-    // initially fill indicesOfSelectedPlaylists list with all playlists
+-(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithSession:(SPTSession *)session error:(NSError *)error {
     if (!error) {
+        // save session object to user defaults
+        self.session = session;
+        [SMUserDefaults setSession:session];
+
+        // initialize indices list to all playlists are selected
+        self.indicesOfSelectedPlaylists = [NSMutableArray array];
         [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
             if (!error) {
-                self.indicesOfSelectedPlaylists = [NSMutableArray arrayWithCapacity:[object items].count];
                 for (NSUInteger i = 0; i < [object items].count; ++i) {
-                    self.indicesOfSelectedPlaylists[i] = [NSNumber numberWithInteger:i];
+                    [self.indicesOfSelectedPlaylists addObject:[NSNumber numberWithInteger:i]];
                 }
                 [SMUserDefaults setIndicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists];
             }
@@ -181,23 +183,25 @@
             }
         }];
     }
-    else {
-        MWLogWarning(@"%@", error);
-    }
+
+    // try to login with new session
+    self.loginError = error;
+    [self loginToSpotifyAPI];
 }
 
 #pragma mark - PGSettingsViewDelegate
 
 -(void)settingsViewDidRequestLogout:(SMSettingsViewController *)settingsView {
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-
     // stop advertisiement and discovery and clear all settings
     [[SMDiscoveryManager sharedInstance] stopDiscovering];
     [[SMDiscoveryManager sharedInstance] stopAdvertising];
     [SMUserDefaults clear];
     
-    // log out of spotify API and show login screen
-    [appDelegate logoutOfSpotifyAPI];
+    // cleanup Spotify objects
+    self.session = nil;
+    [self.trackPlayer clear];
+    [self.trackProvider clearAllTracks];
+    
     [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
@@ -237,47 +241,32 @@
 
 -(void)loginToSpotifyAPI {
     [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
-    
-    __weak SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate loginToSpotifyAPIWithCompletionHandler:^(NSError *error) {
+    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
         [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
         
         if (error) {
-            MWLogWarning(@"%@", error);
             [self performSegueWithIdentifier:@"showLogin" sender:self];
-        }
-        else {
-            // save new session
-            [SMUserDefaults setSession:appDelegate.session];
-            self.session = appDelegate.session;
-
-            // restore saved user settings
-            self.indicesOfSelectedPlaylists = [[SMUserDefaults indicesOfSelectedPlaylists] mutableCopy];
-            [self setAdvertisementState:[SMUserDefaults advertisementState]];
         }
     }];
 }
 
 -(BOOL)setAdvertisementState:(BOOL)advertising {
-    BOOL success = YES;
+    BOOL success = NO;
     
-    if (advertising) {
-        // create dictionary with advertisement data
-        NSDictionary* advertisedData = @{
-            @"username": ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session.canonicalUsername,
-            @"indicesOfSelectedPlaylists": self.indicesOfSelectedPlaylists
-            };
-        
-        // broadcast data
-        NSData* jsonString = [NSJSONSerialization dataWithJSONObject:advertisedData options:0 error:nil];
+    if (advertising && self.indicesOfSelectedPlaylists) {
+        // broadcast username and indices of selected playlists
+        NSData* jsonString = [NSJSONSerialization dataWithJSONObject:@{@"username": self.session.canonicalUsername,
+                                                                       @"indicesOfSelectedPlaylists": self.indicesOfSelectedPlaylists}
+                                                             options:0 error:nil];
         success = [[SMDiscoveryManager sharedInstance] advertiseProperty:jsonString];
     }
-    else {
+    else if (!advertising) {
         [[SMDiscoveryManager sharedInstance] stopAdvertising];
+        success = YES;
     }
     
     // store advertisement state
-    [SMUserDefaults setAdvertisementState:(advertising && success)];
+    [SMUserDefaults setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertising];
     
     return success;
 }
