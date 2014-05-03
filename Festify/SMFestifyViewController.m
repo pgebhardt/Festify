@@ -100,7 +100,15 @@
 }
 
 - (IBAction)spotifyButton:(id)sender {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.spotify.com"]];
+    NSURL* url = nil;
+    if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
+        url = [NSURL URLWithString:@"spotify://open"];
+    }
+    else {
+        url = [NSURL URLWithString:@"http://www.spotify.com"];
+    }
+    
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
