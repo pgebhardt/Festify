@@ -26,8 +26,8 @@
     [super viewDidLoad];
 
     // connect switches to event handler and set them to correct state
-    [self.advertisementSwitch setOn:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
-    [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState) forControlEvents:UIControlEventValueChanged];
+    [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState:) forControlEvents:UIControlEventValueChanged];
+    [self updateAdvertisiementSwitch];
     
     // collect all playlists
     SPTSession* session = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).session;
@@ -36,20 +36,27 @@
             self.playlists = [object items];
             
             // update UI
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-                if (self.playlists.count != self.indicesOfSelectedPlaylists.count) {
-                    cell.detailTextLabel.text = @"On";
-                }
-                else {
-                    cell.detailTextLabel.text = @"Off";
-                }
-            });
+            [self updateLimitPlaylistsCell];
         }
         else {
             MWLogWarning(@"%@", error);
         }
     }];
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // observe changes in advertisement state
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAdvertisiementSwitch) name:SMDiscoveryManagerDidStartAdvertising object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAdvertisiementSwitch) name:SMDiscoveryManagerDidStopAdvertising object:nil];    
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    // remove observations
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -69,10 +76,33 @@
 
 #pragma mark - Actions
 
--(void)toggleAdvertisementState {
+-(void)toggleAdvertisementState:(id)sender {
     if (self.delegate) {
         [self.delegate settingsView:self didChangeAdvertisementState:self.advertisementSwitch.isOn];
     }
+}
+
+-(void)updateLimitPlaylistsCell {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+        if (self.playlists.count != self.indicesOfSelectedPlaylists.count) {
+            cell.detailTextLabel.text = @"On";
+        }
+        else {
+            cell.detailTextLabel.text = @"Off";
+        }
+    });
+}
+
+-(void)updateAdvertisiementSwitch {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([SMDiscoveryManager sharedInstance].isAdvertising) {
+            [self.advertisementSwitch setOn:YES animated:YES];
+        }
+        else {
+            [self.advertisementSwitch setOn:NO animated:YES];
+        }
+    });
 }
 
 #pragma mark - UITableViewDelegate
@@ -132,15 +162,7 @@
     self.indicesOfSelectedPlaylists = [indicesOfSelectedItems mutableCopy];
     
     // update UI
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-        if (self.playlists.count != self.indicesOfSelectedPlaylists.count) {
-            cell.detailTextLabel.text = @"On";
-        }
-        else {
-            cell.detailTextLabel.text = @"Off";
-        }
-    });
+    [self updateLimitPlaylistsCell];
     
     // inform delegate
     if (self.delegate) {

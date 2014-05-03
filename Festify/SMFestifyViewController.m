@@ -38,6 +38,10 @@
     // observe currently played track provider, to activate play button
     [self.trackPlayer addObserver:self forKeyPath:@"currentProvider" options:0 context:nil];
     
+    // listen to discovery manager notifications to update UI correctly
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStopDiscovering object:nil];
+    
     // load session from user defaults and try to login, but wait a bit to avoid UI glitches
     appDelegate.session = [SMUserDefaults session];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -80,21 +84,26 @@
 #pragma  mark - Actions
 
 - (IBAction)festify:(id)sender {
-    // start discovering playlists
-    if (![[SMDiscoveryManager sharedInstance] startDiscovering]) {
-        [TSMessage showNotificationInViewController:self.navigationController
-                                              title:@"Error"
-                                           subtitle:@"Turn On Bluetooth!"
-                                               type:TSMessageNotificationTypeError];
+    // start or stop discovering mode
+    if ([SMDiscoveryManager sharedInstance].isDiscovering) {
+        [[SMDiscoveryManager sharedInstance] stopDiscovering];
     }
     else {
-        // add own selected songs, if advertising is turned on
-        if ([SMDiscoveryManager sharedInstance].isAdvertisingProperty) {
-            [self addPlaylistsForUser:self.session.canonicalUsername indicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists callback:^(NSError *error) {
-                if (error) {
-                    MWLogWarning(@"%@", error);
-                }
-            }];
+        if ([[SMDiscoveryManager sharedInstance] startDiscovering]) {
+            // add own selected songs, if advertising is turned on
+            if ([SMDiscoveryManager sharedInstance].isAdvertising) {
+                [self addPlaylistsForUser:self.session.canonicalUsername indicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists callback:^(NSError *error) {
+                    if (error) {
+                        MWLogWarning(@"%@", error);
+                    }
+                }];
+            }
+        }
+        else {
+            [TSMessage showNotificationInViewController:self.navigationController
+                                                  title:@"Error"
+                                               subtitle:@"Turn On Bluetooth!"
+                                                   type:TSMessageNotificationTypeError];
         }
     }
 }
@@ -109,6 +118,20 @@
     }
     
     [[UIApplication sharedApplication] openURL:url];
+}
+
+-(void)updateFestifyButton:(id)sender {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([SMDiscoveryManager sharedInstance].isDiscovering) {
+            [self.festifyButton setTitleColor:[UIColor colorWithRed:206.0/255.0 green:0.0 blue:0.0 alpha:1.0]
+                                     forState:UIControlStateNormal];
+            
+        }
+        else {
+            [self.festifyButton setTitleColor:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]
+                                     forState:UIControlStateNormal];
+        }
+    });
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
@@ -169,7 +192,7 @@
 
     // stop advertisiement and discovery and clear all settings
     [[SMDiscoveryManager sharedInstance] stopDiscovering];
-    [[SMDiscoveryManager sharedInstance] stopAdvertisingProperty];
+    [[SMDiscoveryManager sharedInstance] stopAdvertising];
     [SMUserDefaults clear];
     
     // log out of spotify API and show login screen
@@ -201,7 +224,7 @@
     [SMUserDefaults setIndicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists];
     
     // restart adverisement
-    [self setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertisingProperty];
+    [self setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertising];
 }
 
 -(void)settingsViewDidRequestPlaylistCleanup:(SMSettingsViewController *)settingsView {
@@ -249,7 +272,7 @@
         success = [[SMDiscoveryManager sharedInstance] advertiseProperty:jsonString];
     }
     else {
-        [[SMDiscoveryManager sharedInstance] stopAdvertisingProperty];
+        [[SMDiscoveryManager sharedInstance] stopAdvertising];
     }
     
     // store advertisement state

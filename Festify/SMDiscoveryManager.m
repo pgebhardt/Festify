@@ -15,7 +15,8 @@
 @property (nonatomic, strong) CBPeripheralManager* peripheralManager;
 @property (nonatomic, strong) NSMutableArray* discoveredPeripherals;
 @property (nonatomic, strong) NSMutableDictionary* peripheralData;
-@property (nonatomic, assign) BOOL discovering;
+@property (nonatomic, assign, getter = isAdvertising) BOOL advertising;
+@property (nonatomic, assign, getter = isDiscovering) BOOL discovering;
 
 @end
 
@@ -39,8 +40,8 @@
         dispatch_queue_t peripheralManagerQueue = dispatch_queue_create("com.patrikgebhardt.festify.peripheralManager", DISPATCH_QUEUE_SERIAL);
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:centralManagerQueue];
         self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:peripheralManagerQueue];
-        self.discovering = NO;
-        
+
+        // init properties
         self.discoveredPeripherals = [NSMutableArray array];
         self.peripheralData = [NSMutableDictionary dictionary];
     }
@@ -55,7 +56,7 @@
     }
     
     // stop advertisement, if already running to clear all services
-    [self stopAdvertisingProperty];
+    [self stopAdvertising];
     
     // init peripheral service to advertise playlist uri and device name
     CBMutableCharacteristic* propertyCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:SMDiscoveryManagerPropertyUUIDString]
@@ -75,19 +76,23 @@
     // advertise service
     [self.peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey: @[[CBUUID UUIDWithString:SMDiscoveryManagerServiceUUIDString]],
                                                CBAdvertisementDataLocalNameKey: [UIDevice currentDevice].name}];
+    self.advertising = YES;
+    
+    // post notification
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidStartAdvertising object:self];
     
     return YES;
 }
 
--(void)stopAdvertisingProperty {
-    if (self.isAdvertisingProperty) {
+-(void)stopAdvertising {
+    if (self.isAdvertising) {
         [self.peripheralManager stopAdvertising];
-        [self.peripheralManager removeAllServices];
     }
-}
+    [self.peripheralManager removeAllServices];
+    self.advertising = NO;
 
--(BOOL)isAdvertisingProperty {
-    return self.peripheralManager.isAdvertising;
+    // post notification
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidStopAdvertising object:self];
 }
 
 -(BOOL)startDiscovering {
@@ -101,28 +106,38 @@
                                                 options:@{CBCentralManagerScanOptionAllowDuplicatesKey: @NO}];
     self.discovering = YES;
     
+    // post notification
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidStartDiscovering object:self];
+
     return YES;
 }
 
 -(void)stopDiscovering {
-    [self.centralManager stopScan];
+    if (self.isDiscovering) {
+        [self.centralManager stopScan];
+    }
     self.discovering = NO;
-}
 
--(BOOL)isDiscovering {
-    return self.discovering;
+    // post notification
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidStopDiscovering object:self];
 }
 
 #pragma mark - CBPeripheralManagerDelegate
 
 -(void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral {
-    
+    if (peripheral.state != CBPeripheralManagerStatePoweredOn && self.isAdvertising) {
+        self.advertising = NO;
+        [self stopAdvertising];
+    }
 }
 
 #pragma mark - CBCentralManagerDelegate
 
 -(void)centralManagerDidUpdateState:(CBCentralManager *)central {
-
+    if (central.state != CBCentralManagerStatePoweredOn && self.isDiscovering) {
+        self.discovering = NO;
+        [self stopDiscovering];
+    }
 }
 
 -(void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {

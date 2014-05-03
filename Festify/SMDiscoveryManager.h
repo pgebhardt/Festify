@@ -15,6 +15,12 @@ static NSString* const SMDiscoveryManagerServiceUUIDString = @"313752b1-f55b-476
 static NSString* const SMDiscoveryManagerPropertyUUIDString = @"be1e3455-4ca0-488a-809c-bd82e094ebaa";
 static NSString* const SMDiscoveryManagerDevicenameUUIDString = @"bebf2065-a207-4f21-a048-85e84dd34a7f";
 
+// notification strings
+static NSString* const SMDiscoveryManagerDidStartAdvertising = @"SMDiscoveryManagerDidStartAdvertising";
+static NSString* const SMDiscoveryManagerDidStopAdvertising = @"SMDiscoveryManagerDidStopAdvertising";
+static NSString* const SMDiscoveryManagerDidStartDiscovering = @"SMDiscoveryManagerDidStartDiscovering";
+static NSString* const SMDiscoveryManagerDidStopDiscovering = @"SMDiscoveryManagerDidStopDiscovering";
+
 @class SMDiscoveryManager;
 
 @protocol SMDiscoveryManagerDelegate<NSObject>
@@ -28,13 +34,13 @@ static NSString* const SMDiscoveryManagerDevicenameUUIDString = @"bebf2065-a207-
 +(SMDiscoveryManager*)sharedInstance;
 
 -(BOOL)advertiseProperty:(NSData*)property;
--(void)stopAdvertisingProperty;
--(BOOL)isAdvertisingProperty;
+-(void)stopAdvertising;
 
 -(BOOL)startDiscovering;
 -(void)stopDiscovering;
--(BOOL)isDiscovering;
 
+@property (nonatomic, readonly, getter = isAdvertising) BOOL advertising;
+@property (nonatomic, readonly, getter = isDiscovering) BOOL discovering;
 @property (nonatomic, weak) id<SMDiscoveryManagerDelegate> delegate;
 
 @end
