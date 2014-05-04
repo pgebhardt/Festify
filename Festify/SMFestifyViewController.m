@@ -17,7 +17,6 @@
 #import "MWLogging.h"
 
 @interface SMFestifyViewController ()
-@property (nonatomic, strong) NSError* loginError;
 @property (nonatomic, strong) NSMutableArray* indicesOfSelectedPlaylists;
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SMTrackPlayer* trackPlayer;
@@ -52,6 +51,15 @@
     });
 }
 
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    // check for valid session, or show login screen
+    if (!self.session) {
+        [self performSegueWithIdentifier:@"showLogin" sender:self];
+    }
+}
+
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showSettings"]) {
         SMSettingsViewController* viewController = (SMSettingsViewController*)segue.destinationViewController;
@@ -63,9 +71,8 @@
     else if ([segue.identifier isEqualToString:@"showLogin"]) {
         SMLoginViewController* viewController = (SMLoginViewController*)segue.destinationViewController;
         
-        viewController.loginError = self.loginError;
-        viewController.underlyingView = self.navigationController.view;
         viewController.delegate = self;
+        viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
     else if ([segue.identifier isEqualToString:@"showTrackPlayer"]) {
         SMPlayerViewController* viewController = (SMPlayerViewController*)segue.destinationViewController;
@@ -182,11 +189,12 @@
                 MWLogWarning(@"%@", error);
             }
         }];
+        
+        [loginView dismissViewControllerAnimated:YES completion:^{
+            // try to login with new session
+            [self loginToSpotifyAPI];
+        }];
     }
-
-    // try to login with new session
-    self.loginError = error;
-    [self loginToSpotifyAPI];
 }
 
 #pragma mark - PGSettingsViewDelegate
@@ -202,7 +210,7 @@
     [self.trackPlayer clear];
     [self.trackProvider clearAllTracks];
     
-    [self performSegueWithIdentifier:@"showLogin" sender:self];
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {

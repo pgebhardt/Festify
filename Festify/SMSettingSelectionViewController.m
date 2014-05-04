@@ -8,8 +8,6 @@
 
 #import "SMSettingSelectionViewController.h"
 #import "MSCellAccessory.h"
-#import "UIImage+ImageEffects.h"
-#import "UIView+ConvertToImage.h"
 
 @interface SMSettingSelectionViewController ()
 @property (nonatomic, strong) NSMutableArray* itemIsSelected;
@@ -51,9 +49,6 @@
     // update UI
     if (self.allowMultipleSelections) {
         self.navigationItem.rightBarButtonItem.title = self.indicesOfSelectedItems.count == self.data.count ? @"Clear All" : @"Select All";
-    }
-    if (self.underlyingView) {
-        [self createBlurredBackgroundFromView:self.underlyingView];
     }
 }
 
@@ -167,21 +162,6 @@
         self.indexOfSelectedItem = indexPath.row;
         [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryView = checkmark;
     }
-}
-
-#pragma mark - Helper
-
--(void)createBlurredBackgroundFromView:(UIView*)view {
-    // create image view containing a blured image of the current view controller.
-    // This makes the effect of a transparent playlist view
-    UIImage* image = [view convertToImage];
-    image = [image applyBlurWithRadius:15
-                             tintColor:[UIColor colorWithRed:26.0/255.0 green:26.0/255.0 blue:26.0/255.0 alpha:0.7]
-                 saturationDeltaFactor:1.3
-                             maskImage:nil];
-    
-    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:self.view.frame];
-    [(UIImageView*)self.tableView.backgroundView setImage:image];
 }
 
 @end

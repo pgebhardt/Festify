@@ -12,13 +12,11 @@
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
 		5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */; };
 		5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */; };
-		5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */; };
 		5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
 		5F14581119127DAE00F5A80C /* MWLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F14581019127DAE00F5A80C /* MWLogging.m */; };
 		5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */; };
 		5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */; };
-		5F1E97B11902E2D00009B675 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
 		5F28F7631901288D00A0468A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7621901288D00A0468A /* libz.dylib */; };
@@ -68,8 +66,6 @@
 		5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = spotifymessagedesign.json; sourceTree = "<group>"; };
 		5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackPlayer.h; sourceTree = "<group>"; };
 		5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackPlayer.m; sourceTree = "<group>"; };
-		5F0E249F1903141200DC306D /* UIView+ConvertToImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ConvertToImage.h"; sourceTree = "<group>"; };
-		5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ConvertToImage.m"; sourceTree = "<group>"; };
 		5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlaylistViewController.h; sourceTree = "<group>"; };
 		5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPlaylistViewController.m; sourceTree = "<group>"; };
 		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -79,8 +75,6 @@
 		5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSettingSelectionViewController.m; sourceTree = "<group>"; };
 		5F1CF46118FD9782009E4791 /* SMPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlayerViewController.h; sourceTree = "<group>"; };
 		5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPlayerViewController.m; sourceTree = "<group>"; };
-		5F1E97AF1902E2D00009B675 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
-		5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		5F1F9BD418FC31B10030A64B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5F20799F190C1DB000AAE15A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -159,12 +153,8 @@
 		5F1E97B21902E5880009B675 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				5F1E97AF1902E2D00009B675 /* UIImage+ImageEffects.h */,
-				5F1E97B01902E2D00009B675 /* UIImage+ImageEffects.m */,
 				5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */,
 				5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */,
-				5F0E249F1903141200DC306D /* UIView+ConvertToImage.h */,
-				5F0E24A01903141200DC306D /* UIView+ConvertToImage.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -445,7 +435,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F0E24A11903141200DC306D /* UIView+ConvertToImage.m in Sources */,
 				5F14581119127DAE00F5A80C /* MWLogging.m in Sources */,
 				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
 				5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */,
@@ -458,7 +447,6 @@
 				5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */,
 				5F423A7118FC115200C3ED75 /* SMAppDelegate.m in Sources */,
 				5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */,
-				5F1E97B11902E2D00009B675 /* UIImage+ImageEffects.m in Sources */,
 				5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */,
 				5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */,
 			);

@@ -27,7 +27,6 @@
 @property (nonatomic, copy) NSString* (^dataAccessor)(id item);
 @property (nonatomic, assign) BOOL allowMultipleSelections;
 
-@property (nonatomic, strong) UIView* underlyingView;
 @property (nonatomic, strong) id<SMSettinsSelectionViewDelegate> delegate;
 
 @end

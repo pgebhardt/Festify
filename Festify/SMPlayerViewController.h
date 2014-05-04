@@ -7,19 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class SMPlayerViewController;
-
-@protocol SMPlayerViewDelegate <NSObject>
-
--(void)playerViewDidUpdateTrackInfo:(SMPlayerViewController*)playerView;
-
-@end
-
 #import "SMPlaylistViewController.h"
 #import "SMTrackPlayer.h"
 
-@interface SMPlayerViewController : UIViewController<SMPlaylistViewDelegate>
+@interface SMPlayerViewController : UIViewController
 
 - (IBAction)rewind:(id)sender;
 - (IBAction)playPause:(id)sender;
@@ -35,6 +26,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *remainingTimeView;
 
 @property (nonatomic, weak) SMTrackPlayer* trackPlayer;
-@property (nonatomic, weak) id<SMPlayerViewDelegate> delegate;
 
 @end

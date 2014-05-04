@@ -8,8 +8,6 @@
 
 #import <Spotify/Spotify.h>
 #import "SMPlaylistViewController.h"
-#import "UIImage+ImageEffects.h"
-#import "UIView+ConvertToImage.h"
 
 @interface SMPlaylistViewController ()
 @property (nonatomic, strong) NSArray* searchResults;
@@ -17,27 +15,21 @@
 
 @implementation SMPlaylistViewController
 
--(void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.searchDisplayController.searchBar.delegate = self;
-}
-
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
     // update UI
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                           atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    [self createBlurredBackgroundFromView:self.underlyingView];
+
+    // make search table view appear similar to playlist table view
+    UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
+    self.searchDisplayController.searchResultsTableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];;
+    self.searchDisplayController.searchBar.delegate = self;
 }
 
 - (IBAction)done:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:^{
-        if (self.delegate) {
-            [self.delegate playlistViewDidEndShowing:self];
-        }
-    }];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Table view data source
@@ -84,7 +76,7 @@
     }
     
     [self.trackPlayer skipToTrack:trackIndex];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope {
@@ -112,34 +104,11 @@
 
 -(void)playerViewDidUpdateTrackInfo:(SMPlayerViewController *)playerView {
     dispatch_async(dispatch_get_main_queue(), ^{
-        // update background image
-        [self createBlurredBackgroundFromView:self.underlyingView];
-        
         // update table view
         [self.tableView reloadData];
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                               atScrollPosition:UITableViewScrollPositionTop animated:YES];
     });
-}
-
-#pragma mark - Helper
-
--(void)createBlurredBackgroundFromView:(UIView*)view {
-    // create image view containing a blured image of the current view controller.
-    // This makes the effect of a transparent playlist view
-    UIImage* image = [view convertToImage];
-    image = [image applyBlurWithRadius:15
-                             tintColor:[UIColor colorWithRed:26.0/255.0 green:26.0/255.0 blue:26.0/255.0 alpha:0.7]
-                 saturationDeltaFactor:1.3
-                             maskImage:nil];
-    
-    UIImageView* tableViewBackground = [[UIImageView alloc] initWithFrame:self.view.frame];
-    UIImageView* searchViewBackground = [[UIImageView alloc] initWithFrame:self.view.frame];
-    [tableViewBackground setImage:image];
-    [searchViewBackground setImage:image];
-    
-    self.tableView.backgroundView = tableViewBackground;
-    self.searchDisplayController.searchResultsTableView.backgroundView = searchViewBackground;
 }
 
 @end

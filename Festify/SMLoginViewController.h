@@ -21,8 +21,6 @@
 
 - (IBAction)login:(id)sender;
 
-@property (nonatomic, strong) UIView* underlyingView;
-@property (nonatomic, strong) NSError* loginError;
 @property (nonatomic, weak) id<SMLoginViewDelegate> delegate;
 
 @end

@@ -62,9 +62,8 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showLimitPlaylists"]) {
-        UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
-        SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)navigationController.viewControllers[0];
-        settingsView.underlyingView = self.navigationController.view;
+        UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
+        SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)navController.viewControllers[0];
         settingsView.delegate = self;
     
         // adjust settings view to let user select which playlists are broadcasted

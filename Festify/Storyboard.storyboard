@@ -147,7 +147,7 @@
                     <navigationItem key="navigationItem" id="Zmt-zk-YEv">
                         <barButtonItem key="rightBarButtonItem" image="List" id="509-8T-7vp">
                             <connections>
-                                <segue destination="cyM-U7-Fye" kind="modal" identifier="showPlaylist" modalTransitionStyle="crossDissolve" id="AsV-op-EQk"/>
+                                <segue destination="cyM-U7-Fye" kind="custom" identifier="showPlaylist" customClass="BlurryModalSegue" id="AsV-op-EQk"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -316,7 +316,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.20000001789999999" green="0.20000001789999999" blue="0.20000001789999999" alpha="1" colorSpace="deviceRGB"/>
                                         <connections>
-                                            <segue destination="fWJ-us-MGe" kind="modal" identifier="showLimitPlaylists" modalTransitionStyle="crossDissolve" id="r80-yq-2Mi"/>
+                                            <segue destination="fWJ-us-MGe" kind="custom" identifier="showLimitPlaylists" customClass="BlurryModalSegue" id="r80-yq-2Mi"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -693,7 +693,7 @@
                     <connections>
                         <outlet property="festifyButton" destination="P6e-RL-Qf1" id="JjL-jA-GbU"/>
                         <outlet property="playButton" destination="wXj-3i-kV3" id="2H7-5S-0Dx"/>
-                        <segue destination="8Rl-HL-ow2" kind="modal" identifier="showLogin" modalTransitionStyle="crossDissolve" id="sN6-9t-lxE"/>
+                        <segue destination="8Rl-HL-ow2" kind="custom" identifier="showLogin" customClass="BlurryModalSegue" id="sN6-9t-lxE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="exX-nK-8kW" userLabel="First Responder" sceneMemberID="firstResponder"/>

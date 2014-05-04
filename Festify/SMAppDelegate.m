@@ -12,6 +12,7 @@
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
 #import "Appirater.h"
+#import "BlurryModalSegue.h"
 
 // spotify authentication constants
 // TODO: replace with post-beta IDs and adjust the App's URL type
@@ -53,6 +54,10 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     // adjust default colors to match spotify color schema
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UITableView appearance] setSeparatorColor:[UIColor colorWithRed:86.0/255.0 green:86.0/255.0 blue:86.0/255.0 alpha:1.0]];
+    [[BlurryModalSegue appearance] setBackingImageBlurRadius:@15];
+    [[BlurryModalSegue appearance] setBackingImageSaturationDeltaFactor:@1.3];
+    [[BlurryModalSegue appearance] setBackingImageTintColor:[UIColor colorWithRed:26.0/255.0 green:26.0/255.0
+                                                                             blue:26.0/255.0 alpha:0.7]];
     [TSMessage addCustomDesignFromFileWithName:@"spotifymessagedesign.json"];
 
     // config appirater rating request system

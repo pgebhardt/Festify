@@ -8,23 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
-
-@class SMPlaylistViewController;
-
-@protocol SMPlaylistViewDelegate <NSObject>
-
--(void)playlistViewDidEndShowing:(SMPlaylistViewController*)playlistView;
-
-@end
-
 #import "SMPlayerViewController.h"
 #import "SMTrackPlayer.h"
 
-@interface SMPlaylistViewController : UITableViewController<UISearchBarDelegate, SMPlayerViewDelegate>
+@interface SMPlaylistViewController : UITableViewController<UISearchBarDelegate>
 
 - (IBAction)done:(id)sender;
-@property (nonatomic, strong) UIView* underlyingView;
 @property (nonatomic, weak) SMTrackPlayer* trackPlayer;
-@property (nonatomic, weak) id<SMPlaylistViewDelegate> delegate;
 
 @end

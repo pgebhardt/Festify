@@ -30,9 +30,7 @@
     [self.trackPlayer addObserver:self forKeyPath:@"playing" options:0 context:nil];
     [self.trackPlayer addObserver:self forKeyPath:@"currentPlaybackPosition" options:0 context:nil];
     [self.trackPlayer addObserver:self forKeyPath:@"currentTrack" options:0 context:nil];
-    if (!self.delegate) {
-        [self.trackPlayer addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
-    }
+    [self.trackPlayer addObserver:self forKeyPath:@"coverArtOfCurrentTrack" options:0 context:nil];
     
     // initialy setup UI correctly
     [self updateTrackInfo:self.trackPlayer.currentTrack];
@@ -49,18 +47,12 @@
     [self.trackPlayer removeObserver:self forKeyPath:@"playing"];
     [self.trackPlayer removeObserver:self forKeyPath:@"currentPlaybackPosition"];
     [self.trackPlayer removeObserver:self forKeyPath:@"currentTrack"];
-    if (!self.delegate) {
-        [self.trackPlayer removeObserver:self forKeyPath:@"coverArtOfCurrentTrack"];
-    }
+    [self.trackPlayer removeObserver:self forKeyPath:@"coverArtOfCurrentTrack"];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"coverArtOfCurrentTrack"]) {
         [self updateCoverArt:self.trackPlayer.coverArtOfCurrentTrack];
-        
-        if (self.delegate) {
-            [self.delegate playerViewDidUpdateTrackInfo:self];
-        }
     }
     else if ([keyPath isEqualToString:@"currentTrack"]) {
         [self updateTrackInfo:self.trackPlayer.currentTrack];
@@ -83,9 +75,6 @@
         SMPlaylistViewController* viewController = (SMPlaylistViewController*)navigationController.viewControllers[0];
         
         viewController.trackPlayer = self.trackPlayer;
-        viewController.underlyingView = self.navigationController.view;
-        self.delegate = viewController;
-        viewController.delegate = self;
     }
 }
 
@@ -159,13 +148,6 @@
             self.coverImage.image = [UIImage imageNamed:@"DefaultCoverArt"];
         }
     });
-}
-
-#pragma mark - PGPlaylistViewDelegate
-
--(void)playlistViewDidEndShowing:(SMPlaylistViewController *)playlistView {
-    playlistView.delegate = nil;
-    self.delegate = nil;
 }
 
 @end
