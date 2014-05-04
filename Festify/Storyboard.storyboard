@@ -315,9 +315,6 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.20000001789999999" green="0.20000001789999999" blue="0.20000001789999999" alpha="1" colorSpace="deviceRGB"/>
-                                        <connections>
-                                            <segue destination="fWJ-us-MGe" kind="modal" identifier="showLimitPlaylists" modalTransitionStyle="crossDissolve" id="k2P-C3-v2V"/>
-                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -441,6 +438,7 @@
                         <outlet property="activityIndicator" destination="TfT-AK-R6j" id="IYd-YX-YaG"/>
                         <outlet property="advertisementSwitch" destination="Kji-CW-VPr" id="nbg-rt-kWH"/>
                         <outlet property="limitPlaylistsStatusLabel" destination="Ykz-rg-hZI" id="fUL-Lf-BN1"/>
+                        <segue destination="fWJ-us-MGe" kind="modal" identifier="showLimitPlaylists" modalTransitionStyle="crossDissolve" id="goa-e4-lig"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lbI-es-HbA" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -759,6 +757,7 @@
         <!--Navigation Controller-->
         <scene sceneID="Ss2-Mh-gRr">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dPe-2s-Oup" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fWJ-us-MGe" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="LQy-dc-PHV"/>
@@ -774,13 +773,13 @@
                         <segue destination="aqi-hv-qKh" kind="relationship" relationship="rootViewController" id="KXS-iB-dn8"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dPe-2s-Oup" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2456" y="-491"/>
         </scene>
-        <!--Setting Selection View Controller - Limit Playlists-->
+        <!--Setting Selection View Controller-->
         <scene sceneID="Vln-cW-kzC">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zHf-ya-4kX" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="aqi-hv-qKh" customClass="SMSettingSelectionViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="d2I-Sa-Nou">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
@@ -810,23 +809,8 @@
                             <outlet property="delegate" destination="aqi-hv-qKh" id="3OG-mE-qVH"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Limit Playlists" id="xlO-3v-VnS">
-                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="done" id="FbR-aJ-JfI">
-                            <connections>
-                                <action selector="done:" destination="aqi-hv-qKh" id="Gf6-Ic-Gcp"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Select All" id="Qqd-u1-Xyk">
-                            <connections>
-                                <action selector="toggleSelection:" destination="aqi-hv-qKh" id="9q8-nn-bEo"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="selectionButton" destination="Qqd-u1-Xyk" id="bWY-tD-Nvx"/>
-                    </connections>
+                    <navigationItem key="navigationItem" id="xlO-3v-VnS"/>
                 </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zHf-ya-4kX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2982" y="-491"/>
         </scene>

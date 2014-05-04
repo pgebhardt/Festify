@@ -63,24 +63,21 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showLimitPlaylists"]) {
         UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
-        SMSettingSelectionViewController* viewController = (SMSettingSelectionViewController*)navigationController.viewControllers[0];
+        SMSettingSelectionViewController* settingsView =
+            (SMSettingSelectionViewController*)navigationController.viewControllers[0];
         
-        viewController.underlyingView = self.navigationController.view;
-        viewController.data = self.playlists;
-        viewController.indicesOfSelectedItems = self.indicesOfSelectedPlaylists;
-        viewController.dataAccessor = ^NSString*(id item) {
+        // adjust settings view to let user select which playlists are broadcasted
+        settingsView.data = self.playlists;
+        settingsView.indicesOfSelectedItems = self.indicesOfSelectedPlaylists;
+        settingsView.dataAccessor = ^NSString*(id item) {
             return [item name];
         };
-        viewController.delegate = self;
+        
+        settingsView.navigationItem.title = @"Limit Playlists";
+        settingsView.allowMultipleSelections = YES;
+        settingsView.underlyingView = self.navigationController.view;
+        settingsView.delegate = self;
     }
-}
-
--(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
-    if ([identifier isEqualToString:@"showLimitPlaylists"] &&
-        self.activityIndicator.isAnimating) {
-        return NO;
-    }
-    return YES;
 }
 
 #pragma mark - Actions
@@ -132,7 +129,11 @@
 
     // handle actions for specific cell
     NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
-    if ([reuseIdentifier isEqualToString:@"contactCell"]) {
+    if ([reuseIdentifier isEqualToString:@"limitPlaylistsCell"] &&
+        !self.activityIndicator.isAnimating) {
+        [self performSegueWithIdentifier:@"showLimitPlaylists" sender:self];
+    }
+    else if ([reuseIdentifier isEqualToString:@"contactCell"]) {
         MFMailComposeViewController* mailComposer = [[MFMailComposeViewController alloc] init];
         mailComposer.mailComposeDelegate = self;
         

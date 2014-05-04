@@ -18,14 +18,15 @@
 
 @interface SMSettingSelectionViewController : UITableViewController
 
-- (IBAction)done:(id)sender;
-- (IBAction)toggleSelection:(id)sender;
+-(void)done:(id)sender;
+-(void)toggleSelection:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *selectionButton;
-@property (nonatomic, strong) UIView* underlyingView;
 @property (nonatomic, strong) NSArray* data;
 @property (nonatomic, strong) NSArray* indicesOfSelectedItems;
 @property (nonatomic, copy) NSString* (^dataAccessor)(id item);
+@property (nonatomic, assign) BOOL allowMultipleSelections;
+
+@property (nonatomic, strong) UIView* underlyingView;
 @property (nonatomic, strong) id<SMSettinsSelectionViewDelegate> delegate;
 
 @end

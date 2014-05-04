@@ -17,6 +17,23 @@
 
 @implementation SMSettingSelectionViewController
 
+-(void)viewDidLoad {
+    [super viewDidLoad];
+
+    // init UI elements
+    if (self.allowMultipleSelections) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Select All"
+                                                                                  style:UIBarButtonItemStylePlain
+                                                                                 target:self
+                                                                                 action:@selector(toggleSelection:)];
+    }
+    if (!self.navigationItem.leftBarButtonItem) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                              target:self
+                                                                                              action:@selector(done:)];
+    }
+}
+
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
@@ -30,8 +47,12 @@
     }
     
     // update UI
-    self.selectionButton.title = self.indicesOfSelectedItems.count == self.data.count ? @"Clear All" : @"Select All";
-    [self createBlurredBackgroundFromView:self.underlyingView];
+    if (self.navigationItem.rightBarButtonItem) {
+        self.navigationItem.rightBarButtonItem.title = self.indicesOfSelectedItems.count == self.data.count ? @"Clear All" : @"Select All";
+    }
+    if (self.underlyingView) {
+        [self createBlurredBackgroundFromView:self.underlyingView];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -54,14 +75,15 @@
 }
 
 - (IBAction)toggleSelection:(id)sender {
-    if ([self.selectionButton.title isEqualToString:@"Select All"]) {
-        self.selectionButton.title = @"Clear All";
+    UIBarButtonItem* button = (UIBarButtonItem*)sender;
+    if ([button.title isEqualToString:@"Select All"]) {
+        button.title = @"Clear All";
         for (NSUInteger i = 0; i < self.data.count; ++i) {
             self.itemIsSelected[i] = @YES;
         }
     }
     else {
-        self.selectionButton.title = @"Select All";
+        button.title = @"Select All";
         for (NSUInteger i = 0; i < self.data.count; ++i) {
             self.itemIsSelected[i] = @NO;
         }
@@ -82,7 +104,10 @@
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    }
     
     // configure cell
     if (self.dataAccessor) {
@@ -119,11 +144,15 @@
         for (NSNumber* itemIsSelected in self.itemIsSelected) {
             allItemsSelected &= itemIsSelected.boolValue;
         }
-        self.selectionButton.title = allItemsSelected ? @"Clear All" : @"Select All";
+        if (self.navigationItem.rightBarButtonItem) {
+            self.navigationItem.rightBarButtonItem.title = allItemsSelected ? @"Clear All" : @"Select All";
+        }
     }
     else {
         cell.accessoryView = nil;
-        self.selectionButton.title = @"Select All";
+        if (self.navigationItem.rightBarButtonItem) {
+            self.navigationItem.rightBarButtonItem.title = @"Select All";
+        }
     }
 }
 
