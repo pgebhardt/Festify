@@ -20,7 +20,7 @@
 #import "SMPlayerViewController.h"
 #import "SMTrackPlayer.h"
 
-@interface SMPlaylistViewController : UITableViewController<SMPlayerViewDelegate>
+@interface SMPlaylistViewController : UITableViewController<UISearchBarDelegate, SMPlayerViewDelegate>
 
 - (IBAction)done:(id)sender;
 @property (nonatomic, strong) UIView* underlyingView;

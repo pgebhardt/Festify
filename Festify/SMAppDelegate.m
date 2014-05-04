@@ -52,6 +52,10 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 
     // adjust default colors to match spotify color schema
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:86.0/255.0 green:86.0/255.0 blue:86.0/255.0 alpha:1.0]];
+    [[UINavigationBar appearance] setTintColor:[UIColor colorWithRed:144.0/255.0 green:189.0/255.0 blue:67.0/255.0 alpha:1.0]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    [[UITableView appearance] setSeparatorColor:[UIColor colorWithRed:86.0/255.0 green:86.0/255.0 blue:86.0/255.0 alpha:1.0]];
     [TSMessage addCustomDesignFromFileWithName:@"spotifymessagedesign.json"];
 
     // config appirater rating request system

@@ -11,11 +11,24 @@
 #import "UIImage+ImageEffects.h"
 #import "UIView+ConvertToImage.h"
 
+@interface SMPlaylistViewController ()
+@property (nonatomic, strong) NSArray* searchResults;
+@end
+
 @implementation SMPlaylistViewController
+
+-(void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.searchDisplayController.searchBar.delegate = self;
+}
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
+    // update UI
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                          atScrollPosition:UITableViewScrollPositionTop animated:NO];
     [self createBlurredBackgroundFromView:self.underlyingView];
 }
 
@@ -34,26 +47,65 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.trackPlayer.currentProvider.tracks.count;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        return self.searchResults.count;
+    }
+    else {
+        return self.trackPlayer.currentProvider.tracks.count;
+    }
 }
 
 #pragma mark - Table view delegate
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    UITableViewCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
-    NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
-    cell.textLabel.text = [self.trackPlayer.currentProvider.tracks[trackIndex] name];
-    cell.detailTextLabel.text = [[[self.trackPlayer.currentProvider.tracks[trackIndex] artists] objectAtIndex:0] name];
+    SPTPartialTrack* track = nil;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        track = self.searchResults[indexPath.row];
+    }
+    else {
+        NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
+        track = self.trackPlayer.currentProvider.tracks[trackIndex];
+    }
+    cell.textLabel.text = track.name;
+    cell.detailTextLabel.text = [track.artists[0] name];
     
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
+    NSUInteger trackIndex = 0;
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        trackIndex = [self.trackPlayer.currentProvider.tracks indexOfObject:self.searchResults[indexPath.row]];
+    }
+    else {
+        trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
+    }
+    
     [self.trackPlayer skipToTrack:trackIndex];
-
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope {
+    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"(name contains[c] %@) || (artists[0].name contains[c] %@)", searchText, searchText];
+    self.searchResults = [self.trackPlayer.currentProvider.tracks filteredArrayUsingPredicate:resultPredicate];
+}
+
+-(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+    [self filterContentForSearchText:searchString
+                               scope:[[self.searchDisplayController.searchBar scopeButtonTitles]
+                                      objectAtIndex:[self.searchDisplayController.searchBar
+                                                     selectedScopeButtonIndex]]];
+    
+    return YES;
+}
+
+#pragma mark - UISearchBarDelegate
+
+-(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    // hide search table view, to avoid strange UI glitch
+    self.searchDisplayController.searchResultsTableView.hidden = YES;
 }
 
 #pragma mark - PGPlayerViewDelegate
@@ -81,8 +133,13 @@
                  saturationDeltaFactor:1.3
                              maskImage:nil];
     
-    self.tableView.backgroundView = [[UIImageView alloc] initWithFrame:self.view.frame];
-    [(UIImageView*)self.tableView.backgroundView setImage:image];
+    UIImageView* tableViewBackground = [[UIImageView alloc] initWithFrame:self.view.frame];
+    UIImageView* searchViewBackground = [[UIImageView alloc] initWithFrame:self.view.frame];
+    [tableViewBackground setImage:image];
+    [searchViewBackground setImage:image];
+    
+    self.tableView.backgroundView = tableViewBackground;
+    self.searchDisplayController.searchResultsTableView.backgroundView = searchViewBackground;
 }
 
 @end
