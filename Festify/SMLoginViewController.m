@@ -10,7 +10,6 @@
 #import "SMFestifyViewController.h"
 #import "SMAppDelegate.h"
 #import "TSMessage.h"
-#import "MBProgressHud.h"
 
 @implementation SMLoginViewController
 

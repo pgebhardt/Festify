@@ -41,20 +41,23 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStopDiscovering object:nil];
     
-    // load saved user defaults
+    // load saved user defaults, but wait a bit to avoid bluetooth glitches
     self.session = [SMUserDefaults session];
     self.indicesOfSelectedPlaylists = [[SMUserDefaults indicesOfSelectedPlaylists] mutableCopy];
-    // restore advertisement state and try to login, but wait a bit to avoid UI and bluetooth glitches
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self setAdvertisementState:[SMUserDefaults advertisementState]];
-        [self loginToSpotifyAPI];
     });
+
+    // try to login, if a stored session is available
+    if (self.session) {
+        [self loginToSpotifyAPI];
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    // check for valid session, or show login screen
+    // show login screen, if no valid session is available
     if (!self.session) {
         [self performSegueWithIdentifier:@"showLogin" sender:self];
     }
