@@ -35,6 +35,8 @@
             self.playlists = [object items];
             
             // update UI
+            [self.activityIndicator stopAnimating];
+            self.limitPlaylistsStatusLabel.hidden = NO;
             [self updateLimitPlaylistsCell];
         }
         else {
@@ -73,6 +75,14 @@
     }
 }
 
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
+    if ([identifier isEqualToString:@"showLimitPlaylists"] &&
+        self.activityIndicator.isAnimating) {
+        return NO;
+    }
+    return YES;
+}
+
 #pragma mark - Actions
 
 -(void)toggleAdvertisementState:(id)sender {
@@ -83,12 +93,11 @@
 
 -(void)updateLimitPlaylistsCell {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
         if (self.playlists.count != self.indicesOfSelectedPlaylists.count) {
-            cell.detailTextLabel.text = @"On";
+            self.limitPlaylistsStatusLabel.text = @"On";
         }
         else {
-            cell.detailTextLabel.text = @"Off";
+            self.limitPlaylistsStatusLabel.text = @"Off";
         }
     });
 }

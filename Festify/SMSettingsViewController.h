@@ -25,6 +25,9 @@
 @interface SMSettingsViewController : UITableViewController<SMSettinsSelectionViewDelegate ,MFMailComposeViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *limitPlaylistsStatusLabel;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+
 @property (nonatomic, strong) NSMutableArray* indicesOfSelectedPlaylists;
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, weak) id<SMSettingsViewDelegate> delegate;

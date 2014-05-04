@@ -11,9 +11,6 @@
 #import "UIImage+ImageEffects.h"
 #import "UIView+ConvertToImage.h"
 
-@interface SMPlaylistViewController ()
-@end
-
 @implementation SMPlaylistViewController
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -48,7 +45,6 @@
     NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
     cell.textLabel.text = [self.trackPlayer.currentProvider.tracks[trackIndex] name];
     cell.detailTextLabel.text = [[[self.trackPlayer.currentProvider.tracks[trackIndex] artists] objectAtIndex:0] name];
-    cell.backgroundColor = [UIColor clearColor];
     
     return cell;
 }
