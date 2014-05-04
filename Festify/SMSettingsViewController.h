@@ -22,7 +22,9 @@
 
 @end
 
-@interface SMSettingsViewController : UITableViewController<SMSettinsSelectionViewDelegate ,MFMailComposeViewControllerDelegate>
+@interface SMSettingsViewController : UITableViewController<SMSettinsSelectionViewDelegate, MFMailComposeViewControllerDelegate>
+
+- (IBAction)done:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *limitPlaylistsStatusLabel;

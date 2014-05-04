@@ -65,7 +65,8 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showSettings"]) {
-        SMSettingsViewController* viewController = (SMSettingsViewController*)segue.destinationViewController;
+        UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
+        SMSettingsViewController* viewController = (SMSettingsViewController*)navController.viewControllers[0];
         
         viewController.session = self.session;
         viewController.indicesOfSelectedPlaylists = self.indicesOfSelectedPlaylists;
@@ -212,8 +213,8 @@
     self.session = nil;
     [self.trackPlayer clear];
     [self.trackProvider clearAllTracks];
-    
-    [self.navigationController popToRootViewControllerAnimated:YES];
+
+    [settingsView dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {

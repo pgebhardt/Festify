@@ -25,11 +25,6 @@
                                                                                  target:self
                                                                                  action:@selector(toggleSelection:)];
     }
-    if (!self.navigationItem.leftBarButtonItem) {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                              target:self
-                                                                                              action:@selector(done:)];
-    }
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -70,10 +65,6 @@
             [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:@[[NSNumber numberWithInteger:self.indexOfSelectedItem]]];
         }
     }
-}
-
-- (IBAction)done:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)toggleSelection:(id)sender {

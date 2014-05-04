@@ -18,7 +18,6 @@
 
 @interface SMSettingSelectionViewController : UITableViewController
 
--(void)done:(id)sender;
 -(void)toggleSelection:(id)sender;
 
 @property (nonatomic, strong) NSArray* data;
