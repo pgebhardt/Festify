@@ -23,6 +23,7 @@
 
 @property (nonatomic, strong) NSArray* data;
 @property (nonatomic, strong) NSArray* indicesOfSelectedItems;
+@property (nonatomic, assign) NSInteger indexOfSelectedItem;
 @property (nonatomic, copy) NSString* (^dataAccessor)(id item);
 @property (nonatomic, assign) BOOL allowMultipleSelections;
 
