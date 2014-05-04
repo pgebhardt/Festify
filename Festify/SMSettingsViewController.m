@@ -150,20 +150,20 @@
         }
     }
     else if ([reuseIdentifier isEqualToString:@"contactCell"]) {
+        // add some basic debug information to default message
+        NSString* message = [NSString stringWithFormat:@"\n\n-----\nApp: %@ %@ (%@)\nDevice: %@ (%@)",
+                             [NSBundle mainBundle].bundleIdentifier,
+                             [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
+                             [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleVersionKey],
+                             [SMSettingsViewController deviceString],
+                             [UIDevice currentDevice].systemVersion];
+        
+        // create mail composer to send feedback to me
         MFMailComposeViewController* mailComposer = [[MFMailComposeViewController alloc] init];
         mailComposer.mailComposeDelegate = self;
-        
-        // show mail composer with some debug infos included
         [mailComposer setSubject:@"Support"];
         [mailComposer setToRecipients:@[@"support+festify@schnuffmade.com"]];
-        [mailComposer setMessageBody:[NSString stringWithFormat:@"\n\n-----\nApp: %@ %@ (%@)\nDevice: %@ (%@)",
-                                      [NSBundle mainBundle].bundleIdentifier,
-                                      [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
-                                      [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleVersionKey],
-                                      [SMSettingsViewController deviceString],
-                                      [UIDevice currentDevice].systemVersion] isHTML:NO];
-        
-        // apply missing style properties and show mail composer
+        [mailComposer setMessageBody:message isHTML:NO];
         [self presentViewController:mailComposer animated:YES completion:nil];
     }
 }
