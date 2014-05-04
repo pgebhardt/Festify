@@ -287,7 +287,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.20000001788139343" green="0.20000001788139343" blue="0.20000001788139343" alpha="1" colorSpace="deviceRGB"/>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="limitPlaylistsCell" id="jKf-2c-ERv">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="jKf-2c-ERv">
                                         <rect key="frame" x="0.0" y="159" width="320" height="40"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jKf-2c-ERv" id="P3J-ig-IEK">
@@ -315,6 +315,9 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.20000001789999999" green="0.20000001789999999" blue="0.20000001789999999" alpha="1" colorSpace="deviceRGB"/>
+                                        <connections>
+                                            <segue destination="fWJ-us-MGe" kind="modal" identifier="showLimitPlaylists" modalTransitionStyle="crossDissolve" id="r80-yq-2Mi"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -438,7 +441,6 @@
                         <outlet property="activityIndicator" destination="TfT-AK-R6j" id="IYd-YX-YaG"/>
                         <outlet property="advertisementSwitch" destination="Kji-CW-VPr" id="nbg-rt-kWH"/>
                         <outlet property="limitPlaylistsStatusLabel" destination="Ykz-rg-hZI" id="fUL-Lf-BN1"/>
-                        <segue destination="fWJ-us-MGe" kind="modal" identifier="showLimitPlaylists" modalTransitionStyle="crossDissolve" id="goa-e4-lig"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lbI-es-HbA" userLabel="First Responder" sceneMemberID="firstResponder"/>

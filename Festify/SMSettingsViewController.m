@@ -63,9 +63,10 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showLimitPlaylists"]) {
         UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
-        SMSettingSelectionViewController* settingsView =
-            (SMSettingSelectionViewController*)navigationController.viewControllers[0];
-        
+        SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)navigationController.viewControllers[0];
+        settingsView.underlyingView = self.navigationController.view;
+        settingsView.delegate = self;
+    
         // adjust settings view to let user select which playlists are broadcasted
         settingsView.data = self.playlists;
         settingsView.indicesOfSelectedItems = self.indicesOfSelectedPlaylists;
@@ -75,9 +76,15 @@
         
         settingsView.navigationItem.title = @"Limit Playlists";
         settingsView.allowMultipleSelections = YES;
-        settingsView.underlyingView = self.navigationController.view;
-        settingsView.delegate = self;
     }
+}
+
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
+    if ([identifier isEqualToString:@"showLimiPlaylists"] &&
+        self.activityIndicator.isAnimating) {
+        return NO;
+    }
+    return YES;
 }
 
 #pragma mark - Actions
@@ -129,9 +136,18 @@
 
     // handle actions for specific cell
     NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
-    if ([reuseIdentifier isEqualToString:@"limitPlaylistsCell"] &&
-        !self.activityIndicator.isAnimating) {
-        [self performSegueWithIdentifier:@"showLimitPlaylists" sender:self];
+    if ([reuseIdentifier isEqualToString:@"clearPlaylistCell"]) {
+        if (self.delegate) {
+            [self.delegate settingsViewDidRequestPlaylistCleanup:self];
+        }
+    }
+    else if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
+        // inform delegate to logout
+        if (self.delegate) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.delegate settingsViewDidRequestLogout:self];
+            });
+        }
     }
     else if ([reuseIdentifier isEqualToString:@"contactCell"]) {
         MFMailComposeViewController* mailComposer = [[MFMailComposeViewController alloc] init];
@@ -149,19 +165,6 @@
         
         // apply missing style properties and show mail composer
         [self presentViewController:mailComposer animated:YES completion:nil];
-    }
-    else if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
-        // inform delegate to logout
-        if (self.delegate) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self.delegate settingsViewDidRequestLogout:self];
-            });
-        }
-    }
-    else if ([reuseIdentifier isEqualToString:@"clearPlaylistCell"]) {
-        if (self.delegate) {
-            [self.delegate settingsViewDidRequestPlaylistCleanup:self];
-        }
     }
 }
 
