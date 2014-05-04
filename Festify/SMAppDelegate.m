@@ -90,9 +90,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 -(void)applicationWillResignActive:(UIApplication *)application {
     // save current application state
     [SMUserDefaults saveApplicationState];
-    
-    // manuel stop track player to avoid glitches
-    [self.trackPlayer pause];
 }
 
 -(void)applicationWillEnterForeground:(UIApplication *)application {
