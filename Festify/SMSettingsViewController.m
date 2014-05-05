@@ -16,10 +16,6 @@
 #import "TSMessage.h"
 #import "MWLogging.h"
 
-@interface SMSettingsViewController ()
-@property (nonatomic, strong) NSArray* playlists;
-@end
-
 @implementation SMSettingsViewController
 
 -(void)viewDidLoad {
@@ -28,21 +24,7 @@
     // connect switches to event handler and set them to correct state
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState:) forControlEvents:UIControlEventValueChanged];
     [self updateAdvertisiementSwitch];
-    
-    // collect all playlists
-    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
-        if (!error) {
-            self.playlists = [object items];
-            
-            // update UI
-            [self.activityIndicator stopAnimating];
-            self.limitPlaylistsStatusLabel.hidden = NO;
-            [self updateLimitPlaylistsCell];
-        }
-        else {
-            MWLogWarning(@"%@", error);
-        }
-    }];
+    [self updateLimitPlaylistsCell];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -67,7 +49,9 @@
     
         // adjust settings view to let user select which playlists are broadcasted
         settingsView.data = self.playlists;
-        settingsView.indicesOfSelectedItems = self.indicesOfSelectedPlaylists;
+        settingsView.indicesOfSelectedItems = [self.playlists indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            return [self.advertisedPlaylists containsObject:[[obj uri] absoluteString]];
+        }];
         settingsView.dataAccessor = ^NSString*(id item) {
             return [item name];
         };
@@ -75,14 +59,6 @@
         settingsView.navigationItem.title = @"Limit Playlists";
         settingsView.allowMultipleSelections = YES;
     }
-}
-
--(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
-    if ([identifier isEqualToString:@"showLimiPlaylists"] &&
-        self.activityIndicator.isAnimating) {
-        return NO;
-    }
-    return YES;
 }
 
 #pragma mark - Actions
@@ -100,7 +76,7 @@
 
 -(void)updateLimitPlaylistsCell {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.playlists.count != self.indicesOfSelectedPlaylists.count) {
+        if (self.playlists.count != self.advertisedPlaylists.count) {
             self.limitPlaylistsStatusLabel.text = @"On";
         }
         else {
@@ -173,15 +149,15 @@
 
 #pragma mark - SMSettingsSelectionViewDelegate
 
--(void)settingsSelectionView:(SMSettingSelectionViewController *)settingsSelectionView didChangeIndicesOfSelectedItems:(NSArray *)indicesOfSelectedItems {
-    self.indicesOfSelectedPlaylists = [indicesOfSelectedItems mutableCopy];
+-(void)settingsSelectionView:(SMSettingSelectionViewController *)settingsSelectionView didChangeIndicesOfSelectedItems:(NSIndexSet*)indicesOfSelectedItems {
+    self.advertisedPlaylists = [[[self.playlists objectsAtIndexes:indicesOfSelectedItems] valueForKey:@"uri"] valueForKey:@"absoluteString"];
     
     // update UI
     [self updateLimitPlaylistsCell];
     
     // inform delegate
     if (self.delegate) {
-        [self.delegate settingsView:self didChangeAdvertisedPlaylistSelection:self.indicesOfSelectedPlaylists];
+        [self.delegate settingsView:self didChangeAdvertisedPlaylistSelection:self.advertisedPlaylists];
     }
 }
 

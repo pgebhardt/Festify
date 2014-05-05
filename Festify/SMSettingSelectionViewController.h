@@ -12,7 +12,7 @@
 
 @protocol SMSettinsSelectionViewDelegate <NSObject>
 
--(void)settingsSelectionView:(SMSettingSelectionViewController*)settingsSelectionView didChangeIndicesOfSelectedItems:(NSArray*)indicesOfSelectedItems;
+-(void)settingsSelectionView:(SMSettingSelectionViewController*)settingsSelectionView didChangeIndicesOfSelectedItems:(NSIndexSet*)indicesOfSelectedItems;
 
 @end
 
@@ -21,7 +21,7 @@
 -(void)toggleSelection:(id)sender;
 
 @property (nonatomic, strong) NSArray* data;
-@property (nonatomic, strong) NSArray* indicesOfSelectedItems;
+@property (nonatomic, strong) NSIndexSet* indicesOfSelectedItems;
 @property (nonatomic, assign) NSInteger indexOfSelectedItem;
 @property (nonatomic, copy) NSString* (^dataAccessor)(id item);
 @property (nonatomic, assign) BOOL allowMultipleSelections;

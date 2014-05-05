@@ -17,7 +17,7 @@
 
 -(void)settingsViewDidRequestLogout:(SMSettingsViewController*)settingsView;
 -(void)settingsViewDidRequestPlaylistCleanup:(SMSettingsViewController*)settingsView;
--(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisedPlaylistSelection:(NSArray*)indicesOfSelectedPlaylists;
+-(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisedPlaylistSelection:(NSArray*)selectedPlaylists;
 -(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisementState:(BOOL)advertising;
 
 @end
@@ -28,10 +28,9 @@
 
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *limitPlaylistsStatusLabel;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
-@property (nonatomic, strong) NSMutableArray* indicesOfSelectedPlaylists;
-@property (nonatomic, strong) SPTSession* session;
+@property (nonatomic, strong) NSArray* playlists;
+@property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, weak) id<SMSettingsViewDelegate> delegate;
 
 @end

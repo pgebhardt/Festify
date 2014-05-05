@@ -22,7 +22,7 @@
     // clear NSUserDefault storage
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsAdvertisementStateKey];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsSpotifySessionKey];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsIndicesOfSelectedPlaylistsKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsAdvertisedPlaylistsKey];
     
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -46,12 +46,13 @@
                                              forKey:SMUserDefaultsAdvertisementStateKey];
 }
 
-+(NSArray *)indicesOfSelectedPlaylists {
-    return [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsIndicesOfSelectedPlaylistsKey];
++(NSArray *)advertisedPlaylists {
+    return [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
 }
 
-+(void)setIndicesOfSelectedPlaylists:(NSArray *)indices {
-    [[NSUserDefaults standardUserDefaults] setValue:indices forKey:SMUserDefaultsIndicesOfSelectedPlaylistsKey];
++(void)setAdvertisedPlaylists:(NSArray *)advertisedPlaylists {
+    [[NSUserDefaults standardUserDefaults] setValue:advertisedPlaylists
+                                             forKey:SMUserDefaultsAdvertisedPlaylistsKey];
 }
 
 @end

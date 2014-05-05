@@ -12,7 +12,7 @@
 // default application keys
 static NSString* const SMUserDefaultsSpotifySessionKey = @"spotifySession";
 static NSString* const SMUserDefaultsAdvertisementStateKey = @"advertisementState";
-static NSString* const SMUserDefaultsIndicesOfSelectedPlaylistsKey = @"indicesOfSelectedPlaylists";
+static NSString* const SMUserDefaultsAdvertisedPlaylistsKey = @"advertisedPlaylists";
 
 @interface SMUserDefaults : NSObject
 
@@ -25,7 +25,7 @@ static NSString* const SMUserDefaultsIndicesOfSelectedPlaylistsKey = @"indicesOf
 +(BOOL)advertisementState;
 +(void)setAdvertisementState:(BOOL)state;
 
-+(NSArray*)indicesOfSelectedPlaylists;
-+(void)setIndicesOfSelectedPlaylists:(NSArray*)indices;
++(NSArray*)advertisedPlaylists;
++(void)setAdvertisedPlaylists:(NSArray*)advertisedPlaylists;
 
 @end

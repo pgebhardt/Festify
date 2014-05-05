@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import <Spotify/Spotify.h>
 
+// notification strings
+static NSString* const SMTrackProviderDidAddPlaylist = @"SMTrackProviderDidAddPlaylist";
+static NSString* const SMTrackProviderDidClearAllTracks = @"SMTrackProviderDidClearAllTracks";
+
 @interface SMTrackProvider : NSObject<SPTTrackProvider>
 
 -(id)init;

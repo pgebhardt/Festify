@@ -17,10 +17,11 @@
 #import "MWLogging.h"
 
 @interface SMFestifyViewController ()
-@property (nonatomic, strong) NSMutableArray* indicesOfSelectedPlaylists;
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SMTrackPlayer* trackPlayer;
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
+@property (nonatomic, strong) SPTPlaylistList* playlists;
+@property (nonatomic, strong) NSArray* advertisedPlaylists;
 @end
 
 @implementation SMFestifyViewController
@@ -34,16 +35,15 @@
     self.trackPlayer = appDelegate.trackPlayer;
     self.trackProvider = [[SMTrackProvider alloc] init];
     
-    // observe currently played track provider, to activate play button
-    [self.trackPlayer addObserver:self forKeyPath:@"currentProvider" options:0 context:nil];
-    
-    // listen to discovery manager notifications to update UI correctly
+    // listen to notifications to update UI correctly
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStopDiscovering object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTrackPlayer:) name:SMTrackProviderDidAddPlaylist object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTrackPlayer:) name:SMTrackProviderDidClearAllTracks object:nil];
     
     // load saved user defaults, but wait a bit to avoid bluetooth glitches
     self.session = [SMUserDefaults session];
-    self.indicesOfSelectedPlaylists = [[SMUserDefaults indicesOfSelectedPlaylists] mutableCopy];
+    self.advertisedPlaylists = [SMUserDefaults advertisedPlaylists];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self setAdvertisementState:[SMUserDefaults advertisementState]];
     });
@@ -68,8 +68,8 @@
         UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
         SMSettingsViewController* viewController = (SMSettingsViewController*)navController.viewControllers[0];
         
-        viewController.session = self.session;
-        viewController.indicesOfSelectedPlaylists = self.indicesOfSelectedPlaylists;
+        viewController.playlists = self.playlists.items;
+        viewController.advertisedPlaylists = self.advertisedPlaylists;
         viewController.delegate = self;
     }
     else if ([segue.identifier isEqualToString:@"showLogin"]) {
@@ -85,17 +85,6 @@
     }
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"currentProvider"]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.playButton.enabled = (self.trackPlayer.currentProvider != nil);
-        });
-    }
-    else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
 #pragma  mark - Actions
 
 - (IBAction)festify:(id)sender {
@@ -107,11 +96,7 @@
         if ([[SMDiscoveryManager sharedInstance] startDiscovering]) {
             // add own selected songs, if advertising is turned on
             if ([SMDiscoveryManager sharedInstance].isAdvertising) {
-                [self addPlaylistsForUser:self.session.canonicalUsername indicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists callback:^(NSError *error) {
-                    if (error) {
-                        MWLogWarning(@"%@", error);
-                    }
-                }];
+                [self addPlaylistsToTrackProvider:self.advertisedPlaylists];
             }
         }
         else {
@@ -148,6 +133,19 @@
     });
 }
 
+-(void)updateTrackPlayer:(id)sender {
+    // init track player, if neccessary
+    if (!self.trackPlayer.currentProvider &&
+        self.trackProvider.tracks.count != 0) {
+        [self.trackPlayer playTrackProvider:self.trackProvider];
+    }
+
+    // update UI
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.playButton.enabled = (self.trackPlayer.currentProvider != nil);
+    });
+}
+
 #pragma mark - PGDiscoveryManagerDelegate
 
 -(void)discoveryManager:(SMDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
@@ -155,21 +153,15 @@
     NSDictionary* advertisedData = [NSJSONSerialization JSONObjectWithData:property options:0 error:nil];
     
     // add playlist for discovered user and notify user
-    __weak typeof(self) weakSelf = self;
-    [self addPlaylistsForUser:advertisedData[@"username"] indicesOfSelectedPlaylists:advertisedData[@"indicesOfSelectedPlaylists"] callback:^(NSError *error) {
-        if (!error) {
-            // notify user
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [TSMessage showNotificationInViewController:weakSelf
-                                                      title:[NSString stringWithFormat:@"Discovered %@!", advertisedData[@"username"]]
-                                                   subtitle:@"All public songs added!"
-                                                       type:TSMessageNotificationTypeSuccess];
-            });
-        }
-        else {
-            MWLogWarning(@"%@", error);
-        }
-    }];
+    [self addPlaylistsToTrackProvider:advertisedData[@"playlists"]];
+    
+    // notify user
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [TSMessage showNotificationInViewController:self
+                                              title:[NSString stringWithFormat:@"Discovered %@!", advertisedData[@"username"]]
+                                           subtitle:@"All public songs added!"
+                                               type:TSMessageNotificationTypeSuccess];
+    });
 }
 
 #pragma mark - PGLoginViewDelegate
@@ -180,22 +172,7 @@
         self.session = session;
         [SMUserDefaults setSession:session];
 
-        // initialize indices list to all playlists are selected
-        self.indicesOfSelectedPlaylists = [NSMutableArray array];
-        [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
-            if (!error) {
-                for (NSUInteger i = 0; i < [object items].count; ++i) {
-                    [self.indicesOfSelectedPlaylists addObject:[NSNumber numberWithInteger:i]];
-                }
-                [SMUserDefaults setIndicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists];
-            }
-            else {
-                MWLogWarning(@"%@", error);
-            }
-        }];
-        
         [loginView dismissViewControllerAnimated:YES completion:^{
-            // try to login with new session
             [self loginToSpotifyAPI];
         }];
     }
@@ -211,6 +188,8 @@
     
     // cleanup Spotify objects
     self.session = nil;
+    self.playlists = nil;
+    self.advertisedPlaylists = nil;
     [self.trackPlayer clear];
     [self.trackProvider clearAllTracks];
 
@@ -219,28 +198,22 @@
 
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
     if (![self setAdvertisementState:advertising]) {
-        [TSMessage showNotificationInViewController:settingsView
+        [TSMessage showNotificationInViewController:self.navigationController
                                               title:@"Error"
                                            subtitle:@"Turn On Bluetooth!"
                                                type:TSMessageNotificationTypeError];
-        
-        [settingsView.advertisementSwitch setOn:NO animated:YES];
     }
     else if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-        // add own selected songs, if discovering is turned on
-        [self addPlaylistsForUser:self.session.canonicalUsername indicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists callback:^(NSError *error) {
-            if (error) {
-                MWLogWarning(@"%@", error);
-            }
-        }];
+        // add all currently advertised songs, if festify mode is active
+        [self addPlaylistsToTrackProvider:self.advertisedPlaylists];
     }
 }
 
--(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisedPlaylistSelection:(NSArray *)indicesOfSelectedPlaylists {
-    self.indicesOfSelectedPlaylists = [indicesOfSelectedPlaylists mutableCopy];
-    [SMUserDefaults setIndicesOfSelectedPlaylists:self.indicesOfSelectedPlaylists];
+-(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisedPlaylistSelection:(NSArray *)selectedPlaylists {
+    self.advertisedPlaylists = selectedPlaylists;
+    [SMUserDefaults setAdvertisedPlaylists:self.advertisedPlaylists];
     
-    // restart adverisement
+    // restart advertisement
     [self setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertising];
 }
 
@@ -254,22 +227,41 @@
 -(void)loginToSpotifyAPI {
     [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-        [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-        
-        if (error) {
+        if (!error) {
+            // load playlists for current user and initialize advertisement array with all playlists
+            [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
+                [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+                
+                if (!error) {
+                    self.playlists = object;
+                    
+                    if (!self.advertisedPlaylists) {
+                        self.advertisedPlaylists = [[self.playlists.items valueForKey:@"uri"] valueForKey:@"absoluteString"];
+                        [SMUserDefaults setAdvertisedPlaylists:self.advertisedPlaylists];
+                    }
+                }
+                else {
+                    MWLogWarning(@"%@", error);
+                }
+            }];
+        }
+        else {
+            [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
             [self performSegueWithIdentifier:@"showLogin" sender:self];
         }
+        
+        
     }];
 }
 
 -(BOOL)setAdvertisementState:(BOOL)advertising {
     BOOL success = NO;
     
-    if (advertising && self.indicesOfSelectedPlaylists) {
-        // broadcast username and indices of selected playlists
-        NSData* jsonString = [NSJSONSerialization dataWithJSONObject:@{@"username": self.session.canonicalUsername,
-                                                                       @"indicesOfSelectedPlaylists": self.indicesOfSelectedPlaylists}
-                                                             options:0 error:nil];
+    if (advertising && self.advertisedPlaylists) {
+        // create broadcast dictionary with username and all playlists
+        NSDictionary* broadcastData = @{@"username": self.session.canonicalUsername,
+                                        @"playlists": self.advertisedPlaylists};
+        NSData* jsonString = [NSJSONSerialization dataWithJSONObject:broadcastData options:0 error:nil];
         success = [[SMDiscoveryManager sharedInstance] advertiseProperty:jsonString];
     }
     else if (!advertising) {
@@ -283,35 +275,17 @@
     return success;
 }
 
--(void)addPlaylistsForUser:(NSString*)username indicesOfSelectedPlaylists:(NSArray*)indices callback:(void (^)(NSError* error))callback {
-    // download list of playlists from given user and add all selected playlists to track provider
-    [SPTRequest playlistsForUser:username withSession:self.session callback:^(NSError *error, id object) {
-        if (!error) {
-            SPTPlaylistList* playlists = object;
-            
-            for (NSNumber* playlistIndex in indices) {
-                [SPTRequest requestItemFromPartialObject:playlists.items[[playlistIndex integerValue]] withSession:self.session callback:^(NSError *error, id object) {
-                    if (!error) {
-                        [self.trackProvider addPlaylist:object];
-                    }
-                    else {
-                        MWLogDebug(@"%@", error);
-                    }
-                    
-                    // set track provider, if not already set and provider not empty
-                    if (self.trackPlayer.currentProvider == nil &&
-                        self.trackProvider.tracks.count != 0 &&
-                        [playlistIndex integerValue] == [indices.lastObject integerValue]) {
-                        [self.trackPlayer playTrackProvider:self.trackProvider];
-                    }
-                }];
+-(void)addPlaylistsToTrackProvider:(NSArray*)playlistURIs {
+    for (NSString* playlist in playlistURIs) {
+        [SPTRequest requestItemAtURI:[NSURL URLWithString:playlist] withSession:self.session callback:^(NSError *error, id object) {
+            if (!error) {
+                [self.trackProvider addPlaylist:object];
             }
-        }
-        
-        if (callback) {
-            callback(error);
-        }
-    }];
+            else {
+                MWLogWarning(@"%@", error);
+            }
+        }];
+    }
 }
 
 @end

@@ -36,9 +36,9 @@
         for (NSUInteger i = 0; i < self.data.count; ++i) {
             self.itemIsSelected[i] = @NO;
         }
-        for (NSNumber* selectedItem in self.indicesOfSelectedItems) {
-            self.itemIsSelected[[selectedItem integerValue]] = @YES;
-        }
+        [self.indicesOfSelectedItems enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+            self.itemIsSelected[idx] = @YES;
+        }];
     }
     
     // update UI
@@ -52,17 +52,17 @@
     
     if (self.delegate) {
         if (self.allowMultipleSelections) {
-            NSMutableArray* indicesOfSelectedItems = [NSMutableArray array];
+            NSMutableIndexSet* indicesOfSelectedItems = [NSMutableIndexSet indexSet];
             for (NSUInteger i = 0; i < self.data.count; ++i) {
                 if ([self.itemIsSelected[i] boolValue]) {
-                    [indicesOfSelectedItems addObject:[NSNumber numberWithInteger:i]];
+                    [indicesOfSelectedItems addIndex:i];
                 }
             }
 
             [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:indicesOfSelectedItems];
         }
         else {
-            [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:@[[NSNumber numberWithInteger:self.indexOfSelectedItem]]];
+            [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:[NSIndexSet indexSetWithIndex:self.indexOfSelectedItem]];
         }
     }
 }

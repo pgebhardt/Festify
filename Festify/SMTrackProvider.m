@@ -30,6 +30,8 @@
 -(void)clearAllTracks {
     [self.tracks removeAllObjects];
     [self.playlistURIs removeAllObjects];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMTrackProviderDidClearAllTracks object:self];
 }
 
 -(BOOL)addPlaylist:(SPTPlaylistSnapshot *)playlist {
@@ -46,6 +48,8 @@
     
     // shuffle tracks array
     [self.tracks shuffle];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMTrackProviderDidAddPlaylist object:self];
     
     return YES;
 }
