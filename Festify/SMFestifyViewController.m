@@ -100,7 +100,8 @@
         SMSettingSelectionViewController* viewController = (SMSettingSelectionViewController*)navController.viewControllers[0];
         
         viewController.data = self.discoveredUsers;
-        viewController.selectionAction = ^(id item) {
+        viewController.selectionAction = ^(id item) { };
+        viewController.accessoryAction = ^(id item) {
             if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"spotify://spotify:user:%@", item]]];
             }

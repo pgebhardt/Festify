@@ -10,6 +10,7 @@
 
 @interface SMSettingSelectionViewController ()
 @property (nonatomic, strong) NSMutableArray* itemIsSelected;
+@property (nonatomic, assign) UITableViewCellAccessoryType defaultAccessory;
 @end
 
 @implementation SMSettingSelectionViewController
@@ -29,6 +30,7 @@
                                                                                               target:self
                                                                                               action:@selector(done:)];
     }
+    self.defaultAccessory = [[self.tableView dequeueReusableCellWithIdentifier:@"cell"] accessoryType];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -122,7 +124,7 @@
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
     else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.accessoryType = self.defaultAccessory;
     }
     
     return cell;
@@ -154,7 +156,7 @@
                 self.navigationItem.rightBarButtonItem.title = allItemsSelected ? @"Clear All" : @"Select All";
             }
             else {
-                cell.accessoryType = UITableViewCellAccessoryNone;
+                cell.accessoryType = self.defaultAccessory;
                 self.navigationItem.rightBarButtonItem.title = @"Select All";
             }
         }
@@ -163,6 +165,12 @@
             self.indexOfSelectedItem = indexPath.row;
             [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
         }
+    }
+}
+
+-(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    if (self.accessoryAction) {
+        self.accessoryAction(self.data[indexPath.row]);
     }
 }
 
