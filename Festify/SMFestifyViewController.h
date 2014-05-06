@@ -17,7 +17,6 @@
 - (IBAction)spotifyButton:(id)sender;
 - (IBAction)festify:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *playButton;
 @property (weak, nonatomic) IBOutlet UIButton *festifyButton;
 
 @end

@@ -145,6 +145,17 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Zmt-zk-YEv">
+                        <nil key="title"/>
+                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="wRR-Xj-m6h">
+                            <rect key="frame" x="142" y="4" width="36" height="36"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <state key="normal" image="SpotifyLogoWhite">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="openInSpotify:" destination="EVF-cW-P26" eventType="touchUpInside" id="Wn4-bs-RWt"/>
+                            </connections>
+                        </button>
                         <barButtonItem key="rightBarButtonItem" image="List" id="509-8T-7vp">
                             <connections>
                                 <segue destination="cyM-U7-Fye" kind="custom" identifier="showPlaylist" customClass="BlurryModalSegue" id="AsV-op-EQk"/>
@@ -690,21 +701,56 @@
                                 <segue destination="Nyb-38-KAh" kind="modal" identifier="showSettings" customClass="BlurryModalSegue" id="LMi-0D-3iI"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" systemItem="play" id="wXj-3i-kV3">
-                            <connections>
-                                <segue destination="EVF-cW-P26" kind="push" identifier="showTrackPlayer" id="NTL-9Y-2qr"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="festifyButton" destination="P6e-RL-Qf1" id="JjL-jA-GbU"/>
-                        <outlet property="playButton" destination="wXj-3i-kV3" id="2H7-5S-0Dx"/>
                         <segue destination="8Rl-HL-ow2" kind="custom" identifier="showLogin" customClass="BlurryModalSegue" id="sN6-9t-lxE"/>
+                        <segue destination="fq2-e2-DGI" kind="custom" identifier="showUsers" customClass="BlurryModalSegue" id="Drq-H5-tYl"/>
+                        <segue destination="EVF-cW-P26" kind="push" identifier="showTrackPlayer" id="umN-ph-JMe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="exX-nK-8kW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1404" y="348"/>
+        </scene>
+        <!--Setting Selection View Controller - Discovered User-->
+        <scene sceneID="6VK-Ps-1J6">
+            <objects>
+                <tableViewController id="GbN-8d-cNT" customClass="SMSettingSelectionViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="1I0-Cs-2k5">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" textLabel="77t-Y1-3Kl" style="IBUITableViewCellStyleDefault" id="Q93-qF-5Yv">
+                                <rect key="frame" x="0.0" y="119" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Q93-qF-5Yv" id="e9r-UP-wCo">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="77t-Y1-3Kl">
+                                            <rect key="frame" x="15" y="0.0" width="290" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="GbN-8d-cNT" id="idJ-nG-Ea8"/>
+                            <outlet property="delegate" destination="GbN-8d-cNT" id="Hg7-nz-Cbb"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Discovered User" id="wJp-Ox-y6D"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cGi-6k-mU6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2456" y="1032"/>
         </scene>
         <!--Login View Controller - Login-->
         <scene sceneID="91b-vx-QUC">
@@ -739,7 +785,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Pf-GA-cZ3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1930" y="1109"/>
+            <point key="canvasLocation" x="1930" y="1734"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="8UB-bL-JO7">
@@ -826,6 +872,28 @@
             </objects>
             <point key="canvasLocation" x="1930" y="-491"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="HKp-kP-Z7v">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fq2-e2-DGI" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="G7x-wB-1R2">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.33725491166114807" green="0.33725491166114807" blue="0.33725491166114807" alpha="1" colorSpace="deviceRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="GbN-8d-cNT" kind="relationship" relationship="rootViewController" id="FLL-25-dXz"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sDs-Ee-teu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1930" y="1032"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Cog" width="25" height="25"/>
@@ -835,6 +903,7 @@
         <image name="Pause" width="16" height="22"/>
         <image name="Rewind" width="30" height="22"/>
         <image name="SpotifyLogo" width="119" height="36"/>
+        <image name="SpotifyLogoWhite" width="35" height="35"/>
     </resources>
     <color key="tintColor" red="0.5647059083" green="0.74117648599999997" blue="0.26274511220000002" alpha="1" colorSpace="deviceRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

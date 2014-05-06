@@ -25,6 +25,11 @@
                                                                                  target:self
                                                                                  action:@selector(toggleSelection:)];
     }
+    if (self.navigationController.viewControllers[0] == self) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                              target:self
+                                                                                              action:@selector(done:)];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -67,7 +72,11 @@
     }
 }
 
-- (IBAction)toggleSelection:(id)sender {
+-(void)done:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)toggleSelection:(id)sender {
     UIBarButtonItem* button = (UIBarButtonItem*)sender;
     if ([button.title isEqualToString:@"Select All"]) {
         button.title = @"Clear All";
@@ -84,6 +93,7 @@
     
     [self.tableView reloadData];
 }
+
 
 
 #pragma mark - Table view data source
@@ -110,8 +120,7 @@
         cell.textLabel.text = [self.data[indexPath.row] description];
     }
     if ([self.itemIsSelected[indexPath.row] boolValue]) {
-        cell.accessoryView = [MSCellAccessory accessoryWithType:FLAT_CHECKMARK
-                                                          color:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
+        cell.accessoryView = [MSCellAccessory accessoryWithType:FLAT_CHECKMARK color:SMTintColor];
     }
     else {
         cell.accessoryView = nil;
@@ -125,33 +134,37 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    // update cell and itemIsSelected array
-    UIView* checkmark = [MSCellAccessory accessoryWithType:FLAT_CHECKMARK
-                                                     color:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]];
-    if (self.allowMultipleSelections) {
-        self.itemIsSelected[indexPath.row] = [self.itemIsSelected[indexPath.row] boolValue] ? @NO : @YES;
-        
-        // update UI
-        UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
-        if ([self.itemIsSelected[indexPath.row] boolValue]) {
-            cell.accessoryView = checkmark;
-            
-            // check if all items are selected
-            BOOL allItemsSelected = YES;
-            for (NSNumber* itemIsSelected in self.itemIsSelected) {
-                allItemsSelected &= itemIsSelected.boolValue;
-            }
-            self.navigationItem.rightBarButtonItem.title = allItemsSelected ? @"Clear All" : @"Select All";
-        }
-        else {
-            cell.accessoryView = nil;
-            self.navigationItem.rightBarButtonItem.title = @"Select All";
-        }
+    if (self.selectionAction) {
+        self.selectionAction(self.data[indexPath.row]);
     }
     else {
-        [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryView = nil;
-        self.indexOfSelectedItem = indexPath.row;
-        [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryView = checkmark;
+        // update cell and itemIsSelected array
+        UIView* checkmark = [MSCellAccessory accessoryWithType:FLAT_CHECKMARK color:SMTintColor];
+        if (self.allowMultipleSelections) {
+            self.itemIsSelected[indexPath.row] = [self.itemIsSelected[indexPath.row] boolValue] ? @NO : @YES;
+            
+            // update UI
+            UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+            if ([self.itemIsSelected[indexPath.row] boolValue]) {
+                cell.accessoryView = checkmark;
+                
+                // check if all items are selected
+                BOOL allItemsSelected = YES;
+                for (NSNumber* itemIsSelected in self.itemIsSelected) {
+                    allItemsSelected &= itemIsSelected.boolValue;
+                }
+                self.navigationItem.rightBarButtonItem.title = allItemsSelected ? @"Clear All" : @"Select All";
+            }
+            else {
+                cell.accessoryView = nil;
+                self.navigationItem.rightBarButtonItem.title = @"Select All";
+            }
+        }
+        else {
+            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryView = nil;
+            self.indexOfSelectedItem = indexPath.row;
+            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryView = checkmark;
+        }
     }
 }
 

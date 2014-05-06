@@ -14,3 +14,7 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
+
+// default colors
+#define SMTintColor [UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]
+#define SMAlertColor [UIColor colorWithRed:206.0/255.0 green:0.0 blue:0.0 alpha:1.0]

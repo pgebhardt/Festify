@@ -8,11 +8,11 @@
 
 #import "SMFestifyViewController.h"
 #import "SMPlayerViewController.h"
+#import "SMSettingSelectionViewController.h"
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
 #import "SMTrackPlayer.h"
 #import "SMTrackProvider.h"
-#import "TSMessage.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
 
@@ -21,6 +21,10 @@
 @property (nonatomic, strong) SMTrackPlayer* trackPlayer;
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
+@property (nonatomic, strong) NSMutableArray* discoveredUsers;
+
+@property (nonatomic, strong) UIBarButtonItem *playButton;
+@property (nonatomic, strong) UIBarButtonItem* usersButton;
 @end
 
 @implementation SMFestifyViewController
@@ -33,6 +37,16 @@
     SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
     self.trackPlayer = appDelegate.trackPlayer;
     self.trackProvider = [[SMTrackProvider alloc] init];
+    self.discoveredUsers = [NSMutableArray array];
+    
+    // initialize UI elements
+    self.usersButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Group"] style:UIBarButtonItemStylePlain
+                                                       target:self action:@selector(usersButtonPressed:)];
+    self.usersButton.enabled = NO;
+    self.playButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay
+                                                                    target:self action:@selector(playButtonPressed:)];
+    self.playButton.enabled = NO;
+    self.navigationItem.rightBarButtonItems = @[self.playButton, self.usersButton];
     
     // listen to notifications to update UI correctly
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
@@ -82,6 +96,21 @@
         
         viewController.trackPlayer = self.trackPlayer;
     }
+    else if ([segue.identifier isEqualToString:@"showUsers"]) {
+        UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
+        SMSettingSelectionViewController* viewController = (SMSettingSelectionViewController*)navController.viewControllers[0];
+        
+        viewController.data = self.discoveredUsers;
+        viewController.selectionAction = ^(id item) {
+            if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"spotify://spotify:user:%@", item]]];
+            }
+        };
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            self.usersButton.tintColor = SMTintColor;
+        }];
+    }
 }
 
 #pragma  mark - Actions
@@ -98,12 +127,6 @@
                 [self addPlaylistsToTrackProvider:self.advertisedPlaylists];
             }
         }
-        else {
-            [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:@"Error"
-                                               subtitle:@"Turn On Bluetooth!"
-                                                   type:TSMessageNotificationTypeError];
-        }
     }
 }
 
@@ -119,15 +142,21 @@
     [[UIApplication sharedApplication] openURL:url];
 }
 
+-(void)playButtonPressed:(id)sender {
+    [self performSegueWithIdentifier:@"showTrackPlayer" sender:self];
+}
+
+-(void)usersButtonPressed:(id)sender {
+    [self performSegueWithIdentifier:@"showUsers" sender:self];
+}
+
 -(void)updateFestifyButton:(id)sender {
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-            [self.festifyButton setTitleColor:[UIColor colorWithRed:206.0/255.0 green:0.0 blue:0.0 alpha:1.0]
-                                     forState:UIControlStateNormal];
+            [self.festifyButton setTitleColor:SMAlertColor forState:UIControlStateNormal];
         }
         else {
-            [self.festifyButton setTitleColor:[UIColor colorWithRed:132.0/255.0 green:189.0/255.0 blue:0.0 alpha:1.0]
-                                     forState:UIControlStateNormal];
+            [self.festifyButton setTitleColor:SMTintColor forState:UIControlStateNormal];
         }
     });
 }
@@ -154,13 +183,17 @@
     // add playlist for discovered user and notify user
     [self addPlaylistsToTrackProvider:advertisedData[@"playlists"]];
     
-    // notify user
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [TSMessage showNotificationInViewController:self
-                                              title:[NSString stringWithFormat:@"Discovered %@!", advertisedData[@"username"]]
-                                           subtitle:@"All public songs added!"
-                                               type:TSMessageNotificationTypeSuccess];
-    });
+    // update discovered user array and show animation indicating new user
+    if (![self.discoveredUsers containsObject:advertisedData[@"username"]]) {
+        [self.discoveredUsers insertObject:advertisedData[@"username"] atIndex:0];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.usersButton.enabled = YES;
+            [UIView animateWithDuration:0.5 animations:^{
+                self.usersButton.tintColor = SMAlertColor;
+            }];
+        });
+    }
 }
 
 #pragma mark - PGLoginViewDelegate
@@ -188,9 +221,8 @@
     // cleanup Spotify objects
     self.session = nil;
     self.advertisedPlaylists = @[];
-    [self.trackPlayer clear];
-    [self.trackProvider clearAllTracks];
-
+    
+    [self settingsViewDidRequestPlaylistCleanup:settingsView];
     [settingsView dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -217,6 +249,11 @@
 -(void)settingsViewDidRequestPlaylistCleanup:(SMSettingsViewController *)settingsView {
     [self.trackPlayer clear];
     [self.trackProvider clearAllTracks];
+    [self.discoveredUsers removeAllObjects];
+    
+    // update UI
+    self.usersButton.tintColor = SMTintColor;
+    self.usersButton.enabled = NO;
 }
 
 #pragma mark - Helper

@@ -24,6 +24,7 @@
 @property (nonatomic, strong) NSIndexSet* indicesOfSelectedItems;
 @property (nonatomic, assign) NSInteger indexOfSelectedItem;
 @property (nonatomic, copy) NSString* (^dataAccessor)(id item);
+@property (nonatomic, copy) void (^selectionAction)(id item);
 @property (nonatomic, assign) BOOL allowMultipleSelections;
 
 @property (nonatomic, strong) id<SMSettinsSelectionViewDelegate> delegate;

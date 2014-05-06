@@ -11,18 +11,6 @@
 
 @implementation SMPlayerViewController
 
--(void)viewDidLoad {
-    [super viewDidLoad];
-
-    // set button with spotify logo as title view
-    UIButton* titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [titleButton setImage:[UIImage imageNamed:@"SpotifyLogoWhite"] forState:UIControlStateNormal];
-    [titleButton addTarget:self action:@selector(openInSpotify:) forControlEvents:UIControlEventTouchUpInside];
-    [titleButton sizeToFit];
-    
-    self.navigationItem.titleView = titleButton;
-}
-
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
@@ -80,17 +68,6 @@
 
 #pragma mark - Actions
 
--(void)openInSpotify:(id)sender {
-    // open currently played track in spotify app, if available
-    if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
-        NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"spotify://%@",
-                                           self.trackPlayer.currentTrack.uri.absoluteString]];
-        
-        [self.trackPlayer pause];
-        [[UIApplication sharedApplication] openURL:url];
-    }
-}
-
 -(IBAction)rewind:(id)sender {
     [self.trackPlayer skipBackward];
 }
@@ -106,6 +83,17 @@
 
 -(IBAction)fastForward:(id)sender {
     [self.trackPlayer skipForward];
+}
+
+- (IBAction)openInSpotify:(id)sender {
+    // open currently played track in spotify app, if available
+    if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
+        NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"spotify://%@",
+                                           self.trackPlayer.currentTrack.uri.absoluteString]];
+        
+        [self.trackPlayer pause];
+        [[UIApplication sharedApplication] openURL:url];
+    }
 }
 
 #pragma mark - Logic
