@@ -1,5 +1,5 @@
 platform :ios, '7.0'
-pod 'TSMessages'
+pod 'TSMessages', '= 0.9.7'
 pod 'MBProgressHUD', '~> 0.8'
 pod 'MSCellAccessory'
 pod 'Appirater'
