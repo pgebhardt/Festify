@@ -13,7 +13,6 @@
 #import "SMDiscoveryManager.h"
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
-#import "TSMessage.h"
 #import "MWLogging.h"
 
 @interface SMSettingsViewController ()
@@ -74,7 +73,9 @@
             return [item name];
         };
         
-        settingsView.navigationItem.title = @"Limit Playlists";
+        UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
+        settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+        settingsView.navigationItem.title = @"Visible Playlists";
         settingsView.allowMultipleSelections = YES;
     }
 }
@@ -97,10 +98,6 @@
     if (self.delegate) {
         if (![self.delegate settingsView:self didChangeAdvertisementState:self.advertisementSwitch.isOn]) {
             [self.advertisementSwitch setOn:NO animated:YES];
-            [TSMessage showNotificationInViewController:self.navigationController
-                                                  title:@"Error"
-                                               subtitle:@"Turn On Bluetooth!"
-                                                   type:TSMessageNotificationTypeError];
         }
     }
 }
@@ -114,7 +111,7 @@
             self.playlistNumberLabel.text = @"All";
         }
         else {
-            self.playlistNumberLabel.text = @"";
+            self.playlistNumberLabel.text = @"Limited";
         }
     });
 }

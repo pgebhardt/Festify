@@ -8,7 +8,6 @@
 
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
-#import "TSMessage.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
 #import "Appirater.h"
@@ -58,7 +57,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [[BlurryModalSegue appearance] setBackingImageSaturationDeltaFactor:@1.3];
     [[BlurryModalSegue appearance] setBackingImageTintColor:[UIColor colorWithRed:26.0/255.0 green:26.0/255.0
                                                                              blue:26.0/255.0 alpha:0.7]];
-    [TSMessage addCustomDesignFromFileWithName:@"spotifymessagedesign.json"];
 
     // config appirater rating request system
     // TODO: [Appirater setAppId:@"123456789"];

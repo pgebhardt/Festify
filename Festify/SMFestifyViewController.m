@@ -23,7 +23,6 @@
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, strong) NSMutableArray* discoveredUsers;
 
-@property (nonatomic, strong) UIBarButtonItem *playButton;
 @property (nonatomic, strong) UIBarButtonItem* usersButton;
 @end
 
@@ -40,13 +39,13 @@
     self.discoveredUsers = [NSMutableArray array];
     
     // initialize UI elements
+    UIBarButtonItem* settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Cog"]
+                                                                       style:UIBarButtonItemStylePlain target:self
+                                                                      action:@selector(settingsButtonPressed:)];
     self.usersButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Group"] style:UIBarButtonItemStylePlain
                                                        target:self action:@selector(usersButtonPressed:)];
     self.usersButton.enabled = NO;
-    self.playButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay
-                                                                    target:self action:@selector(playButtonPressed:)];
-    self.playButton.enabled = NO;
-    self.navigationItem.rightBarButtonItems = @[self.playButton, self.usersButton];
+    self.navigationItem.leftBarButtonItems = @[settingsButton, self.usersButton];
     
     // listen to notifications to update UI correctly
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
@@ -142,8 +141,8 @@
     [[UIApplication sharedApplication] openURL:url];
 }
 
--(void)playButtonPressed:(id)sender {
-    [self performSegueWithIdentifier:@"showTrackPlayer" sender:self];
+-(void)settingsButtonPressed:(id)sender {
+    [self performSegueWithIdentifier:@"showSettings" sender:self];
 }
 
 -(void)usersButtonPressed:(id)sender {
@@ -188,10 +187,16 @@
         [self.discoveredUsers insertObject:advertisedData[@"username"] atIndex:0];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.usersButton.enabled = YES;
-            [UIView animateWithDuration:0.5 animations:^{
+            if (self.usersButton.enabled) {
+                [UIView animateWithDuration:0.5 animations:^{
+                    self.usersButton.tintColor = SMAlertColor;
+                }];
+            }
+            else {
                 self.usersButton.tintColor = SMAlertColor;
-            }];
+            }
+            
+            self.usersButton.enabled = YES;
         });
     }
 }

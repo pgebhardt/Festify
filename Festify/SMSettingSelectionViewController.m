@@ -7,7 +7,6 @@
 //
 
 #import "SMSettingSelectionViewController.h"
-#import "MSCellAccessory.h"
 
 @interface SMSettingSelectionViewController ()
 @property (nonatomic, strong) NSMutableArray* itemIsSelected;
@@ -120,10 +119,10 @@
         cell.textLabel.text = [self.data[indexPath.row] description];
     }
     if ([self.itemIsSelected[indexPath.row] boolValue]) {
-        cell.accessoryView = [MSCellAccessory accessoryWithType:FLAT_CHECKMARK color:SMTintColor];
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
     else {
-        cell.accessoryView = nil;
+        cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
     return cell;
@@ -139,14 +138,13 @@
     }
     else {
         // update cell and itemIsSelected array
-        UIView* checkmark = [MSCellAccessory accessoryWithType:FLAT_CHECKMARK color:SMTintColor];
         if (self.allowMultipleSelections) {
             self.itemIsSelected[indexPath.row] = [self.itemIsSelected[indexPath.row] boolValue] ? @NO : @YES;
             
             // update UI
             UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
             if ([self.itemIsSelected[indexPath.row] boolValue]) {
-                cell.accessoryView = checkmark;
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
                 
                 // check if all items are selected
                 BOOL allItemsSelected = YES;
@@ -156,14 +154,14 @@
                 self.navigationItem.rightBarButtonItem.title = allItemsSelected ? @"Clear All" : @"Select All";
             }
             else {
-                cell.accessoryView = nil;
+                cell.accessoryType = UITableViewCellAccessoryNone;
                 self.navigationItem.rightBarButtonItem.title = @"Select All";
             }
         }
         else {
-            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryView = nil;
+            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryType = UITableViewCellAccessoryNone;
             self.indexOfSelectedItem = indexPath.row;
-            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryView = checkmark;
+            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
         }
     }
 }

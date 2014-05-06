@@ -24,6 +24,7 @@
 
     // make search table view appear similar to playlist table view
     UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
+    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
     self.searchDisplayController.searchResultsTableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
     self.searchDisplayController.searchBar.delegate = self;
 }

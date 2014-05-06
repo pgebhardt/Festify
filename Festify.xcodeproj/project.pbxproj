@@ -10,7 +10,6 @@
 		5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* SMSettingsViewController.m */; };
 		5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMTrackProvider.m */; };
 		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
-		5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */ = {isa = PBXBuildFile; fileRef = 5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */; };
 		5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */; };
 		5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
@@ -63,7 +62,6 @@
 		5F089B6618FD56A3002476CB /* SMTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackProvider.m; sourceTree = "<group>"; };
 		5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Shuffling.h"; sourceTree = "<group>"; };
 		5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Shuffling.m"; sourceTree = "<group>"; };
-		5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = spotifymessagedesign.json; sourceTree = "<group>"; };
 		5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackPlayer.h; sourceTree = "<group>"; };
 		5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackPlayer.m; sourceTree = "<group>"; };
 		5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlaylistViewController.h; sourceTree = "<group>"; };
@@ -253,7 +251,6 @@
 		5F423A6718FC115200C3ED75 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				5F0A6CE51902D31B000C7170 /* spotifymessagedesign.json */,
 				5F423A6818FC115200C3ED75 /* Festify-Info.plist */,
 				5F423A6918FC115200C3ED75 /* InfoPlist.strings */,
 				5F423A6C18FC115200C3ED75 /* main.m */,
@@ -369,7 +366,6 @@
 			files = (
 				5F423A6B18FC115200C3ED75 /* InfoPlist.strings in Resources */,
 				5F423A7318FC115200C3ED75 /* Images.xcassets in Resources */,
-				5F0A6CE61902D31B000C7170 /* spotifymessagedesign.json in Resources */,
 				5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

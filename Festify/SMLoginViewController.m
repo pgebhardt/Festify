@@ -9,7 +9,6 @@
 #import "SMLoginViewController.h"
 #import "SMFestifyViewController.h"
 #import "SMAppDelegate.h"
-#import "TSMessage.h"
 
 @implementation SMLoginViewController
 
@@ -30,13 +29,6 @@
     // login to spotify api
     [(SMAppDelegate*)[UIApplication sharedApplication].delegate requestSpotifySessionWithCompletionHandler:^(SPTSession* session, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (error) {
-                [TSMessage showNotificationInViewController:self
-                                                      title:@"Authentication Error"
-                                                   subtitle:error.userInfo[NSLocalizedDescriptionKey]
-                                                       type:TSMessageNotificationTypeError];
-            }
-            
             if (self.delegate) {
                 [self.delegate loginView:self didCompleteLoginWithSession:session error:error];
             }

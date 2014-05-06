@@ -18,5 +18,6 @@
 - (IBAction)festify:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UIButton *festifyButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *playButton;
 
 @end
