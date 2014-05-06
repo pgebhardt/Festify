@@ -47,7 +47,11 @@
 }
 
 +(NSArray *)advertisedPlaylists {
-    return [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
+    NSArray* advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
+    if (!advertisedPlaylists) {
+        advertisedPlaylists = [NSArray array];
+    }
+    return advertisedPlaylists;
 }
 
 +(void)setAdvertisedPlaylists:(NSArray *)advertisedPlaylists {

@@ -20,7 +20,6 @@
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SMTrackPlayer* trackPlayer;
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
-@property (nonatomic, strong) SPTPlaylistList* playlists;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
 @end
 
@@ -68,7 +67,7 @@
         UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
         SMSettingsViewController* viewController = (SMSettingsViewController*)navController.viewControllers[0];
         
-        viewController.playlists = self.playlists.items;
+        viewController.session = self.session;
         viewController.advertisedPlaylists = self.advertisedPlaylists;
         viewController.delegate = self;
     }
@@ -188,8 +187,7 @@
     
     // cleanup Spotify objects
     self.session = nil;
-    self.playlists = nil;
-    self.advertisedPlaylists = nil;
+    self.advertisedPlaylists = @[];
     [self.trackPlayer clear];
     [self.trackProvider clearAllTracks];
 
@@ -227,30 +225,11 @@
 -(void)loginToSpotifyAPI {
     [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-        if (!error) {
-            // load playlists for current user and initialize advertisement array with all playlists
-            [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
-                [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-                
-                if (!error) {
-                    self.playlists = object;
-                    
-                    if (!self.advertisedPlaylists) {
-                        self.advertisedPlaylists = [[self.playlists.items valueForKey:@"uri"] valueForKey:@"absoluteString"];
-                        [SMUserDefaults setAdvertisedPlaylists:self.advertisedPlaylists];
-                    }
-                }
-                else {
-                    MWLogWarning(@"%@", error);
-                }
-            }];
-        }
-        else {
-            [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+        [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+
+        if (error) {
             [self performSegueWithIdentifier:@"showLogin" sender:self];
         }
-        
-        
     }];
 }
 

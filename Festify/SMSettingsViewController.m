@@ -16,6 +16,10 @@
 #import "TSMessage.h"
 #import "MWLogging.h"
 
+@interface SMSettingsViewController ()
+@property (nonatomic, strong) NSArray* playlists;
+@end
+
 @implementation SMSettingsViewController
 
 -(void)viewDidLoad {
@@ -24,7 +28,21 @@
     // connect switches to event handler and set them to correct state
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState:) forControlEvents:UIControlEventValueChanged];
     [self updateAdvertisiementSwitch];
-    [self updateLimitPlaylistsCell];
+
+    // collect all playlists
+    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
+        if (!error) {
+            self.playlists = [object items];
+            
+            // update UI
+            [self.playlistActivityIndicator stopAnimating];
+            self.playlistNumberLabel.hidden = NO;
+            [self updateVisiblePlaylistsCell];
+        }
+        else {
+            MWLogWarning(@"%@", error);
+        }
+    }];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -74,13 +92,16 @@
     }
 }
 
--(void)updateLimitPlaylistsCell {
+-(void)updateVisiblePlaylistsCell {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.playlists.count != self.advertisedPlaylists.count) {
-            self.limitPlaylistsStatusLabel.text = @"On";
+        if (self.advertisedPlaylists.count == 0) {
+            self.playlistNumberLabel.text = @"None";
+        }
+        else if (self.advertisedPlaylists.count == self.playlists.count){
+            self.playlistNumberLabel.text = @"All";
         }
         else {
-            self.limitPlaylistsStatusLabel.text = @"Off";
+            self.playlistNumberLabel.text = [NSString stringWithFormat:@"%d", self.advertisedPlaylists.count];
         }
     });
 }
@@ -153,7 +174,7 @@
     self.advertisedPlaylists = [[[self.playlists objectsAtIndexes:indicesOfSelectedItems] valueForKey:@"uri"] valueForKey:@"absoluteString"];
     
     // update UI
-    [self updateLimitPlaylistsCell];
+    [self updateVisiblePlaylistsCell];
     
     // inform delegate
     if (self.delegate) {

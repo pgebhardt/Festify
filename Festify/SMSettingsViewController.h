@@ -27,9 +27,10 @@
 - (IBAction)done:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
-@property (weak, nonatomic) IBOutlet UILabel *limitPlaylistsStatusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *playlistNumberLabel;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *playlistActivityIndicator;
 
-@property (nonatomic, strong) NSArray* playlists;
+@property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, weak) id<SMSettingsViewDelegate> delegate;
 
