@@ -279,7 +279,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.20000001789999999" green="0.20000001789999999" blue="0.20000001789999999" alpha="1" colorSpace="deviceRGB"/>
                                         <connections>
-                                            <segue destination="aqi-hv-qKh" kind="push" identifier="showLimitPlaylists" id="AcQ-9B-6u3"/>
+                                            <segue destination="aqi-hv-qKh" kind="push" identifier="showVisiblePlaylists" id="AcQ-9B-6u3"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="pvB-JI-avL">

@@ -61,7 +61,7 @@
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"showLimitPlaylists"]) {
+    if ([segue.identifier isEqualToString:@"showVisiblePlaylists"]) {
         SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)segue.destinationViewController;
         settingsView.delegate = self;
     
@@ -77,6 +77,14 @@
         settingsView.navigationItem.title = @"Limit Playlists";
         settingsView.allowMultipleSelections = YES;
     }
+}
+
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
+    if (self.playlistActivityIndicator.isAnimating &&
+        [identifier isEqualToString:@"showVisiblePlaylists"]) {
+        return NO;
+    }
+    return YES;
 }
 
 #pragma mark - Actions
@@ -106,7 +114,7 @@
             self.playlistNumberLabel.text = @"All";
         }
         else {
-            self.playlistNumberLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.advertisedPlaylists.count];
+            self.playlistNumberLabel.text = @"";
         }
     });
 }
