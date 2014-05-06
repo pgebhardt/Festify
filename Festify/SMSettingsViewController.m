@@ -73,8 +73,9 @@
             return [item name];
         };
 
-        settingsView.navigationItem.title = @"Visible Playlists";
         settingsView.allowMultipleSelections = YES;
+        settingsView.navigationItem.title = @"Visible Playlists";
+        settingsView.subtitle = @"Select playlists visible to other users. These playlists must be public in your Spotify profile.";
         UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
         settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
     }
@@ -146,9 +147,9 @@
 
     // handle actions for specific cell
     NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
-    if ([reuseIdentifier isEqualToString:@"clearPlaylistCell"]) {
+    if ([reuseIdentifier isEqualToString:@"resetCell"]) {
         if (self.delegate) {
-            [self.delegate settingsViewDidRequestPlaylistCleanup:self];
+            [self.delegate settingsViewDidRequestReset:self];
         }
     }
     else if ([reuseIdentifier isEqualToString:@"logoutCell"]) {

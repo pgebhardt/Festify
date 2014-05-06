@@ -166,6 +166,13 @@
     }
 }
 
+-(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (section == [self numberOfSectionsInTableView:tableView] - 1) {
+        return self.subtitle;
+    }
+    return @"";
+}
+
 // these two methods hide the section headers completely
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return CGFLOAT_MIN;

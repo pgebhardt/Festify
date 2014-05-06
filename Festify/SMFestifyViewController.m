@@ -227,7 +227,7 @@
     self.session = nil;
     self.advertisedPlaylists = @[];
     
-    [self settingsViewDidRequestPlaylistCleanup:settingsView];
+    [self settingsViewDidRequestReset:settingsView];
     [settingsView dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -251,7 +251,7 @@
     [self setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertising];
 }
 
--(void)settingsViewDidRequestPlaylistCleanup:(SMSettingsViewController *)settingsView {
+-(void)settingsViewDidRequestReset:(SMSettingsViewController *)settingsView {
     [self.trackPlayer clear];
     [self.trackProvider clearAllTracks];
     [self.discoveredUsers removeAllObjects];

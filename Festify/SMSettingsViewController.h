@@ -16,7 +16,7 @@
 @protocol SMSettingsViewDelegate <NSObject>
 
 -(void)settingsViewDidRequestLogout:(SMSettingsViewController*)settingsView;
--(void)settingsViewDidRequestPlaylistCleanup:(SMSettingsViewController*)settingsView;
+-(void)settingsViewDidRequestReset:(SMSettingsViewController*)settingsView;
 -(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisedPlaylistSelection:(NSArray*)selectedPlaylists;
 -(BOOL)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisementState:(BOOL)advertising;
 
