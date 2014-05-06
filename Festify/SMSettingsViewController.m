@@ -88,7 +88,13 @@
 
 -(void)toggleAdvertisementState:(id)sender {
     if (self.delegate) {
-        [self.delegate settingsView:self didChangeAdvertisementState:self.advertisementSwitch.isOn];
+        if (![self.delegate settingsView:self didChangeAdvertisementState:self.advertisementSwitch.isOn]) {
+            [self.advertisementSwitch setOn:NO animated:YES];
+            [TSMessage showNotificationInViewController:self.navigationController
+                                                  title:@"Error"
+                                               subtitle:@"Turn On Bluetooth!"
+                                                   type:TSMessageNotificationTypeError];
+        }
     }
 }
 

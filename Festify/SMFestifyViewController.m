@@ -194,17 +194,16 @@
     [settingsView dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
-    if (![self setAdvertisementState:advertising]) {
-        [TSMessage showNotificationInViewController:self.navigationController
-                                              title:@"Error"
-                                           subtitle:@"Turn On Bluetooth!"
-                                               type:TSMessageNotificationTypeError];
-    }
-    else if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-        // add all currently advertised songs, if festify mode is active
+-(BOOL)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
+    BOOL success = [self setAdvertisementState:advertising];
+    
+    // add all currently advertised songs, if festify and advertisement modes are active
+    if ([SMDiscoveryManager sharedInstance].isDiscovering &&
+        [SMDiscoveryManager sharedInstance].isAdvertising) {
         [self addPlaylistsToTrackProvider:self.advertisedPlaylists];
     }
+    
+    return success;
 }
 
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisedPlaylistSelection:(NSArray *)selectedPlaylists {

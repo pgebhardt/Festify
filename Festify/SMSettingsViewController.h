@@ -18,7 +18,7 @@
 -(void)settingsViewDidRequestLogout:(SMSettingsViewController*)settingsView;
 -(void)settingsViewDidRequestPlaylistCleanup:(SMSettingsViewController*)settingsView;
 -(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisedPlaylistSelection:(NSArray*)selectedPlaylists;
--(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisementState:(BOOL)advertising;
+-(BOOL)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisementState:(BOOL)advertising;
 
 @end
 
