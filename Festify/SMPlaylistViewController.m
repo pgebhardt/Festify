@@ -21,7 +21,11 @@
     // update UI
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                           atScrollPosition:UITableViewScrollPositionTop animated:NO];
+}
 
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
     // make search table view appear similar to playlist table view
     UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
     self.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
