@@ -81,7 +81,6 @@
 
 #pragma mark - Actions
 
-
 - (IBAction)done:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -107,7 +106,7 @@
             self.playlistNumberLabel.text = @"All";
         }
         else {
-            self.playlistNumberLabel.text = [NSString stringWithFormat:@"%d", self.advertisedPlaylists.count];
+            self.playlistNumberLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.advertisedPlaylists.count];
         }
     });
 }
