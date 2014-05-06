@@ -28,7 +28,7 @@
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState:) forControlEvents:UIControlEventValueChanged];
     [self updateAdvertisiementSwitch];
 
-    // collect all playlists
+    // collect playlists from currently logged in user to pass to playlist selection screen
     [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
         if (!error) {
             self.playlists = [object items];
@@ -42,6 +42,9 @@
             MWLogWarning(@"%@", error);
         }
     }];
+    
+    // update UI
+    self.logoutLabel.text = [NSString stringWithFormat:@"Log Out %@", self.session.canonicalUsername];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
