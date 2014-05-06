@@ -72,11 +72,11 @@
         settingsView.dataAccessor = ^NSString*(id item) {
             return [item name];
         };
-        
-        UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
-        settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+
         settingsView.navigationItem.title = @"Visible Playlists";
         settingsView.allowMultipleSelections = YES;
+        UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
+        settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
     }
 }
 
