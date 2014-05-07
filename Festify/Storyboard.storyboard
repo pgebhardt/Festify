@@ -268,21 +268,21 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Visible Playlists" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ERc-eo-Hsk">
-                                                    <rect key="frame" x="15" y="11" width="118" height="21"/>
+                                                    <rect key="frame" x="15" y="12" width="118" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="None" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ykz-rg-hZI">
-                                                    <rect key="frame" x="158" y="11" width="130" height="21"/>
+                                                    <rect key="frame" x="157" y="11" width="130" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="wpl-gx-P3l">
-                                                    <rect key="frame" x="267" y="12" width="20" height="20"/>
+                                                    <rect key="frame" x="267" y="13" width="20" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </activityIndicatorView>
                                             </subviews>
@@ -341,18 +341,20 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reset Festify" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iaH-9e-Cb0">
-                                                    <rect key="frame" x="20" y="9" width="280" height="26"/>
+                                                    <rect key="frame" x="20" y="11" width="280" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="280" id="hZq-z4-diX"/>
+                                                        <constraint firstAttribute="height" constant="22" id="s6q-Ky-oT7"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="iaH-9e-Cb0" firstAttribute="leading" secondItem="JT0-xg-exf" secondAttribute="leading" constant="20" id="2br-3n-Iss"/>
-                                                <constraint firstAttribute="trailing" secondItem="iaH-9e-Cb0" secondAttribute="trailing" constant="20" id="DmB-Hh-qd0"/>
-                                                <constraint firstItem="iaH-9e-Cb0" firstAttribute="top" secondItem="JT0-xg-exf" secondAttribute="top" constant="9" id="WTW-YD-xUC"/>
-                                                <constraint firstAttribute="bottom" secondItem="iaH-9e-Cb0" secondAttribute="bottom" constant="8" id="eH4-bB-hVd"/>
+                                                <constraint firstAttribute="centerY" secondItem="iaH-9e-Cb0" secondAttribute="centerY" constant="-0.5" id="AhZ-CU-vS4"/>
+                                                <constraint firstAttribute="centerX" secondItem="iaH-9e-Cb0" secondAttribute="centerX" id="e9P-DE-Eh8"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.20000001788139343" green="0.20000001788139343" blue="0.20000001788139343" alpha="1" colorSpace="deviceRGB"/>
@@ -369,18 +371,20 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log Out" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QTd-ao-yCB">
-                                                    <rect key="frame" x="20" y="9" width="280" height="26"/>
+                                                    <rect key="frame" x="20" y="11" width="280" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="280" id="YZU-MA-Jnh"/>
+                                                        <constraint firstAttribute="height" constant="22" id="zQ5-nf-FoJ"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="QTd-ao-yCB" firstAttribute="top" secondItem="IaO-70-bmR" secondAttribute="top" constant="9" id="EH0-AO-3mI"/>
-                                                <constraint firstAttribute="trailing" secondItem="QTd-ao-yCB" secondAttribute="trailing" constant="20" id="qCd-d8-NMN"/>
-                                                <constraint firstAttribute="bottom" secondItem="QTd-ao-yCB" secondAttribute="bottom" constant="8" id="r2C-6K-FpT"/>
-                                                <constraint firstItem="QTd-ao-yCB" firstAttribute="leading" secondItem="IaO-70-bmR" secondAttribute="leading" constant="20" id="z19-8V-rfr"/>
+                                                <constraint firstAttribute="centerY" secondItem="QTd-ao-yCB" secondAttribute="centerY" constant="-0.5" id="P9d-ZE-Jht"/>
+                                                <constraint firstAttribute="centerX" secondItem="QTd-ao-yCB" secondAttribute="centerX" id="zBt-93-N25"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.80784313725490198" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -422,18 +426,20 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Contact Us" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W3K-Pk-0UV">
-                                                    <rect key="frame" x="20" y="9" width="280" height="26"/>
+                                                    <rect key="frame" x="20" y="11" width="280" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="280" id="QCe-nX-ZAY"/>
+                                                        <constraint firstAttribute="height" constant="22" id="TQo-vX-8mW"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="W3K-Pk-0UV" secondAttribute="bottom" constant="8" id="Iwv-MD-an3"/>
-                                                <constraint firstItem="W3K-Pk-0UV" firstAttribute="top" secondItem="alt-ZC-sHW" secondAttribute="top" constant="9" id="ULK-Ma-Ro3"/>
-                                                <constraint firstAttribute="trailing" secondItem="W3K-Pk-0UV" secondAttribute="trailing" constant="20" id="gQm-hi-hOt"/>
-                                                <constraint firstItem="W3K-Pk-0UV" firstAttribute="leading" secondItem="alt-ZC-sHW" secondAttribute="leading" constant="20" id="oNW-Ol-Rn9"/>
+                                                <constraint firstAttribute="centerY" secondItem="W3K-Pk-0UV" secondAttribute="centerY" constant="-0.5" id="TEo-mJ-1c8"/>
+                                                <constraint firstAttribute="centerX" secondItem="W3K-Pk-0UV" secondAttribute="centerX" id="d6s-1C-Roy"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.5647059083" green="0.74117648599999997" blue="0.26274511220000002" alpha="1" colorSpace="deviceRGB"/>

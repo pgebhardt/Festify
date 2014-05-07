@@ -106,6 +106,7 @@
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"spotify://spotify:user:%@", item]]];
             }
         };
+        viewController.subtitle = @"All visible playlists of these users are currently include in Festify`s playlist.";
         
         [UIView animateWithDuration:0.5 animations:^{
             self.usersButton.tintColor = SMTintColor;
