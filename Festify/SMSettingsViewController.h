@@ -30,6 +30,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *playlistNumberLabel;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *playlistActivityIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *logoutLabel;
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;

@@ -45,6 +45,9 @@
     
     // update UI
     self.logoutLabel.text = [NSString stringWithFormat:@"Log Out %@", self.session.canonicalUsername];
+    self.versionLabel.text = [NSString stringWithFormat:@"%@ (%@)",
+                              [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
+                              [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleVersionKey]];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -132,17 +135,6 @@
 }
 
 #pragma mark - UITableViewDelegate
-
--(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (section == self.tableView.numberOfSections - 1) {
-        return [NSString stringWithFormat:@"©2014 SchnuffMade. %@ %@",
-                [NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey],
-                [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"]];
-    }
-    else {
-        return @"";
-    }
-}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // deselect cell
