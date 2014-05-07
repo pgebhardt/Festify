@@ -15,6 +15,7 @@
 #import "SMTrackProvider.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
+#import "BBBadgeBarButtonItem.h"
 
 @interface SMFestifyViewController ()
 @property (nonatomic, strong) SPTSession* session;
@@ -22,8 +23,7 @@
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, strong) NSMutableArray* discoveredUsers;
-
-@property (nonatomic, strong) UIBarButtonItem* usersButton;
+@property (nonatomic, strong) BBBadgeBarButtonItem* usersButton;
 @end
 
 @implementation SMFestifyViewController
@@ -33,19 +33,11 @@
     [SMDiscoveryManager sharedInstance].delegate = self;
     
     // init properties
-    SMAppDelegate* appDelegate = (SMAppDelegate*)[UIApplication sharedApplication].delegate;
-    self.trackPlayer = appDelegate.trackPlayer;
+    self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     self.trackProvider = [[SMTrackProvider alloc] init];
     self.discoveredUsers = [NSMutableArray array];
     
-    // initialize UI elements
-    UIBarButtonItem* settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Cog"]
-                                                                       style:UIBarButtonItemStylePlain target:self
-                                                                      action:@selector(settingsButtonPressed:)];
-    self.usersButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Group"] style:UIBarButtonItemStylePlain
-                                                       target:self action:@selector(usersButtonPressed:)];
-    self.usersButton.enabled = NO;
-    self.navigationItem.leftBarButtonItems = @[settingsButton, self.usersButton];
+    [self initializeUI];
     
     // listen to notifications to update UI correctly
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
@@ -64,6 +56,25 @@
     if (self.session) {
         [self loginToSpotifyAPI];
     }
+}
+
+-(void)initializeUI {
+    // create bar button item with badge to indicate newly discovered users
+    UIButton* userButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [userButton addTarget:self action:@selector(usersButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [userButton setImage:[UIImage imageNamed:@"Group"] forState:UIControlStateNormal];
+    [userButton sizeToFit];
+    userButton.tintColor = SMTintColor;
+    
+    self.usersButton = [[BBBadgeBarButtonItem alloc] initWithCustomUIButton:userButton];
+    self.usersButton.badgeOriginX = [userButton imageForState:UIControlStateNormal].size.width / 2.0;
+    self.usersButton.enabled = NO;
+    
+    UIBarButtonItem* settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Cog"]
+                                                                       style:UIBarButtonItemStylePlain target:self
+                                                                      action:@selector(settingsButtonPressed:)];
+    
+    self.navigationItem.leftBarButtonItems = @[settingsButton, self.usersButton];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -91,9 +102,7 @@
         viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
     else if ([segue.identifier isEqualToString:@"showTrackPlayer"]) {
-        SMPlayerViewController* viewController = (SMPlayerViewController*)segue.destinationViewController;
-        
-        viewController.trackPlayer = self.trackPlayer;
+        ((SMPlayerViewController*)segue.destinationViewController).trackPlayer = self.trackPlayer;
     }
     else if ([segue.identifier isEqualToString:@"showUsers"]) {
         UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
@@ -107,10 +116,7 @@
             }
         };
         viewController.subtitle = @"All visible playlists of these users are currently include in Festify`s playlist.";
-        
-        [UIView animateWithDuration:0.5 animations:^{
-            self.usersButton.tintColor = SMTintColor;
-        }];
+        self.usersButton.badgeValue = @"";
     }
 }
 
@@ -189,15 +195,9 @@
         [self.discoveredUsers insertObject:advertisedData[@"username"] atIndex:0];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.usersButton.enabled) {
-                [UIView animateWithDuration:0.5 animations:^{
-                    self.usersButton.tintColor = SMAlertColor;
-                }];
-            }
-            else {
-                self.usersButton.tintColor = SMAlertColor;
-            }
-            
+            NSInteger value = [self.usersButton.badgeValue integerValue];
+            value += 1;
+            self.usersButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)value];
             self.usersButton.enabled = YES;
         });
     }
@@ -259,7 +259,7 @@
     [self.discoveredUsers removeAllObjects];
     
     // update UI
-    self.usersButton.tintColor = SMTintColor;
+    self.usersButton.badgeValue = @"";
     self.usersButton.enabled = NO;
 }
 
