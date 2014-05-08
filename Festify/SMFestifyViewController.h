@@ -11,6 +11,9 @@
 #import "SMLoginViewController.h"
 #import "SMSettingsViewController.h"
 
+// notification center strings
+static NSString* const SMFestifyViewControllerRestoreApplicationState = @"SMFestifyViewControllerRestoreApplicationState";
+
 @interface SMFestifyViewController : UIViewController<SMDiscoveryManagerDelegate,
     SMLoginViewDelegate, SMSettingsViewDelegate>
 

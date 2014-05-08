@@ -32,30 +32,20 @@
     [super viewDidLoad];
     [SMDiscoveryManager sharedInstance].delegate = self;
     
+    // listen to notifications to update application state correctly
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStopDiscovering object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTrackPlayer:) name:SMTrackProviderDidAddPlaylist object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTrackPlayer:) name:SMTrackProviderDidClearAllTracks object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreApplicationState) name:SMFestifyViewControllerRestoreApplicationState object:nil];
+
     // init properties
     self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     self.trackProvider = [[SMTrackProvider alloc] init];
     self.discoveredUsers = [NSMutableArray array];
     
     [self initializeUI];
-    
-    // listen to notifications to update UI correctly
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStopDiscovering object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTrackPlayer:) name:SMTrackProviderDidAddPlaylist object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTrackPlayer:) name:SMTrackProviderDidClearAllTracks object:nil];
-    
-    // load saved user defaults, but wait a bit to avoid bluetooth glitches
-    self.session = [SMUserDefaults session];
-    self.advertisedPlaylists = [SMUserDefaults advertisedPlaylists];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self setAdvertisementState:[SMUserDefaults advertisementState]];
-    });
-
-    // try to login, if a stored session is available
-    if (self.session) {
-        [self loginToSpotifyAPI];
-    }
+    [self restoreApplicationState];
 }
 
 -(void)initializeUI {
@@ -205,16 +195,12 @@
 
 #pragma mark - PGLoginViewDelegate
 
--(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithSession:(SPTSession *)session error:(NSError *)error {
-    if (!error) {
-        // save session object to user defaults
-        self.session = session;
+-(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithSession:(SPTSession *)session {
+    [loginView dismissViewControllerAnimated:YES completion:^{
+        // store new session to users defaults and restore application state
         [SMUserDefaults setSession:session];
-
-        [loginView dismissViewControllerAnimated:YES completion:^{
-            [self loginToSpotifyAPI];
-        }];
-    }
+        [self restoreApplicationState];
+    }];
 }
 
 #pragma mark - PGSettingsViewDelegate
@@ -227,7 +213,6 @@
     
     // cleanup Spotify objects
     self.session = nil;
-    self.advertisedPlaylists = @[];
     
     [self settingsViewDidRequestReset:settingsView];
     [settingsView dismissViewControllerAnimated:YES completion:nil];
@@ -265,12 +250,26 @@
 
 #pragma mark - Helper
 
--(void)loginToSpotifyAPI {
+-(void)restoreApplicationState {
     [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    
+    // load stored spotify session and try to enable playback
+    self.session = [SMUserDefaults session];
     [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-        [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-
-        if (error) {
+        if (!error) {
+            // load user settings
+            [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
+                [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+                
+                self.advertisedPlaylists = advertisedPlaylists;
+                [self setAdvertisementState:[SMUserDefaults advertisementState]];
+            }];
+        }
+        else {
+            [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+            
+            // cleanup stored application state and show login screen
+            [SMUserDefaults clear];
             [self performSegueWithIdentifier:@"showLogin" sender:self];
         }
     }];
@@ -279,7 +278,7 @@
 -(BOOL)setAdvertisementState:(BOOL)advertising {
     BOOL success = NO;
     
-    if (advertising && self.advertisedPlaylists) {
+    if (advertising && self.advertisedPlaylists && self.session) {
         // create broadcast dictionary with username and all playlists
         NSDictionary* broadcastData = @{@"username": self.session.canonicalUsername,
                                         @"playlists": self.advertisedPlaylists};

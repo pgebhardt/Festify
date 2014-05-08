@@ -8,8 +8,7 @@
 
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
-#import "MBProgressHUD.h"
-#import "MWLogging.h"
+#import "SMFestifyViewController.h"
 #import "Appirater.h"
 #import "BlurryModalSegue.h"
 
@@ -97,14 +96,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 -(void)applicationWillEnterForeground:(UIApplication *)application {
     // assume spotify did logout when player is not playing
     if (!self.trackPlayer.playing && self.trackPlayer.session) {
-        [MBProgressHUD showHUDAddedTo:self.window.subviews.lastObject animated:YES];
-        [self.trackPlayer enablePlaybackWithSession:self.trackPlayer.session callback:^(NSError *error) {
-            [MBProgressHUD hideAllHUDsForView:self.window.subviews.lastObject animated:YES];
-            
-            if (error) {
-                MWLogError(@"%@", error);
-            }
-        }];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SMFestifyViewControllerRestoreApplicationState object:nil];
     }
     
     [Appirater appEnteredForeground:YES];

@@ -25,7 +25,7 @@ static NSString* const SMUserDefaultsAdvertisedPlaylistsKey = @"advertisedPlayli
 +(BOOL)advertisementState;
 +(void)setAdvertisementState:(BOOL)state;
 
-+(NSArray*)advertisedPlaylists;
++(void)advertisedPlaylists:(void (^)(NSArray* advertisedPlaylists))completion;
 +(void)setAdvertisedPlaylists:(NSArray*)advertisedPlaylists;
 
 @end

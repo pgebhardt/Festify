@@ -38,7 +38,12 @@
 }
 
 +(BOOL)advertisementState {
-    return [[[NSUserDefaults standardUserDefaults] valueForKeyPath:SMUserDefaultsAdvertisementStateKey] boolValue];
+    NSObject* advertisementState = [[NSUserDefaults standardUserDefaults] valueForKeyPath:SMUserDefaultsAdvertisementStateKey];
+    
+    if (!advertisementState) {
+        return YES;
+    }
+    return [(NSNumber*)advertisementState boolValue];
 }
 
 +(void)setAdvertisementState:(BOOL)state {
@@ -46,12 +51,32 @@
                                              forKey:SMUserDefaultsAdvertisementStateKey];
 }
 
-+(NSArray *)advertisedPlaylists {
-    NSArray* advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
++(void)advertisedPlaylists:(void (^)(NSArray *))completion {
+    NSMutableArray* advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
+    
     if (!advertisedPlaylists) {
-        advertisedPlaylists = [NSArray array];
+        advertisedPlaylists = [NSMutableArray array];
+        
+        // initialize advertised playlists with all playlists, if session is available
+        SPTSession* session = [SMUserDefaults session];
+        if (session) {
+            [SPTRequest playlistsForUser:session.canonicalUsername withSession:session callback:^(NSError *error, id object) {
+                if (!error) {
+                    [advertisedPlaylists addObjectsFromArray:[[[object items] valueForKey:@"uri"] valueForKey:@"absoluteString"]];
+                }
+                
+                if (completion) {
+                    completion(advertisedPlaylists);
+                }
+            }];
+        }
+        else if (completion) {
+            completion(advertisedPlaylists);
+        }
     }
-    return advertisedPlaylists;
+    else if (completion) {
+        completion(advertisedPlaylists);
+    }
 }
 
 +(void)setAdvertisedPlaylists:(NSArray *)advertisedPlaylists {

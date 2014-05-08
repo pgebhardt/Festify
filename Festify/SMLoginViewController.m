@@ -16,8 +16,8 @@
     // login to spotify api
     [(SMAppDelegate*)[UIApplication sharedApplication].delegate requestSpotifySessionWithCompletionHandler:^(SPTSession* session, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.delegate) {
-                [self.delegate loginView:self didCompleteLoginWithSession:session error:error];
+            if (!error && self.delegate) {
+                [self.delegate loginView:self didCompleteLoginWithSession:session];
             }
         });
     }];
