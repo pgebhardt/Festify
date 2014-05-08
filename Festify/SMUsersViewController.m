@@ -56,27 +56,11 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    if (indexPath.row == 0) {
-        NSMutableArray* indexes = [NSMutableArray array];
-        for (NSInteger i = 0; i < [self.users[indexPath.section][@"playlists"] count]; ++i) {
-            [indexes addObject:[NSIndexPath indexPathForRow:(i + 1) inSection:indexPath.section]];
-        }
-        
-        if ([self.userIsExpanded[indexPath.section] boolValue]) {
-            self.userIsExpanded[indexPath.section] = @NO;
-            
-            [self.tableView beginUpdates];
-            [self.tableView deleteRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
-        }
-        else {
-            self.userIsExpanded[indexPath.section] = @YES;
-            
-            [self.tableView beginUpdates];
-            [self.tableView insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
-        }
-    }
+    [self toggleUserExpansionWithIndexPath:indexPath];
+}
+
+-(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    [self toggleUserExpansionWithIndexPath:indexPath];
 }
 
 // these two methods hide the section headers completely
@@ -100,6 +84,32 @@
         return @"All visible playlists of these users are currently include in Festify`s playlist.";
     }
     return nil;
+}
+
+#pragma mark - Helper
+
+-(void)toggleUserExpansionWithIndexPath:(NSIndexPath*)indexPath {
+    if (indexPath.row == 0) {
+        NSMutableArray* indexes = [NSMutableArray array];
+        for (NSInteger i = 0; i < [self.users[indexPath.section][@"playlists"] count]; ++i) {
+            [indexes addObject:[NSIndexPath indexPathForRow:(i + 1) inSection:indexPath.section]];
+        }
+        
+        if ([self.userIsExpanded[indexPath.section] boolValue]) {
+            self.userIsExpanded[indexPath.section] = @NO;
+            
+            [self.tableView beginUpdates];
+            [self.tableView deleteRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+        }
+        else {
+            self.userIsExpanded[indexPath.section] = @YES;
+            
+            [self.tableView beginUpdates];
+            [self.tableView insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+        }
+    }
 }
 
 @end
