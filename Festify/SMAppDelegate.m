@@ -51,7 +51,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 
     // adjust default colors to match spotify color schema
-    [application setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UITableView appearance] setSeparatorColor:[UIColor colorWithRed:86.0/255.0 green:86.0/255.0 blue:86.0/255.0 alpha:1.0]];
     [[BlurryModalSegue appearance] setBackingImageBlurRadius:@15];
     [[BlurryModalSegue appearance] setBackingImageSaturationDeltaFactor:@1.3];
