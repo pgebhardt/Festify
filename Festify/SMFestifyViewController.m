@@ -67,15 +67,6 @@
     self.navigationItem.leftBarButtonItems = @[settingsButton, self.usersButton];
 }
 
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-
-    // show login screen, if no valid session is available
-    if (!self.session) {
-        [self performSegueWithIdentifier:@"showLogin" sender:self];
-    }
-}
-
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showSettings"]) {
         UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
@@ -118,11 +109,10 @@
         [[SMDiscoveryManager sharedInstance] stopDiscovering];
     }
     else {
-        if ([[SMDiscoveryManager sharedInstance] startDiscovering]) {
+        if ([[SMDiscoveryManager sharedInstance] startDiscovering] &&
+            [SMDiscoveryManager sharedInstance].isAdvertising) {
             // add own selected songs, if advertising is turned on
-            if ([SMDiscoveryManager sharedInstance].isAdvertising) {
-                [self addPlaylistsToTrackProvider:self.advertisedPlaylists];
-            }
+            [self addPlaylistsToTrackProvider:self.advertisedPlaylists];
         }
     }
 }
@@ -213,9 +203,12 @@
     
     // cleanup Spotify objects
     self.session = nil;
+    [self.trackPlayer clear];
     
     [self settingsViewDidRequestReset:settingsView];
-    [settingsView dismissViewControllerAnimated:YES completion:nil];
+    [settingsView dismissViewControllerAnimated:YES completion:^{
+        [self performSegueWithIdentifier:@"showLogin" sender:self];
+    }];
 }
 
 -(BOOL)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
