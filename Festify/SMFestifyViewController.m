@@ -8,7 +8,7 @@
 
 #import "SMFestifyViewController.h"
 #import "SMPlayerViewController.h"
-#import "SMSettingSelectionViewController.h"
+#import "SMUsersViewController.h"
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
 #import "SMTrackPlayer.h"
@@ -87,16 +87,9 @@
     }
     else if ([segue.identifier isEqualToString:@"showUsers"]) {
         UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
-        SMSettingSelectionViewController* viewController = (SMSettingSelectionViewController*)navController.viewControllers[0];
+        SMUsersViewController* viewController = (SMUsersViewController*)navController.viewControllers[0];
         
-        viewController.data = self.discoveredUsers;
-        viewController.selectionAction = ^(id item) { };
-        viewController.accessoryAction = ^(id item) {
-            if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"spotify://spotify:user:%@", item]]];
-            }
-        };
-        viewController.subtitle = @"All visible playlists of these users are currently include in Festify`s playlist.";
+        viewController.users = self.discoveredUsers;
         self.usersButton.badgeValue = @"";
     }
 }
@@ -171,8 +164,9 @@
     [self addPlaylistsToTrackProvider:advertisedData[@"playlists"]];
     
     // update discovered user array and show animation indicating new user
-    if (![self.discoveredUsers containsObject:advertisedData[@"username"]]) {
-        [self.discoveredUsers insertObject:advertisedData[@"username"] atIndex:0];
+    if (![[self.discoveredUsers valueForKey:@"username"] containsObject:advertisedData[@"username"]]) {
+        [self.discoveredUsers insertObject:@{@"username": advertisedData[@"username"],
+                                             @"playlists": advertisedData[@"playlists"]} atIndex:0];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             NSInteger value = [self.usersButton.badgeValue integerValue];

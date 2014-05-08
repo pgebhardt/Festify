@@ -32,6 +32,7 @@
 		5F423A8618FC115200C3ED75 /* FestifyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A8518FC115200C3ED75 /* FestifyTests.m */; };
 		5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */; };
 		5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */; };
+		5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */; };
 		5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* SMDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
 		5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BD190C55790077F648 /* QuartzCore.framework */; };
@@ -97,6 +98,8 @@
 		5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		5F521D2C18FF013800B915B7 /* SMFestifyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMFestifyViewController.h; sourceTree = "<group>"; };
 		5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMFestifyViewController.m; sourceTree = "<group>"; };
+		5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUsersViewController.h; sourceTree = "<group>"; };
+		5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMUsersViewController.m; sourceTree = "<group>"; };
 		5F5A162118FC535100E408DC /* SMDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMDiscoveryManager.h; sourceTree = "<group>"; };
 		5F5A162218FC535100E408DC /* SMDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -172,6 +175,8 @@
 				5F089B5E18FD169B002476CB /* SMSettingsViewController.m */,
 				5F15E0B719124BC8006CDDBF /* SMSettingSelectionViewController.h */,
 				5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */,
+				5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */,
+				5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */,
 			);
 			name = "View Controller";
 			sourceTree = "<group>";
@@ -432,6 +437,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F14581119127DAE00F5A80C /* MWLogging.m in Sources */,
+				5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */,
 				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
 				5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */,
 				5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */,
