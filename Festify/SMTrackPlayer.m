@@ -76,7 +76,7 @@
 
 -(void)playTrackProvider:(id<SPTTrackProvider>)provider fromIndex:(NSInteger)index {
     [self.trackPlayer playTrackProvider:provider fromIndex:index];
-    [self.trackPlayer pausePlayback];
+    // [self.trackPlayer pausePlayback];
     
     self.indexOfCurrentTrack = index;
     self.currentProvider = provider;

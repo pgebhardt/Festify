@@ -36,15 +36,18 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    // convert index array to array containig whether cell is selected or not
+    self.itemIsSelected = [NSMutableArray arrayWithCapacity:self.data.count];
+    for (NSUInteger i = 0; i < self.data.count; ++i) {
+        self.itemIsSelected[i] = @NO;
+    }
     if (self.allowMultipleSelections) {
-        // convert index array to array containig whether cell is selected or not
-        self.itemIsSelected = [NSMutableArray arrayWithCapacity:self.data.count];
-        for (NSUInteger i = 0; i < self.data.count; ++i) {
-            self.itemIsSelected[i] = @NO;
-        }
         [self.indicesOfSelectedItems enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
             self.itemIsSelected[idx] = @YES;
         }];
+    }
+    else {
+        self.itemIsSelected[self.indexOfSelectedItem] = @YES;
     }
     
     // update UI

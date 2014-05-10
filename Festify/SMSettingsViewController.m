@@ -17,6 +17,7 @@
 
 @interface SMSettingsViewController ()
 @property (nonatomic, strong) NSArray* playlists;
+@property (nonatomic, assign) NSInteger indexOfSelectedUserTimout;
 @end
 
 @implementation SMSettingsViewController
@@ -44,6 +45,11 @@
     }];
     
     // update UI
+    self.indexOfSelectedUserTimout = [[SMUserDefaults userTimeoutSelections] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [[obj objectForKey:@"value"] doubleValue] == [SMUserDefaults userTimeout];
+    }];
+    
+    self.timeoutLabel.text = [SMUserDefaults userTimeoutSelections][self.indexOfSelectedUserTimout][@"name"];
     self.logoutLabel.text = [NSString stringWithFormat:@"Log Out %@", self.session.canonicalUsername];
     self.versionLabel.text = [NSString stringWithFormat:@"%@ (%@)",
                               [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
@@ -82,6 +88,23 @@
         settingsView.allowMultipleSelections = YES;
         settingsView.navigationItem.title = @"Visible Playlists";
         settingsView.subtitle = @"Select playlists visible to other users. These playlists must be public in your Spotify profile.";
+        UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
+        settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+    }
+    else if ([segue.identifier isEqualToString:@"showUserTimeout"]) {
+        SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)segue.destinationViewController;
+        settingsView.delegate = self;
+        
+        // adjust settings view to let user select which playlists are broadcasted
+        settingsView.data = [SMUserDefaults userTimeoutSelections];
+        settingsView.dataAccessor = ^NSString*(id item) {
+            return [item objectForKey:@"name"];
+        };
+        settingsView.indexOfSelectedItem = self.indexOfSelectedUserTimout;
+        settingsView.allowMultipleSelections = NO;
+        
+        settingsView.navigationItem.title = @"Delete Users";
+        settingsView.subtitle = @"When a discovered user is not available since the selcted time interval, it is deleted from the playlist.";
         UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
         settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
     }
@@ -142,12 +165,7 @@
 
     // handle actions for specific cell
     NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
-    if ([reuseIdentifier isEqualToString:@"resetCell"]) {
-        if (self.delegate) {
-            [self.delegate settingsViewDidRequestReset:self];
-        }
-    }
-    else if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
+    if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
         // inform delegate to logout
         if (self.delegate) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -177,14 +195,25 @@
 #pragma mark - SMSettingsSelectionViewDelegate
 
 -(void)settingsSelectionView:(SMSettingSelectionViewController *)settingsSelectionView didChangeIndicesOfSelectedItems:(NSIndexSet*)indicesOfSelectedItems {
-    self.advertisedPlaylists = [[[self.playlists objectsAtIndexes:indicesOfSelectedItems] valueForKey:@"uri"] valueForKey:@"absoluteString"];
-    
-    // update UI
-    [self updateVisiblePlaylistsCell];
-    
-    // inform delegate
-    if (self.delegate) {
-        [self.delegate settingsView:self didChangeAdvertisedPlaylistSelection:self.advertisedPlaylists];
+    if ([settingsSelectionView.navigationItem.title isEqualToString:@"Visible Playlists"]) {
+        self.advertisedPlaylists = [[[self.playlists objectsAtIndexes:indicesOfSelectedItems] valueForKey:@"uri"] valueForKey:@"absoluteString"];
+        
+        // update UI
+        [self updateVisiblePlaylistsCell];
+        
+        // inform delegate
+        if (self.delegate) {
+            [self.delegate settingsView:self didChangeAdvertisedPlaylistSelection:self.advertisedPlaylists];
+        }
+    }
+    else if ([settingsSelectionView.navigationItem.title isEqualToString:@"Delete Users"]) {
+        // update UI
+        self.timeoutLabel.text = [SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"name"];
+
+        // inform delegate
+        if (self.delegate) {
+            [self.delegate settingsView:self didChangeUserTimeout:[[SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"value"] integerValue]];
+        }
     }
 }
 

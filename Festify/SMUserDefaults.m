@@ -23,6 +23,7 @@
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsAdvertisementStateKey];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsSpotifySessionKey];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsAdvertisedPlaylistsKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:SMUserDefaultsUserTimeoutKey];
     
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -82,6 +83,30 @@
 +(void)setAdvertisedPlaylists:(NSArray *)advertisedPlaylists {
     [[NSUserDefaults standardUserDefaults] setValue:advertisedPlaylists
                                              forKey:SMUserDefaultsAdvertisedPlaylistsKey];
+}
+
++(NSInteger)userTimeout {
+    NSObject* timeout = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsUserTimeoutKey];
+    if (!timeout) {
+        return 120;
+    }
+    
+    return [(NSNumber*)timeout integerValue];
+}
+
++(void)setUserTimeout:(NSInteger)timeout {
+    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithInteger:timeout]
+                                             forKey:SMUserDefaultsUserTimeoutKey];
+}
+
++(NSArray *)userTimeoutSelections {
+    // possible selections for user timout
+    return @[@{@"name": @"After 30 min", @"value": @30},
+             @{@"name": @"After 1 h", @"value": @60},
+             @{@"name": @"After 2 h", @"value": @120},
+             @{@"name": @"After 4 h", @"value": @240},
+             @{@"name": @"After 6 h", @"value": @360},
+             @{@"name": @"Never", @"value": @(-1)}];
 }
 
 @end

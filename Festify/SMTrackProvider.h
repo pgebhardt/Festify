@@ -10,13 +10,21 @@
 #import <Spotify/Spotify.h>
 
 // notification strings
-static NSString* const SMTrackProviderDidAddPlaylist = @"SMTrackProviderDidAddPlaylist";
-static NSString* const SMTrackProviderDidClearAllTracks = @"SMTrackProviderDidClearAllTracks";
+static NSString* const SMTrackProviderDidUpdateTracksArray = @"SMTrackProviderDidUpdateTracksArray";
+
+// users dictionary key
+static NSString* const SMTrackProviderPlaylistsKey = @"SMTrackProviderPlaylistsKey";
+static NSString* const SMTrackProviderTimerKey = @"SMTrackProviderTimerKey";
+static NSString* const SMTrackProviderAddedDateKey = @"SMTrackProviderAddedDateKey";
 
 @interface SMTrackProvider : NSObject<SPTTrackProvider>
 
 -(id)init;
--(BOOL)addPlaylist:(SPTPlaylistSnapshot*)playlist;
--(void)clearAllTracks;
+-(void)setPlaylists:(NSArray*)playlists forUser:(NSString*)username withTimeoutInterval:(NSInteger)timeout;
+-(void)updateTimeoutInterval:(NSInteger)timeout forUser:(NSString*)username;
+-(void)removePlaylistsForUser:(NSString*)username;
+-(void)clear;
+
+@property (nonatomic, readonly) NSMutableDictionary* users;
 
 @end

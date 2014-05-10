@@ -17,10 +17,27 @@
 -(void)viewDidLoad {
     [super viewDidLoad];
     
+    // show edit button
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    
+    // array describing, wether a user is expanded or not
     self.userIsExpanded = [NSMutableArray array];
-    for (NSInteger i = 0; i < self.users.count; ++i) {
+    for (NSInteger i = 0; i < self.trackProvider.users.count; ++i) {
         [self.userIsExpanded addObject:@NO];
     }
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // observe changes in track provider
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:SMTrackProviderDidUpdateTracksArray object:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (IBAction)done:(id)sender {
@@ -30,22 +47,25 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.users.count;
+    return self.trackProvider.users.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.userIsExpanded[section] boolValue] ? ([self.users[section][@"playlists"] count] + 1) : 1;
+    return [self.userIsExpanded[section] boolValue] ? ([self.trackProvider.users.allValues[section][SMTrackProviderPlaylistsKey] count] + 1) : 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = nil;
     if (indexPath.row == 0) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"usernameCell" forIndexPath:indexPath];
-        cell.textLabel.text = self.users[indexPath.section][@"username"];
+        cell.textLabel.text = self.trackProvider.users.allKeys[indexPath.section];
+        
+        NSInteger minutesToTimeout = -[self.trackProvider.users.allValues[indexPath.section][SMTrackProviderAddedDateKey] timeIntervalSinceNow] / 60.0;
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"added %ld min. ago", (long)minutesToTimeout];
     }
     else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"playlistCell" forIndexPath:indexPath];
-        cell.textLabel.text = [self.users[indexPath.section][@"playlists"] objectAtIndex:(indexPath.row - 1)];
+        cell.textLabel.text = [[self.trackProvider.users.allValues[indexPath.section][SMTrackProviderPlaylistsKey] objectAtIndex:(indexPath.row - 1)] name];
     }
     
     return cell;
@@ -56,11 +76,50 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    [self toggleUserExpansionWithIndexPath:indexPath];
+    if (indexPath.row == 0) {
+        NSMutableArray* indexes = [NSMutableArray array];
+        for (NSInteger i = 0; i < [self.trackProvider.users.allValues[indexPath.section][SMTrackProviderPlaylistsKey] count]; ++i) {
+            [indexes addObject:[NSIndexPath indexPathForRow:(i + 1) inSection:indexPath.section]];
+        }
+        
+        if ([self.userIsExpanded[indexPath.section] boolValue]) {
+            self.userIsExpanded[indexPath.section] = @NO;
+        }
+        else {
+            self.userIsExpanded[indexPath.section] = @YES;
+        }
+        
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+                      withRowAnimation:UITableViewRowAnimationFade];
+    }
 }
 
--(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    [self toggleUserExpansionWithIndexPath:indexPath];
+-(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // only the user itself is editable, not the playlists
+    if (indexPath.row == 0) {
+        return YES;
+    }
+    return NO;
+}
+
+-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // only allow editing in editing mode
+    if ([tableView isEditing]) {
+        return UITableViewCellEditingStyleDelete;
+    }
+    else {
+        return UITableViewCellEditingStyleNone;
+    }
+}
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // delete user from track provider
+    [self.trackProvider removePlaylistsForUser:self.trackProvider.users.allKeys[indexPath.section]];
+    
+    // disable editing mode if last object
+    if (self.trackProvider.users.count == 0) {
+        self.editing = NO;
+    }
 }
 
 // these two methods hide the section headers completely
@@ -88,28 +147,17 @@
 
 #pragma mark - Helper
 
--(void)toggleUserExpansionWithIndexPath:(NSIndexPath*)indexPath {
-    if (indexPath.row == 0) {
-        NSMutableArray* indexes = [NSMutableArray array];
-        for (NSInteger i = 0; i < [self.users[indexPath.section][@"playlists"] count]; ++i) {
-            [indexes addObject:[NSIndexPath indexPathForRow:(i + 1) inSection:indexPath.section]];
-        }
-        
-        if ([self.userIsExpanded[indexPath.section] boolValue]) {
-            self.userIsExpanded[indexPath.section] = @NO;
-            
-            [self.tableView beginUpdates];
-            [self.tableView deleteRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
-        }
-        else {
-            self.userIsExpanded[indexPath.section] = @YES;
-            
-            [self.tableView beginUpdates];
-            [self.tableView insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
-        }
+-(void)reloadData {
+    // array describing, wether a user is expanded or not
+    self.userIsExpanded = [NSMutableArray array];
+    for (NSInteger i = 0; i < self.trackProvider.users.count; ++i) {
+        [self.userIsExpanded addObject:@NO];
     }
+
+    [self.tableView beginUpdates];
+    [self.tableView deleteSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.numberOfSections)] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfSectionsInTableView:self.tableView])] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
 }
 
 @end

@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SMTrackProvider.h"
 
 @interface SMUsersViewController : UITableViewController
-@property (nonatomic, strong) NSArray* users;
+
+@property (nonatomic, strong) SMTrackProvider* trackProvider;
 - (IBAction)done:(id)sender;
+
 @end

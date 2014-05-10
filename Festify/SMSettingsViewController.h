@@ -16,9 +16,9 @@
 @protocol SMSettingsViewDelegate <NSObject>
 
 -(void)settingsViewDidRequestLogout:(SMSettingsViewController*)settingsView;
--(void)settingsViewDidRequestReset:(SMSettingsViewController*)settingsView;
--(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisedPlaylistSelection:(NSArray*)selectedPlaylists;
 -(BOOL)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisementState:(BOOL)advertising;
+-(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisedPlaylistSelection:(NSArray*)selectedPlaylists;
+-(void)settingsView:(SMSettingsViewController*)settingsView didChangeUserTimeout:(NSInteger)timeout;
 
 @end
 
@@ -28,6 +28,7 @@
 
 @property (weak, nonatomic) IBOutlet UISwitch *advertisementSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *playlistNumberLabel;
+@property (weak, nonatomic) IBOutlet UILabel *timeoutLabel;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *playlistActivityIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *logoutLabel;
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;

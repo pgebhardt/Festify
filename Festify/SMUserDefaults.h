@@ -10,9 +10,10 @@
 #import <Spotify/Spotify.h>
 
 // default application keys
-static NSString* const SMUserDefaultsSpotifySessionKey = @"spotifySession";
-static NSString* const SMUserDefaultsAdvertisementStateKey = @"advertisementState";
-static NSString* const SMUserDefaultsAdvertisedPlaylistsKey = @"advertisedPlaylists";
+static NSString* const SMUserDefaultsSpotifySessionKey = @"SMUserDefaultsSpotifySessionKey";
+static NSString* const SMUserDefaultsAdvertisementStateKey = @"SMUserDefaultsAdvertisementStateKey";
+static NSString* const SMUserDefaultsAdvertisedPlaylistsKey = @"SMUserDefaultsAdvertisedPlaylistsKey";
+static NSString* const SMUserDefaultsUserTimeoutKey = @"SMUserDefaultsUserTimeoutKey";
 
 @interface SMUserDefaults : NSObject
 
@@ -27,5 +28,9 @@ static NSString* const SMUserDefaultsAdvertisedPlaylistsKey = @"advertisedPlayli
 
 +(void)advertisedPlaylists:(void (^)(NSArray* advertisedPlaylists))completion;
 +(void)setAdvertisedPlaylists:(NSArray*)advertisedPlaylists;
+
++(NSInteger)userTimeout;
++(void)setUserTimeout:(NSInteger)timeout;
++(NSArray*)userTimeoutSelections;
 
 @end
