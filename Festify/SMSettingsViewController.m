@@ -72,6 +72,9 @@
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
+    UIImageView* backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
+
     if ([segue.identifier isEqualToString:@"showVisiblePlaylists"]) {
         SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)segue.destinationViewController;
         settingsView.delegate = self;
@@ -86,8 +89,7 @@
             return [item name];
         };
         
-        UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
-        settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+        settingsView.tableView.backgroundView = backgroundImageView;
         settingsView.navigationItem.title = @"Visible Playlists";
         settingsView.subtitle = @"Select playlists visible to other users. These playlists must be public in your Spotify profile.";
     }
@@ -103,10 +105,15 @@
         settingsView.indexOfSelectedItem = self.indexOfSelectedUserTimout;
         settingsView.allowMultipleSelections = NO;
         
-        UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
-        settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+        settingsView.tableView.backgroundView = backgroundImageView;
         settingsView.navigationItem.title = @"Delete Users";
         settingsView.subtitle = @"When a user is not available for the selcted time interval, it's songs are deleted from the playlist.";        
+    }
+    else if ([segue.identifier isEqualToString:@"showAcknowledgements"]) {
+        UIViewController* viewController = (UIViewController*)segue.destinationViewController;
+        
+        [viewController.view addSubview:backgroundImageView];
+        [viewController.view sendSubviewToBack:backgroundImageView];
     }
 }
 

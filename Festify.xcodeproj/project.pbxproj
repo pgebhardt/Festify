@@ -18,6 +18,8 @@
 		5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */; };
 		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
+		5F2123B4191E7F8A00849778 /* SMAcknowledgementsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F2123B3191E7F8A00849778 /* SMAcknowledgementsViewController.m */; };
+		5F2123B6191E815D00849778 /* Pods-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F2123B5191E815D00849778 /* Pods-acknowledgements.plist */; };
 		5F28F7631901288D00A0468A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7621901288D00A0468A /* libz.dylib */; };
 		5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6218FC115200C3ED75 /* CoreGraphics.framework */; };
 		5F423A6518FC115200C3ED75 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6418FC115200C3ED75 /* UIKit.framework */; };
@@ -78,6 +80,9 @@
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5F20799F190C1DB000AAE15A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		5F2079A1190C1DB700AAE15A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		5F2123B2191E7F8A00849778 /* SMAcknowledgementsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMAcknowledgementsViewController.h; sourceTree = "<group>"; };
+		5F2123B3191E7F8A00849778 /* SMAcknowledgementsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMAcknowledgementsViewController.m; sourceTree = "<group>"; };
+		5F2123B5191E815D00849778 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-acknowledgements.plist"; path = "../Pods/Pods-acknowledgements.plist"; sourceTree = "<group>"; };
 		5F28F7621901288D00A0468A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		5F423A5D18FC115200C3ED75 /* Festify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Festify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F423A6018FC115200C3ED75 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -177,6 +182,8 @@
 				5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */,
 				5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */,
 				5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */,
+				5F2123B2191E7F8A00849778 /* SMAcknowledgementsViewController.h */,
+				5F2123B3191E7F8A00849778 /* SMAcknowledgementsViewController.m */,
 			);
 			name = "View Controller";
 			sourceTree = "<group>";
@@ -256,6 +263,7 @@
 		5F423A6718FC115200C3ED75 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5F2123B5191E815D00849778 /* Pods-acknowledgements.plist */,
 				5F423A6818FC115200C3ED75 /* Festify-Info.plist */,
 				5F423A6918FC115200C3ED75 /* InfoPlist.strings */,
 				5F423A6C18FC115200C3ED75 /* main.m */,
@@ -372,6 +380,7 @@
 				5F423A6B18FC115200C3ED75 /* InfoPlist.strings in Resources */,
 				5F423A7318FC115200C3ED75 /* Images.xcassets in Resources */,
 				5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */,
+				5F2123B6191E815D00849778 /* Pods-acknowledgements.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +448,7 @@
 				5F14581119127DAE00F5A80C /* MWLogging.m in Sources */,
 				5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */,
 				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
+				5F2123B4191E7F8A00849778 /* SMAcknowledgementsViewController.m in Sources */,
 				5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */,
 				5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */,
 				5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */,

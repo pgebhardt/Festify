@@ -249,6 +249,45 @@
             </objects>
             <point key="canvasLocation" x="2982" y="348"/>
         </scene>
+        <!--Acknowledgements View Controller - Acknowledgements-->
+        <scene sceneID="8xV-fI-Vdm">
+            <objects>
+                <viewController id="kpX-Cl-nrF" customClass="SMAcknowledgementsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="OQY-h5-ifU"/>
+                        <viewControllerLayoutGuide type="bottom" id="4dA-gD-6mz"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="a22-je-7Hz">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ob2-oD-O5v">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ob2-oD-O5v" firstAttribute="leading" secondItem="a22-je-7Hz" secondAttribute="leading" id="MQw-3w-hhH"/>
+                            <constraint firstItem="4dA-gD-6mz" firstAttribute="top" secondItem="ob2-oD-O5v" secondAttribute="bottom" id="W6I-ay-2Y8"/>
+                            <constraint firstItem="ob2-oD-O5v" firstAttribute="top" secondItem="a22-je-7Hz" secondAttribute="top" id="YvT-zF-qul"/>
+                            <constraint firstAttribute="trailing" secondItem="ob2-oD-O5v" secondAttribute="trailing" id="ige-0a-fVJ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Acknowledgements" id="cuF-yX-5ko"/>
+                    <connections>
+                        <outlet property="textView" destination="ob2-oD-O5v" id="nWm-ae-6vq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2gQ-wT-Riy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2982" y="-1244"/>
+        </scene>
         <!--Settings View Controller - Settings-->
         <scene sceneID="Jei-n3-CXK">
             <objects>
@@ -403,6 +442,9 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.20000001789999999" green="0.20000001789999999" blue="0.20000001789999999" alpha="1" colorSpace="deviceRGB"/>
+                                        <connections>
+                                            <segue destination="kpX-Cl-nrF" kind="push" identifier="showAcknowledgements" id="a2A-4f-usd"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
