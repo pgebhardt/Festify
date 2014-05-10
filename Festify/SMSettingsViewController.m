@@ -91,7 +91,7 @@
         
         settingsView.tableView.backgroundView = backgroundImageView;
         settingsView.navigationItem.title = @"Visible Playlists";
-        settingsView.subtitle = @"Select playlists visible to other users. These playlists must be public in your Spotify profile.";
+        settingsView.subtitle = @"Selected playlists are visible to other users nearby. These playlists must be public in your Spotify profile.";
     }
     else if ([segue.identifier isEqualToString:@"showUserTimeout"]) {
         SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)segue.destinationViewController;
@@ -116,7 +116,7 @@
         NSString* path = [[NSBundle mainBundle] pathForResource:@"Pods-acknowledgements" ofType:@"plist"];
         NSDictionary* acknowledgements = [NSDictionary dictionaryWithContentsOfFile:path][@"PreferenceSpecifiers"];
         
-        // read out all acknowledgements and add them to one continous string
+        // read out all acknowledgements and add them to one continious string
         NSMutableString* acknowledgementsText = [NSMutableString string];
         for (NSDictionary *acknowledgement in acknowledgements) {
             [acknowledgementsText appendFormat:@"\n\n%@\n%@", acknowledgement[@"Title"], acknowledgement[@"FooterText"]];

@@ -68,7 +68,7 @@
         cell.textLabel.text = self.trackProvider.users.allKeys[indexPath.section];
         
         NSInteger time = -[self.trackProvider.users.allValues[indexPath.section][SMTrackProviderDateUpdatedKey] timeIntervalSinceNow];
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"updated %@ ago", [self timeToString:time]];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ ago", [self timeToString:time]];
     }
     else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"playlistCell" forIndexPath:indexPath];
