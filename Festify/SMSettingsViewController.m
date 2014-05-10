@@ -112,6 +112,18 @@
     else if ([segue.identifier isEqualToString:@"showAcknowledgements"]) {
         UIViewController* viewController = (UIViewController*)segue.destinationViewController;
         
+        // load acknowledgements from plist file
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"Pods-acknowledgements" ofType:@"plist"];
+        NSDictionary* acknowledgements = [NSDictionary dictionaryWithContentsOfFile:path][@"PreferenceSpecifiers"];
+        
+        // read out all acknowledgements and add them to one continous string
+        NSMutableString* acknowledgementsText = [NSMutableString string];
+        for (NSDictionary *acknowledgement in acknowledgements) {
+            [acknowledgementsText appendFormat:@"\n\n%@\n%@", acknowledgement[@"Title"], acknowledgement[@"FooterText"]];
+        }
+
+        ((UITextView*)[viewController.view subviews][0]).text = acknowledgementsText;
+        ((UITextView*)[viewController.view subviews][0]).textContainerInset = UIEdgeInsetsMake(40.0, 10.0, 12.0, 10.0);
         [viewController.view addSubview:backgroundImageView];
         [viewController.view sendSubviewToBack:backgroundImageView];
     }
