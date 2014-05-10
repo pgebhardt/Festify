@@ -75,10 +75,12 @@
 }
 
 -(void)playTrackProvider:(id<SPTTrackProvider>)provider fromIndex:(NSInteger)index {
-    [self.trackPlayer playTrackProvider:provider fromIndex:index];
-    
-    self.indexOfCurrentTrack = index;
-    self.currentProvider = provider;
+    [self performActionWithBackgroundCheck:^{
+        self.indexOfCurrentTrack = index;
+        self.currentProvider = provider;
+        
+        [self.trackPlayer playTrackProvider:provider fromIndex:index];
+    }];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -95,45 +97,6 @@
     [self.trackPlayer removeObserver:self forKeyPath:@"currentPlaybackPosition"];
 }
 
--(void)handleRemoteEvent:(UIEvent *)event {
-    void (^handler)(void) = ^{
-        // control track player by remote events
-        if (event.type == UIEventTypeRemoteControl) {
-            if (event.subtype == UIEventSubtypeRemoteControlPlay ||
-                event.subtype == UIEventSubtypeRemoteControlPause ||
-                event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
-                if (self.playing) {
-                    [self pause];
-                }
-                else {
-                    [self play];
-                }
-            }
-            else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
-                [self skipForward];
-            }
-            else if (event.subtype == UIEventSubtypeRemoteControlPreviousTrack) {
-                [self skipBackward];
-            }
-        }
-    };
-    
-    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive
-        && !self.playing) {
-        [self enablePlaybackWithSession:self.session callback:^(NSError *error) {
-            if (!error) {
-                handler();
-            }
-            else {
-                MWLogError(@"%@", error);
-            }
-        }];
-    }
-    else {
-        handler();
-    }
-}
-
 -(void)clear {
     // stop playback and cleanup track provider
     [self pause];
@@ -148,46 +111,56 @@
 
 -(void)play {
     if (self.currentProvider) {
-        [self.trackPlayer resumePlayback];
-        self.playing = YES;
-
-        // update playback position and rate to avoid apple tv and lockscreen glitches
-        self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
-        self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
-        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
+        [self performActionWithBackgroundCheck:^{
+            [self.trackPlayer resumePlayback];
+            self.playing = YES;
+            
+            // update playback position and rate to avoid apple tv and lockscreen glitches
+            self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @1.0;
+            self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
+        }];
     }
 }
 
 -(void)pause {
     if (self.currentProvider) {
-        [self.trackPlayer pausePlayback];
-        self.playing = NO;
-        
-        // update playback position and rate to avoid apple tv and lockscreen glitches
-        self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
-        self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
-        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
+        [self performActionWithBackgroundCheck:^{
+            [self.trackPlayer pausePlayback];
+            self.playing = NO;
+            
+            // update playback position and rate to avoid apple tv and lockscreen glitches
+            self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
+            self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
+        }];
     }
 }
 
 -(void)skipToTrack:(NSInteger)index {
     if (self.currentProvider) {
-        [self.trackPlayer playTrackProvider:self.currentProvider fromIndex:index];
-        [self play];
+        [self performActionWithBackgroundCheck:^{
+            [self.trackPlayer playTrackProvider:self.currentProvider fromIndex:index];
+            [self play];
+        }];
     }
 }
 
 -(void)skipForward {
     if (self.currentProvider) {
-        [self.trackPlayer skipToNextTrack];
-        [self play];
+        [self performActionWithBackgroundCheck:^{
+            [self.trackPlayer skipToNextTrack];
+            [self play];
+        }];
     }
 }
 
 -(void)skipBackward {
     if (self.currentProvider) {
-        [self.trackPlayer skipToPreviousTrack:NO];
-        [self play];
+        [self performActionWithBackgroundCheck:^{
+            [self.trackPlayer skipToPreviousTrack:NO];
+            [self play];
+        }];
     }
 }
 
@@ -231,6 +204,31 @@
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message {
     MWLogDebug(@"%@", message);
+}
+
+#pragma mark - Helper
+
+-(void)performActionWithBackgroundCheck:(void (^)(void))action {
+    if (action) {
+        if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive &&
+            !self.playing) {
+            UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+            
+            [self enablePlaybackWithSession:self.session callback:^(NSError *error) {
+                if (!error) {
+                    action();
+                    
+                    [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+                }
+                else {
+                    MWLogError(@"%@", error);
+                }
+            }];
+        }
+        else {
+            action();
+        }
+    }
 }
 
 @end

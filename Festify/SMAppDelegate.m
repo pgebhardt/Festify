@@ -24,7 +24,25 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 @implementation SMAppDelegate
 
 -(void)remoteControlReceivedWithEvent:(UIEvent *)event {
-    [self.trackPlayer handleRemoteEvent:event];
+    // control track player by remote events
+    if (event.type == UIEventTypeRemoteControl) {
+        if (event.subtype == UIEventSubtypeRemoteControlPlay ||
+            event.subtype == UIEventSubtypeRemoteControlPause ||
+            event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
+            if (self.trackPlayer.playing) {
+                [self.trackPlayer pause];
+            }
+            else {
+                [self.trackPlayer play];
+            }
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
+            [self.trackPlayer skipForward];
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlPreviousTrack) {
+            [self.trackPlayer skipBackward];
+        }
+    }
 }
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(SPTSession*, NSError *))completion {

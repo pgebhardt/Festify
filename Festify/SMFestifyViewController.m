@@ -153,7 +153,7 @@
 
     // update UI
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.playButton.enabled = (self.trackPlayer.currentProvider != nil);
+        self.playButton.enabled = (self.trackProvider.users.count != 0);
         self.usersButton.enabled = (self.trackProvider.users.count != 0);
         if (self.trackProvider.tracks.count == 0) {
             self.usersButton.badgeValue = @"";

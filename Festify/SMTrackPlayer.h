@@ -17,7 +17,6 @@
 -(void)enablePlaybackWithSession:(SPTSession*)session callback:(SPTErrorableOperationCallback)block;
 -(void)playTrackProvider:(id<SPTTrackProvider>)provider;
 -(void)playTrackProvider:(id<SPTTrackProvider>)provider fromIndex:(NSInteger)index;
--(void)handleRemoteEvent:(UIEvent*)event;
 -(void)clear;
 
 -(void)play;
