@@ -76,7 +76,6 @@
 
 -(void)playTrackProvider:(id<SPTTrackProvider>)provider fromIndex:(NSInteger)index {
     [self.trackPlayer playTrackProvider:provider fromIndex:index];
-    // [self.trackPlayer pausePlayback];
     
     self.indexOfCurrentTrack = index;
     self.currentProvider = provider;
@@ -198,6 +197,7 @@
     // update properties
     self.currentTrack = provider.tracks[index];
     self.indexOfCurrentTrack = index;
+    self.playing = YES;
     
     // update track info dictionary and NowPlayingCenter
     self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = @0.0;

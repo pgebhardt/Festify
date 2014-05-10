@@ -10,6 +10,8 @@
 
 @interface SMUsersViewController ()
 @property (nonatomic, strong) NSMutableArray* userIsExpanded;
+@property (nonatomic, strong) NSTimer* reloadTimer;
+@property (nonatomic, strong) NSMutableArray* usernameCellIndices;
 @end
 
 @implementation SMUsersViewController
@@ -32,12 +34,18 @@
     
     // observe changes in track provider
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:SMTrackProviderDidUpdateTracksArray object:nil];
+
+    
+    // update time label for username cells
+    [self updateUsernameCellIndexesArray];
+    self.reloadTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(reloadUserCells) userInfo:nil repeats:YES];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.reloadTimer invalidate];
 }
 
 - (IBAction)done:(id)sender {
@@ -60,8 +68,8 @@
         cell = [tableView dequeueReusableCellWithIdentifier:@"usernameCell" forIndexPath:indexPath];
         cell.textLabel.text = self.trackProvider.users.allKeys[indexPath.section];
         
-        NSInteger minutesToTimeout = -[self.trackProvider.users.allValues[indexPath.section][SMTrackProviderAddedDateKey] timeIntervalSinceNow] / 60.0;
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"added %ld min. ago", (long)minutesToTimeout];
+        NSInteger secondsToTimeout = -[self.trackProvider.users.allValues[indexPath.section][SMTrackProviderAddedDateKey] timeIntervalSinceNow];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"added %@ ago", [self timeToString:secondsToTimeout]];
     }
     else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"playlistCell" forIndexPath:indexPath];
@@ -148,16 +156,45 @@
 #pragma mark - Helper
 
 -(void)reloadData {
-    // array describing, wether a user is expanded or not
     self.userIsExpanded = [NSMutableArray array];
     for (NSInteger i = 0; i < self.trackProvider.users.count; ++i) {
         [self.userIsExpanded addObject:@NO];
     }
-
+    [self updateUsernameCellIndexesArray];
+    
     [self.tableView beginUpdates];
     [self.tableView deleteSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.numberOfSections)] withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfSectionsInTableView:self.tableView])] withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
+}
+
+-(void)reloadUserCells {
+    [self.tableView reloadRowsAtIndexPaths:self.usernameCellIndices withRowAnimation:UITableViewRowAnimationNone];
+}
+
+-(void)updateUsernameCellIndexesArray {
+    self.usernameCellIndices = [NSMutableArray array];
+    for (NSInteger i = 0; i < self.trackProvider.users.count; ++i) {
+        [self.usernameCellIndices addObject:[NSIndexPath indexPathForRow:0 inSection:i]];
+    }
+}
+
+-(NSString*)timeToString:(NSInteger)time {
+    if (time < 60) {
+        return [NSString stringWithFormat:@"%ld sec.", (long)time];
+    }
+    else if (time < 60 * 60) {
+        return [NSString stringWithFormat:@"%ld min.", (long)time / 60];
+    }
+    else if (time < 60 * 60 * 24) {
+        return [NSString stringWithFormat:@"%ld h", (long)time / 60 / 60];
+    }
+    else if (time < 2 * 60 * 60 * 24) {
+        return [NSString stringWithFormat:@"%ld day", (long)time / 60 / 60 / 24];
+    }
+    else {
+        return [NSString stringWithFormat:@"%ld days", (long)time / 60 / 60 / 24];
+    }
 }
 
 @end
