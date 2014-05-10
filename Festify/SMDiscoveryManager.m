@@ -143,7 +143,6 @@
 
 -(void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
     // start sending advertised data to central
-    NSLog(@"%@", characteristic.UUID.UUIDString);
     if ([[characteristic.UUID.UUIDString lowercaseString] isEqualToString:SMDiscoveryManagerPropertyUUIDString]) {
         // save new central and data position to info dictionary
         NSMutableDictionary* centralInfo = [NSMutableDictionary dictionary];
