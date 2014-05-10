@@ -78,18 +78,18 @@
     
         // adjust settings view to let user select which playlists are broadcasted
         settingsView.data = self.playlists;
+        settingsView.allowMultipleSelections = YES;
         settingsView.indicesOfSelectedItems = [self.playlists indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
             return [self.advertisedPlaylists containsObject:[[obj uri] absoluteString]];
         }];
         settingsView.dataAccessor = ^NSString*(id item) {
             return [item name];
         };
-
-        settingsView.allowMultipleSelections = YES;
-        settingsView.navigationItem.title = @"Visible Playlists";
-        settingsView.subtitle = @"Select playlists visible to other users. These playlists must be public in your Spotify profile.";
+        
         UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
         settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+        settingsView.navigationItem.title = @"Visible Playlists";
+        settingsView.subtitle = @"Select playlists visible to other users. These playlists must be public in your Spotify profile.";
     }
     else if ([segue.identifier isEqualToString:@"showUserTimeout"]) {
         SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)segue.destinationViewController;
@@ -103,10 +103,10 @@
         settingsView.indexOfSelectedItem = self.indexOfSelectedUserTimout;
         settingsView.allowMultipleSelections = NO;
         
-        settingsView.navigationItem.title = @"Delete Users";
-        settingsView.subtitle = @"When a discovered user is not available since the selcted time interval, it is deleted from the playlist.";
         UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
         settingsView.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
+        settingsView.navigationItem.title = @"Delete Users";
+        settingsView.subtitle = @"When a user is not available for the selcted time interval, it's songs are deleted from the playlist.";        
     }
 }
 
