@@ -13,10 +13,17 @@
 
 @property (nonatomic, strong) CBCentralManager* centralManager;
 @property (nonatomic, strong) CBPeripheralManager* peripheralManager;
-@property (nonatomic, strong) NSMutableArray* discoveredPeripherals;
-@property (nonatomic, strong) NSMutableDictionary* peripheralData;
 @property (nonatomic, assign, getter = isAdvertising) BOOL advertising;
 @property (nonatomic, assign, getter = isDiscovering) BOOL discovering;
+
+// central manager objects
+@property (nonatomic, strong) NSMutableArray* discoveredPeripherals;
+@property (nonatomic, strong) NSMutableDictionary* peripheralData;
+
+// peripheral manager objects
+@property (nonatomic, strong) NSData* advertisedProperty;
+@property (nonatomic, strong) NSMutableDictionary* subscribedCentralsInfo;
+@property (nonatomic, strong) CBMutableCharacteristic* propertyCharacteristic;
 
 @end
 
@@ -43,6 +50,7 @@
 
         // init properties
         self.discoveredPeripherals = [NSMutableArray array];
+        self.subscribedCentralsInfo = [NSMutableDictionary dictionary];
         self.peripheralData = [NSMutableDictionary dictionary];
     }
     
@@ -50,6 +58,8 @@
 }
 
 -(BOOL)advertiseProperty:(NSData*)property {
+    self.advertisedProperty = property;
+    
     // check the bluetooth state
     if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn) {
         return NO;
@@ -59,10 +69,10 @@
     [self stopAdvertising];
     
     // init peripheral service to advertise playlist uri and device name
-    CBMutableCharacteristic* propertyCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:SMDiscoveryManagerPropertyUUIDString]
-                                                                                     properties:CBCharacteristicPropertyRead
-                                                                                          value:property
-                                                                                    permissions:CBAttributePermissionsReadable];
+    self.propertyCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:SMDiscoveryManagerPropertyUUIDString]
+                                                                     properties:CBCharacteristicPropertyNotify
+                                                                          value:nil
+                                                                    permissions:CBAttributePermissionsReadable];
     
     CBMutableCharacteristic* devicenameCharacteristic = [[CBMutableCharacteristic alloc] initWithType:[CBUUID UUIDWithString:SMDiscoveryManagerDevicenameUUIDString]
                                                                                     properties:CBCharacteristicPropertyRead
@@ -70,7 +80,7 @@
                                                                                    permissions:CBAttributePermissionsReadable];
     
     CBMutableService* service = [[CBMutableService alloc] initWithType:[CBUUID UUIDWithString:SMDiscoveryManagerServiceUUIDString] primary:YES];
-    service.characteristics = @[propertyCharacteristic, devicenameCharacteristic];
+    service.characteristics = @[self.propertyCharacteristic, devicenameCharacteristic];
     [self.peripheralManager addService:service];
     
     // advertise service
@@ -129,6 +139,33 @@
         self.advertising = NO;
         [self stopAdvertising];
     }
+}
+
+-(void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
+    // start sending advertised data to central
+    NSLog(@"%@", characteristic.UUID.UUIDString);
+    if ([[characteristic.UUID.UUIDString lowercaseString] isEqualToString:SMDiscoveryManagerPropertyUUIDString]) {
+        // save new central and data position to info dictionary
+        NSMutableDictionary* centralInfo = [NSMutableDictionary dictionary];
+        centralInfo[@"central"] = central;
+        centralInfo[@"dataPosition"] = [NSNumber numberWithInteger:[self sendDataChunkToCentral:central fromPosition:0]];
+        
+        self.subscribedCentralsInfo[central.identifier.UUIDString] = centralInfo;
+    }
+}
+
+-(void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral {
+    // send next data chunk to all subscribers
+    for (NSMutableDictionary* centralInfo in self.subscribedCentralsInfo.allValues) {
+        NSInteger newDataPosition = [self sendDataChunkToCentral:centralInfo[@"central"] fromPosition:[centralInfo[@"dataPosition"] integerValue]];
+        centralInfo[@"dataPosition"] = [NSNumber numberWithInteger:newDataPosition];
+    }
+}
+
+-(void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
+    NSLog(@"unsubscribe");
+    
+    [self.subscribedCentralsInfo removeObjectForKey:central.identifier.UUIDString];
 }
 
 #pragma mark - CBCentralManagerDelegate
@@ -198,9 +235,14 @@
         return;
     }
     
-    // read playlist value of the characteristic
+    // read devicename and subscribe to property characteristic
     for (CBCharacteristic* characteristic in service.characteristics) {
-        [peripheral readValueForCharacteristic:characteristic];
+        if ([[characteristic.UUID.UUIDString lowercaseString] isEqualToString:SMDiscoveryManagerDevicenameUUIDString]) {
+            [peripheral readValueForCharacteristic:characteristic];
+        }
+        else if ([[characteristic.UUID.UUIDString lowercaseString] isEqualToString:SMDiscoveryManagerPropertyUUIDString]) {
+            [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+        }
     }
 }
 
@@ -215,24 +257,78 @@
     // add dictionary for current peripheral
     if (!self.peripheralData[peripheral.identifier.UUIDString]) {
         self.peripheralData[peripheral.identifier.UUIDString] = [NSMutableDictionary dictionary];
+        self.peripheralData[peripheral.identifier.UUIDString][@"dataComplete"] = @NO;
     }
 
-    // save received data to peripheral dictionary
-    [self.peripheralData[peripheral.identifier.UUIDString] setValue:[characteristic.value copy]
-                                                             forKey:[characteristic.UUID.UUIDString lowercaseString]];
-
+    // read out characteristic value
+    NSString* characteristicValue = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
+    
+    if ([[characteristic.UUID.UUIDString lowercaseString] isEqualToString:SMDiscoveryManagerDevicenameUUIDString]) {
+        [self.peripheralData[peripheral.identifier.UUIDString] setValue:characteristicValue
+                                                                 forKey:[characteristic.UUID.UUIDString lowercaseString]];
+    }
+    else if ([[characteristic.UUID.UUIDString lowercaseString] isEqualToString:SMDiscoveryManagerPropertyUUIDString]) {
+        if (![characteristicValue isEqualToString:@"EOM"]) {
+            if (!self.peripheralData[peripheral.identifier.UUIDString][SMDiscoveryManagerPropertyUUIDString]) {
+                self.peripheralData[peripheral.identifier.UUIDString][SMDiscoveryManagerPropertyUUIDString] = [NSMutableData dataWithData:characteristic.value];
+            }
+            else {
+                [self.peripheralData[peripheral.identifier.UUIDString][SMDiscoveryManagerPropertyUUIDString] appendData:characteristic.value];
+            }
+        }
+        else {
+            self.peripheralData[peripheral.identifier.UUIDString][@"dataComplete"] = @YES;
+        }
+    }
+    
     // check if all data are collected
-    if ([self.peripheralData[peripheral.identifier.UUIDString] allKeys].count == 2) {
+    if ([self.peripheralData[peripheral.identifier.UUIDString] allKeys].count == 3 &&
+        [self.peripheralData[peripheral.identifier.UUIDString][@"dataComplete"] boolValue]) {
         // inform delegate about new playlist
         if (self.delegate) {
-            NSData* property = [self.peripheralData[peripheral.identifier.UUIDString] objectForKey:SMDiscoveryManagerPropertyUUIDString];
-            NSString* devicename = [[NSString alloc] initWithData:self.peripheralData[peripheral.identifier.UUIDString][SMDiscoveryManagerDevicenameUUIDString]
-                                                         encoding:NSUTF8StringEncoding];
+            NSData* property = self.peripheralData[peripheral.identifier.UUIDString][SMDiscoveryManagerPropertyUUIDString];
+            NSString* devicename = self.peripheralData[peripheral.identifier.UUIDString][SMDiscoveryManagerDevicenameUUIDString];
             [self.delegate discoveryManager:self didDiscoverDevice:devicename withProperty:property];
         }
         
         // disconnect device
         [self.centralManager cancelPeripheralConnection:peripheral];
+    }
+}
+
+#pragma mark - Helper
+
+-(NSInteger)sendDataChunkToCentral:(CBCentral*)central fromPosition:(NSInteger)position {
+    // try to send EOM, if all data are allready send
+    if (position >= self.advertisedProperty.length) {
+        [self.peripheralManager updateValue:[@"EOM" dataUsingEncoding:NSUTF8StringEncoding]
+                          forCharacteristic:self.propertyCharacteristic
+                       onSubscribedCentrals:@[central]];
+        
+        return position;
+    }
+
+    // send chunk of property to central
+    while (YES) {
+        NSInteger amountToSend = self.advertisedProperty.length - position > central.maximumUpdateValueLength ?
+            central.maximumUpdateValueLength : self.advertisedProperty.length - position;
+        NSData* chunk = [NSData dataWithBytes:(self.advertisedProperty.bytes + position) length:amountToSend];
+        
+        if (![self.peripheralManager updateValue:chunk forCharacteristic:self.propertyCharacteristic onSubscribedCentrals:@[central]]) {
+            return position;
+        }
+        
+        // update current data position and send EOM, if neccessary
+        position += amountToSend;
+        
+        // try to send EOM, if all data are allready send
+        if (position >= self.advertisedProperty.length) {
+            [self.peripheralManager updateValue:[@"EOM" dataUsingEncoding:NSUTF8StringEncoding]
+                              forCharacteristic:self.propertyCharacteristic
+                           onSubscribedCentrals:@[central]];
+            
+            return position;
+        }
     }
 }
 
