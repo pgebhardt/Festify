@@ -159,12 +159,16 @@
     for (NSMutableDictionary* centralInfo in self.subscribedCentralsInfo.allValues) {
         NSInteger newDataPosition = [self sendDataChunkToCentral:centralInfo[@"central"] fromPosition:[centralInfo[@"dataPosition"] integerValue]];
         centralInfo[@"dataPosition"] = [NSNumber numberWithInteger:newDataPosition];
+
+        // remove info dictionary for specific central, if all data are send
+        if (newDataPosition == -1) {
+            CBCentral* central = centralInfo[@"central"];
+            [self.subscribedCentralsInfo removeObjectForKey:central.identifier.UUIDString];
+        }
     }
 }
 
 -(void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
-    NSLog(@"unsubscribe");
-    
     [self.subscribedCentralsInfo removeObjectForKey:central.identifier.UUIDString];
 }
 
@@ -301,11 +305,16 @@
 -(NSInteger)sendDataChunkToCentral:(CBCentral*)central fromPosition:(NSInteger)position {
     // try to send EOM, if all data are allready send
     if (position >= self.advertisedProperty.length) {
-        [self.peripheralManager updateValue:[@"EOM" dataUsingEncoding:NSUTF8StringEncoding]
-                          forCharacteristic:self.propertyCharacteristic
-                       onSubscribedCentrals:@[central]];
+        BOOL success = [self.peripheralManager updateValue:[@"EOM" dataUsingEncoding:NSUTF8StringEncoding]
+                                         forCharacteristic:self.propertyCharacteristic
+                                      onSubscribedCentrals:@[central]];
         
-        return position;
+        if (success) {
+            return -1;
+        }
+        else {
+            return position;
+        }
     }
 
     // send chunk of property to central
@@ -323,11 +332,16 @@
         
         // try to send EOM, if all data are allready send
         if (position >= self.advertisedProperty.length) {
-            [self.peripheralManager updateValue:[@"EOM" dataUsingEncoding:NSUTF8StringEncoding]
-                              forCharacteristic:self.propertyCharacteristic
-                           onSubscribedCentrals:@[central]];
+            BOOL success = [self.peripheralManager updateValue:[@"EOM" dataUsingEncoding:NSUTF8StringEncoding]
+                                             forCharacteristic:self.propertyCharacteristic
+                                          onSubscribedCentrals:@[central]];
             
-            return position;
+            if (success) {
+                return -1;
+            }
+            else {
+                return position;
+            }
         }
     }
 }
