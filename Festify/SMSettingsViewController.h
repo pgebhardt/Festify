@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
-#import <SPotify/Spotify.h>
+#import <Spotify/Spotify.h>
 #import "SMSettingSelectionViewController.h"
+#import "SMTrackProvider.h"
 
 @class SMSettingsViewController;
 
@@ -18,7 +19,6 @@
 -(void)settingsViewDidRequestLogout:(SMSettingsViewController*)settingsView;
 -(BOOL)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisementState:(BOOL)advertising;
 -(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisedPlaylistSelection:(NSArray*)selectedPlaylists;
--(void)settingsView:(SMSettingsViewController*)settingsView didChangeUserTimeout:(NSInteger)timeout;
 
 @end
 
@@ -34,6 +34,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 
 @property (nonatomic, strong) SPTSession* session;
+@property (nonatomic, strong) SMTrackProvider* trackProvider;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, weak) id<SMSettingsViewDelegate> delegate;
 

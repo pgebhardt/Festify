@@ -70,6 +70,7 @@
         SMSettingsViewController* viewController = (SMSettingsViewController*)navController.viewControllers[0];
         
         viewController.session = self.session;
+        viewController.trackProvider = self.trackProvider;
         viewController.advertisedPlaylists = self.advertisedPlaylists;
         viewController.delegate = self;
     }
@@ -222,14 +223,6 @@
     }
 
     [self setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertising];
-}
-
--(void)settingsView:(SMSettingsViewController *)settingsView didChangeUserTimeout:(NSInteger)timeout {
-    [SMUserDefaults setUserTimeout:timeout];
-    
-    for (NSString* username in self.trackProvider.users.allKeys) {
-        [self.trackProvider updateTimeoutInterval:timeout forUser:username];
-    }
 }
 
 #pragma mark - Helper

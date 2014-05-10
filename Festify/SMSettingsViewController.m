@@ -229,9 +229,12 @@
         // update UI
         self.timeoutLabel.text = [SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"name"];
 
-        // inform delegate
-        if (self.delegate) {
-            [self.delegate settingsView:self didChangeUserTimeout:[[SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"value"] integerValue]];
+        // update track provider
+        NSInteger timeout = [[SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"value"] integerValue];
+        [SMUserDefaults setUserTimeout:timeout];
+    
+        for (NSString* username in self.trackProvider.users.allKeys) {
+            [self.trackProvider updateTimeoutInterval:timeout forUser:username];
         }
     }
 }

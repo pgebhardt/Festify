@@ -126,15 +126,25 @@
 }
 
 -(void)updateTracksArray {
-    [self.tracks removeAllObjects];
-    
-    for (NSDictionary* userInfo in self.users.allValues) {
-        for (SPTPlaylistSnapshot* playlist in userInfo[SMTrackProviderPlaylistsKey]) {
-            [self.tracks addObjectsFromArray:playlist.tracks];
+    // select maximum 100 random songs of each user
+    NSMutableArray* tracksOfUser = [NSMutableArray array];
+    for (NSInteger i = 0; i < self.users.count; ++i) {
+        [tracksOfUser addObject:[NSMutableArray array]];
+        
+        for (SPTPlaylistSnapshot* playlist in self.users.allValues[i][SMTrackProviderPlaylistsKey]) {
+            [tracksOfUser[i] addObjectsFromArray:playlist.tracks];
         }
+        [tracksOfUser shuffle];
     }
-    [self.tracks shuffle];
+
+    [self.tracks removeAllObjects];
+    for (NSArray* tracks in tracksOfUser) {
+        NSIndexSet* indicesOfTracks = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0,
+            tracks.count < 100 ? tracks.count : 100)];
+        [self.tracks addObjectsFromArray:[tracks objectsAtIndexes:indicesOfTracks]];
+    }
     
+    [self.tracks shuffle];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMTrackProviderDidUpdateTracksArray object:self];
 }
 
