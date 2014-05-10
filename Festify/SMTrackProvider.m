@@ -35,11 +35,22 @@
         self.users[username] = userInfo;
     }
     
-    // replace playlists for user and initialize or update timer
-    userInfo[SMTrackProviderPlaylistsKey] = playlists;
-    [self updateTimeoutInterval:timeout forUser:username];
+    // only update tracks array, if playlists are not identical
+    if (userInfo[SMTrackProviderPlaylistsKey]) {
+        NSArray* oldPlaylistURIs = [[[userInfo[SMTrackProviderPlaylistsKey] valueForKey:@"uri"] valueForKey:@"absoluteString"] sortedArrayUsingSelector:@selector(compare:)];
+        NSArray* newPlaylistURIs = [[[playlists valueForKey:@"uri"] valueForKey:@"absoluteString"] sortedArrayUsingSelector:@selector(compare:)];
+        
+        if (![newPlaylistURIs isEqualToArray:oldPlaylistURIs]) {
+            userInfo[SMTrackProviderPlaylistsKey] = playlists;
+            [self updateTracksArray];
+        }
+    }
+    else {
+        userInfo[SMTrackProviderPlaylistsKey] = playlists;
+        [self updateTracksArray];
+    }
     
-    [self updateTracksArray];
+    [self updateTimeoutInterval:timeout forUser:username];
 }
 
 -(void)updateTimeoutInterval:(NSInteger)timeout forUser:(NSString *)username {
