@@ -70,9 +70,6 @@
 
             [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:indicesOfSelectedItems];
         }
-        else {
-            [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:[NSIndexSet indexSetWithIndex:self.indexOfSelectedItem]];
-        }
     }
 }
 
@@ -167,6 +164,11 @@
             [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryType = UITableViewCellAccessoryNone;
             self.indexOfSelectedItem = indexPath.row;
             [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
+            
+            // inform delegate only on selection changes in single selection mode
+            if (self.delegate) {
+                [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:[NSIndexSet indexSetWithIndex:self.indexOfSelectedItem]];
+            }
         }
     }
 }

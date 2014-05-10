@@ -226,7 +226,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Up Next" id="ebI-nP-PHG">
-                        <barButtonItem key="rightBarButtonItem" systemItem="stop" id="qVO-jJ-rGq">
+                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="qVO-jJ-rGq">
                             <connections>
                                 <action selector="done:" destination="Mf0-Gs-FPK" id="4lY-WS-UCL"/>
                             </connections>
@@ -657,7 +657,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Discovered Users" id="wJp-Ox-y6D">
-                        <barButtonItem key="rightBarButtonItem" systemItem="stop" id="PS5-Qs-ofp">
+                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="PS5-Qs-ofp">
                             <connections>
                                 <action selector="done:" destination="GbN-8d-cNT" id="Yu5-Wv-dVR"/>
                             </connections>
