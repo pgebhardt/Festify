@@ -35,7 +35,6 @@
     // observe changes in track provider
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:SMTrackProviderDidUpdateTracksArray object:nil];
 
-    
     // update time label for username cells
     [self updateUsernameCellIndexesArray];
     self.reloadTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(reloadUserCells) userInfo:nil repeats:YES];
@@ -68,8 +67,8 @@
         cell = [tableView dequeueReusableCellWithIdentifier:@"usernameCell" forIndexPath:indexPath];
         cell.textLabel.text = self.trackProvider.users.allKeys[indexPath.section];
         
-        NSInteger secondsToTimeout = -[self.trackProvider.users.allValues[indexPath.section][SMTrackProviderAddedDateKey] timeIntervalSinceNow];
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"added %@ ago", [self timeToString:secondsToTimeout]];
+        NSInteger time = -[self.trackProvider.users.allValues[indexPath.section][SMTrackProviderDateUpdatedKey] timeIntervalSinceNow];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"updated %@ ago", [self timeToString:time]];
     }
     else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"playlistCell" forIndexPath:indexPath];
@@ -148,7 +147,7 @@
 
 -(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (section == [self numberOfSectionsInTableView:tableView] - 1) {
-        return @"All visible playlists of these users are currently include in Festify`s playlist.";
+        return @"Tap username to see the user's visible playlists.";
     }
     return nil;
 }
@@ -163,14 +162,16 @@
     [self updateUsernameCellIndexesArray];
     
     [self.tableView beginUpdates];
-    [self.tableView deleteSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.numberOfSections)] withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfSectionsInTableView:self.tableView])] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView deleteSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.tableView.numberOfSections)]
+                  withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView insertSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfSectionsInTableView:self.tableView])]
+                  withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
 }
 
 -(void)reloadUserCells {
     if (!self.isEditing) {
-        [self.tableView reloadRowsAtIndexPaths:self.usernameCellIndices withRowAnimation:UITableViewRowAnimationNone];        
+        [self.tableView reloadRowsAtIndexPaths:self.usernameCellIndices withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 

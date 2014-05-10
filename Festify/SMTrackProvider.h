@@ -15,7 +15,7 @@ static NSString* const SMTrackProviderDidUpdateTracksArray = @"SMTrackProviderDi
 // users dictionary key
 static NSString* const SMTrackProviderPlaylistsKey = @"SMTrackProviderPlaylistsKey";
 static NSString* const SMTrackProviderTimerKey = @"SMTrackProviderTimerKey";
-static NSString* const SMTrackProviderAddedDateKey = @"SMTrackProviderAddedDateKey";
+static NSString* const SMTrackProviderDateUpdatedKey = @"SMTrackProviderDateUpdatedKey";
 
 @interface SMTrackProvider : NSObject<SPTTrackProvider>
 

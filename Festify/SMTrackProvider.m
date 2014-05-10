@@ -31,7 +31,6 @@
     NSMutableDictionary* userInfo = self.users[username];
     if (!userInfo) {
         userInfo = [NSMutableDictionary dictionary];
-        userInfo[SMTrackProviderAddedDateKey] = [NSDate date];
         self.users[username] = userInfo;
     }
     
@@ -50,6 +49,7 @@
         [self updateTracksArray];
     }
     
+    userInfo[SMTrackProviderDateUpdatedKey] = [NSDate date];
     [self updateTimeoutInterval:timeout forUser:username];
 }
 
@@ -71,9 +71,9 @@
             userInfo[SMTrackProviderTimerKey] = timer;
         }
         else {
-            NSDate* dateAdded = userInfo[SMTrackProviderAddedDateKey];
+            NSDate* dateUpdated = userInfo[SMTrackProviderDateUpdatedKey];
             [userInfo[SMTrackProviderTimerKey] setFireDate:[NSDate dateWithTimeInterval:(NSTimeInterval)timeout * 60.0
-                                                                              sinceDate:dateAdded]];
+                                                                              sinceDate:dateUpdated]];
         }
     }
     else {
