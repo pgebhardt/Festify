@@ -262,7 +262,7 @@
     
     // cleanup Spotify objects
     self.session = nil;
-    [self.trackPlayer clear];
+    [self.trackPlayer logout];
     [self.trackProvider clear];
     
     [self performSegueWithIdentifier:@"showLogin" sender:self];

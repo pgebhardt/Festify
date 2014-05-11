@@ -18,6 +18,7 @@
 -(void)playTrackProvider:(id<SPTTrackProvider>)provider;
 -(void)playTrackProvider:(id<SPTTrackProvider>)provider fromIndex:(NSInteger)index;
 -(void)clear;
+-(void)logout;
 
 -(void)play;
 -(void)pause;

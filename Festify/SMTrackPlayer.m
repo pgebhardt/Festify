@@ -101,11 +101,15 @@
     // stop playback and cleanup track provider
     [self pause];
     
-    self.session = nil;
     self.currentProvider = nil;
     self.currentTrack = nil;
     self.indexOfCurrentTrack = -1;
     self.currentPlaybackPosition = 0.0;
+}
+
+-(void)logout {
+    self.session = nil;
+    [self clear];
 }
 
 #pragma mark - playback contols
