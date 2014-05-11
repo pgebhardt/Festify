@@ -95,17 +95,28 @@
 #pragma  mark - Actions
 
 - (IBAction)festify:(id)sender {
-    // start or stop discovering mode
-    if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-        [[SMDiscoveryManager sharedInstance] stopDiscovering];
+    // only enable festify mode, if user has a premium spotify account
+    if (self.trackPlayer.session) {
+        // start or stop discovering mode
+        if ([SMDiscoveryManager sharedInstance].isDiscovering) {
+            [[SMDiscoveryManager sharedInstance] stopDiscovering];
+        }
+        else {
+            if ([[SMDiscoveryManager sharedInstance] startDiscovering] &&
+                [SMDiscoveryManager sharedInstance].isAdvertising) {
+                // add own selected songs, if advertising is turned on
+                MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
+                [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:-1];
+            }
+        }
     }
     else {
-        if ([[SMDiscoveryManager sharedInstance] startDiscovering] &&
-            [SMDiscoveryManager sharedInstance].isAdvertising) {
-            // add own selected songs, if advertising is turned on
-            MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
-            [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:-1];
-        }
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Discovering other users requires a Spotify Premium account."
+                                                            message:nil
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+        [alertView show];
     }
 }
 
@@ -240,16 +251,15 @@
 -(void)restoreApplicationState {
     [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     
-    // load stored spotify session and try to enable playback
+    // load stored session and advertised playlists, and try to enable playback,
+    // if possible
     self.session = [SMUserDefaults session];
-    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-        if (!error) {
-            // load user settings
-            [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
+    [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
+        if (advertisedPlaylists) {
+            self.advertisedPlaylists = advertisedPlaylists;
+            
+            [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
                 [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-                
-                self.advertisedPlaylists = advertisedPlaylists;
-                [self setAdvertisementState:[SMUserDefaults advertisementState]];
             }];
         }
         else {
@@ -257,7 +267,9 @@
             
             // cleanup stored application state and show login screen
             [SMUserDefaults clear];
-            [self performSegueWithIdentifier:@"showLogin" sender:self];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self performSegueWithIdentifier:@"showLogin" sender:self];
+            });
         }
     }];
 }
