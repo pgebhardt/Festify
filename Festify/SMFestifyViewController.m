@@ -22,7 +22,6 @@
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, strong) BBBadgeBarButtonItem* usersButton;
-@property (nonatomic, strong) NSTimer* festifyButtonTimer;
 @end
 
 @implementation SMFestifyViewController
@@ -149,9 +148,6 @@
         if ([SMDiscoveryManager sharedInstance].isDiscovering) {
             [self animateFestifyButton];
         }
-        else {
-            [self.festifyButtonTimer invalidate];
-        }
     });
 }
 
@@ -189,14 +185,9 @@
             self.festifyButton.transform = CGAffineTransformMakeRotation(20.0 * M_PI / 180.0);
         } completion:^(BOOL finished) {
             if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-                if (!self.festifyButtonTimer) {
-                    self.festifyButtonTimer = self.festifyButtonTimer = [NSTimer scheduledTimerWithTimeInterval:1.2 target:self selector:@selector(animateFestifyButton)
-                                                                                                       userInfo:nil repeats:YES];
-                    [self.festifyButtonTimer fire];
-                }
+                [self animateFestifyButton];
             }
             else {
-                self.festifyButtonTimer = nil;
                 [UIView animateWithDuration:0.3 delay:0.0
                                     options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
                                  animations:^{
