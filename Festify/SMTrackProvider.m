@@ -8,7 +8,6 @@
 
 #import "SMTrackProvider.h"
 #import "NSMutableArray+Shuffling.h"
-#import "MWLogging.h"
 
 @interface SMTrackProvider ()
 
@@ -127,7 +126,6 @@
     NSString* username = timer.userInfo;
     NSMutableDictionary* userInfo = self.users[username];
     [userInfo removeObjectForKey:SMTrackProviderTimerKey];
-    MWLogDebug(@"warning sent: %@", userInfo[SMTrackProviderDeletionWarningSentKey]);
     
     // delete user from track provider if deletion warning was sent,
     // or inform delegate to update user within 1 minute

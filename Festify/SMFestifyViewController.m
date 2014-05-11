@@ -179,7 +179,6 @@
     if ([SMDiscoveryManager sharedInstance].isDiscovering) {
         [[SMDiscoveryManager sharedInstance] startDiscovering];
     }
-    MWLogDebug(@"rescan");
 }
 
 #pragma mark - PGLoginViewDelegate
