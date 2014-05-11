@@ -56,12 +56,14 @@
     __block NSMutableArray* advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
     
     if (!advertisedPlaylists) {
+        advertisedPlaylists = [NSMutableArray array];
+        
         // initialize advertised playlists with all playlists, if session is available
         SPTSession* session = [SMUserDefaults session];
         if (session) {
             [SPTRequest playlistsForUser:session.canonicalUsername withSession:session callback:^(NSError *error, id object) {
                 if (!error) {
-                    advertisedPlaylists = [NSMutableArray arrayWithArray:[[[object items] valueForKey:@"uri"] valueForKey:@"absoluteString"]];
+                    [advertisedPlaylists addObjectsFromArray:[[[object items] valueForKey:@"uri"] valueForKey:@"absoluteString"]];
                 }
                 
                 if (completion) {

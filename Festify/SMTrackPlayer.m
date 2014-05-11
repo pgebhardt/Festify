@@ -101,6 +101,7 @@
     // stop playback and cleanup track provider
     [self pause];
     
+    self.session = nil;
     self.currentProvider = nil;
     self.currentTrack = nil;
     self.indexOfCurrentTrack = -1;

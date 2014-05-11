@@ -208,17 +208,7 @@
 #pragma mark - PGSettingsViewDelegate
 
 -(void)settingsViewDidRequestLogout:(SMSettingsViewController *)settingsView {
-    // stop advertisiement and discovery and clear all settings
-    [[SMDiscoveryManager sharedInstance] stopDiscovering];
-    [[SMDiscoveryManager sharedInstance] stopAdvertising];
-    [SMUserDefaults clear];
-    
-    // cleanup Spotify objects
-    self.session = nil;
-    [self.trackPlayer clear];
-    [self.trackProvider clear];
-
-    [self performSegueWithIdentifier:@"showLogin" sender:self];
+    [self logoutOfSpotify];
 }
 
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
@@ -238,29 +228,44 @@
 -(void)restoreApplicationState {
     [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     
-    // load stored session and try to enable playback, if possible
+    // load stored session and check, if session is valid with simple API call,
+    // otherwise show login screen
     self.session = [SMUserDefaults session];
-    [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
-        // load remaining user sessings and try to enable playback, if no valid user settings are
-        // available, show login screen
-        if (advertisedPlaylists) {
-            self.advertisedPlaylists = advertisedPlaylists;
-            [self setAdvertisementState:[SMUserDefaults advertisementState]];
-            
-            [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-                [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
+        if (!error) {
+            [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
+                // load remaining user sessings and try to enable playback
+                self.advertisedPlaylists = advertisedPlaylists;
+                [self setAdvertisementState:[SMUserDefaults advertisementState]];
+                
+                [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+                    [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+                }];
             }];
         }
         else {
             [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
             
-            // cleanup stored application state and show login screen
-            [SMUserDefaults clear];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self performSegueWithIdentifier:@"showLogin" sender:self];
+                [self.navigationController popToRootViewControllerAnimated:YES];
+                [self logoutOfSpotify];
             });
         }
     }];
+}
+
+-(void)logoutOfSpotify {
+    // stop advertisiement and discovery and clear all settings
+    [[SMDiscoveryManager sharedInstance] stopDiscovering];
+    [[SMDiscoveryManager sharedInstance] stopAdvertising];
+    [SMUserDefaults clear];
+    
+    // cleanup Spotify objects
+    self.session = nil;
+    [self.trackPlayer clear];
+    [self.trackProvider clear];
+    
+    [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
 -(void)setAdvertisementState:(BOOL)advertising {
