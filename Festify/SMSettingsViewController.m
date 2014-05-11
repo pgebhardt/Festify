@@ -185,12 +185,12 @@
     // handle actions for specific cell
     NSString* reuseIdentifier = [tableView cellForRowAtIndexPath:indexPath].reuseIdentifier;
     if ([reuseIdentifier isEqualToString:@"logoutCell"]) {
-        // inform delegate to logout
-        if (self.delegate) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self dismissViewControllerAnimated:YES completion:^{
+            // inform delegate to logout
+            if (self.delegate) {
                 [self.delegate settingsViewDidRequestLogout:self];
-            });
-        }
+            }
+        }];
     }
     else if ([reuseIdentifier isEqualToString:@"contactCell"]) {
         // add some basic debug information to default message

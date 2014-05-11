@@ -214,10 +214,8 @@
     self.session = nil;
     [self.trackPlayer clear];
     [self.trackProvider clear];
-    
-    [settingsView dismissViewControllerAnimated:YES completion:^{
-        [self performSegueWithIdentifier:@"showLogin" sender:self];
-    }];
+
+    [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
 -(BOOL)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
