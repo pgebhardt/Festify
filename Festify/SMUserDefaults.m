@@ -106,7 +106,7 @@
              @{@"name": @"After 2 h", @"value": @120},
              @{@"name": @"After 4 h", @"value": @240},
              @{@"name": @"After 6 h", @"value": @360},
-             @{@"name": @"Never", @"value": @(-1)}];
+             @{@"name": @"Never", @"value": @0}];
 }
 
 @end

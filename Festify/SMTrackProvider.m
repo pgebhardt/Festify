@@ -50,7 +50,7 @@
     }
     
     userInfo[SMTrackProviderDateUpdatedKey] = [NSDate date];
-    [self updateTimeoutInterval:(timeout - 1) forUser:username];
+    [self updateTimeoutInterval:timeout forUser:username];
 }
 
 -(void)updateTimeoutInterval:(NSInteger)timeout forUser:(NSString *)username {
@@ -60,11 +60,11 @@
         return;
     }
     
-    if (timeout != -1) {
+    if (timeout != 0) {
         // create or update timer to delete user from track provider after timeout has expired
         userInfo[SMTrackProviderDeletionWarningSentKey] = @NO;
         if (!userInfo[SMTrackProviderTimerKey]) {
-            NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)timeout * 60.0
+            NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(timeout - 1) * 60.0
                                                               target:self
                                                             selector:@selector(timerHasExpired:)
                                                             userInfo:username
@@ -73,7 +73,7 @@
         }
         else {
             NSDate* dateUpdated = userInfo[SMTrackProviderDateUpdatedKey];
-            [userInfo[SMTrackProviderTimerKey] setFireDate:[NSDate dateWithTimeInterval:(NSTimeInterval)timeout * 60.0
+            [userInfo[SMTrackProviderTimerKey] setFireDate:[NSDate dateWithTimeInterval:(NSTimeInterval)(timeout - 1) * 60.0
                                                                               sinceDate:dateUpdated]];
         }
     }
@@ -130,7 +130,7 @@
     // delete user from track provider if deletion warning was sent,
     // or inform delegate to update user within 1 minute
     if (![userInfo[SMTrackProviderDeletionWarningSentKey] boolValue]) {
-        [self updateTimeoutInterval:1 forUser:username];
+        [self updateTimeoutInterval:(1 + 1) forUser:username];
         userInfo[SMTrackProviderDeletionWarningSentKey] = @YES;
         
         if (self.delegate) {

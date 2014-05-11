@@ -226,16 +226,19 @@
         }
     }
     else if ([settingsSelectionView.navigationItem.title isEqualToString:@"Delete Users"]) {
-        // update UI
-        self.timeoutLabel.text = [SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"name"];
-
         // update track provider
         NSInteger timeout = [[SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"value"] integerValue];
         [SMUserDefaults setUserTimeout:timeout];
-    
+        
         for (NSString* username in self.trackProvider.users.allKeys) {
             [self.trackProvider updateTimeoutInterval:timeout forUser:username];
         }
+
+        // update UI
+        self.timeoutLabel.text = [SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"name"];
+        self.indexOfSelectedUserTimout = [[SMUserDefaults userTimeoutSelections] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            return [[obj objectForKey:@"value"] doubleValue] == timeout;
+        }];
     }
 }
 
