@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "SMDiscoveryManager.h"
+#import "SMTrackProvider.h"
 #import "SMLoginViewController.h"
 #import "SMSettingsViewController.h"
 
@@ -15,7 +16,7 @@
 static NSString* const SMFestifyViewControllerRestoreApplicationState = @"SMFestifyViewControllerRestoreApplicationState";
 
 @interface SMFestifyViewController : UIViewController<SMDiscoveryManagerDelegate,
-    SMLoginViewDelegate, SMSettingsViewDelegate>
+    SMTrackProviderDelegate, SMLoginViewDelegate, SMSettingsViewDelegate>
 
 - (IBAction)spotifyButton:(id)sender;
 - (IBAction)festify:(id)sender;

@@ -12,7 +12,6 @@
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
 #import "SMTrackPlayer.h"
-#import "SMTrackProvider.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
 #import "BBBadgeBarButtonItem.h"
@@ -40,6 +39,7 @@
     // init properties
     self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     self.trackProvider = [[SMTrackProvider alloc] init];
+    self.trackProvider.delegate = self;
     
     [self initializeUI];
     [self restoreApplicationState];
@@ -169,6 +169,17 @@
     NSDictionary* advertisedData = [NSJSONSerialization JSONObjectWithData:property options:0 error:nil];
 
     [self setPlaylists:advertisedData[@"playlists"] forUser:advertisedData[@"username"] withTimeout:[SMUserDefaults userTimeout]];
+}
+
+#pragma mark - SMTrackProviderDelegate
+
+-(void)trackProvider:(SMTrackProvider *)trackProvider willDeleteUser:(NSString *)username {
+    // restart discovery manager to rescan for all available devices to possibly prevent
+    // track provider from deleting the user
+    if ([SMDiscoveryManager sharedInstance].isDiscovering) {
+        [[SMDiscoveryManager sharedInstance] startDiscovering];
+    }
+    MWLogDebug(@"rescan");
 }
 
 #pragma mark - PGLoginViewDelegate

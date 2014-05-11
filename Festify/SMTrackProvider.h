@@ -16,6 +16,13 @@ static NSString* const SMTrackProviderDidUpdateTracksArray = @"SMTrackProviderDi
 static NSString* const SMTrackProviderPlaylistsKey = @"SMTrackProviderPlaylistsKey";
 static NSString* const SMTrackProviderTimerKey = @"SMTrackProviderTimerKey";
 static NSString* const SMTrackProviderDateUpdatedKey = @"SMTrackProviderDateUpdatedKey";
+static NSString* const SMTrackProviderDeletionWarningSentKey = @"SMTrackProviderDeletionWarningSentKey";
+
+@class SMTrackProvider;
+
+@protocol SMTrackProviderDelegate <NSObject>
+-(void)trackProvider:(SMTrackProvider*)trackProvider willDeleteUser:(NSString*)username;
+@end
 
 @interface SMTrackProvider : NSObject<SPTTrackProvider>
 
@@ -26,5 +33,6 @@ static NSString* const SMTrackProviderDateUpdatedKey = @"SMTrackProviderDateUpda
 -(void)clear;
 
 @property (nonatomic, readonly) NSMutableDictionary* users;
+@property (nonatomic, weak) id<SMTrackProviderDelegate> delegate;
 
 @end

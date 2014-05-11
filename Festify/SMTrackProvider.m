@@ -8,6 +8,7 @@
 
 #import "SMTrackProvider.h"
 #import "NSMutableArray+Shuffling.h"
+#import "MWLogging.h"
 
 @interface SMTrackProvider ()
 
@@ -50,7 +51,7 @@
     }
     
     userInfo[SMTrackProviderDateUpdatedKey] = [NSDate date];
-    [self updateTimeoutInterval:timeout forUser:username];
+    [self updateTimeoutInterval:(timeout - 1) forUser:username];
 }
 
 -(void)updateTimeoutInterval:(NSInteger)timeout forUser:(NSString *)username {
@@ -62,6 +63,7 @@
     
     if (timeout != -1) {
         // create or update timer to delete user from track provider after timeout has expired
+        userInfo[SMTrackProviderDeletionWarningSentKey] = @NO;
         if (!userInfo[SMTrackProviderTimerKey]) {
             NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)timeout * 60.0
                                                               target:self
@@ -122,7 +124,24 @@
 #pragma mark - Helper
 
 -(void)timerHasExpired:(NSTimer*)timer {
-    [self removePlaylistsForUser:timer.userInfo];
+    NSString* username = timer.userInfo;
+    NSMutableDictionary* userInfo = self.users[username];
+    [userInfo removeObjectForKey:SMTrackProviderTimerKey];
+    MWLogDebug(@"warning sent: %@", userInfo[SMTrackProviderDeletionWarningSentKey]);
+    
+    // delete user from track provider if deletion warning was sent,
+    // or inform delegate to update user within 1 minute
+    if (![userInfo[SMTrackProviderDeletionWarningSentKey] boolValue]) {
+        [self updateTimeoutInterval:1 forUser:username];
+        userInfo[SMTrackProviderDeletionWarningSentKey] = @YES;
+        
+        if (self.delegate) {
+            [self.delegate trackProvider:self willDeleteUser:username];
+        }
+    }
+    else {
+        [self removePlaylistsForUser:timer.userInfo];
+    }
 }
 
 -(void)updateTracksArray {
