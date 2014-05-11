@@ -60,8 +60,7 @@
     [super viewWillAppear:animated];
     
     // observe changes in advertisement state
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAdvertisiementSwitch) name:SMDiscoveryManagerDidStartAdvertising object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAdvertisiementSwitch) name:SMDiscoveryManagerDidStopAdvertising object:nil];    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAdvertisiementSwitch) name:SMDiscoveryManagerDidUpdateAdvertisementState object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -145,10 +144,16 @@
 
 -(void)toggleAdvertisementState:(id)sender {
     if (self.delegate) {
-        if (![self.delegate settingsView:self didChangeAdvertisementState:self.advertisementSwitch.isOn]) {
-            [self.advertisementSwitch setOn:NO animated:YES];
-        }
+        [self.delegate settingsView:self didChangeAdvertisementState:self.advertisementSwitch.isOn];
     }
+
+    // check if advertisement was not enabled and update UI accordingly 
+    if (![SMDiscoveryManager sharedInstance].isAdvertising) {
+        [self.advertisementSwitch setOn:NO animated:YES];
+    }
+
+    // store advertisement state
+    [SMUserDefaults setAdvertisementState:self.advertisementSwitch.isOn];
 }
 
 -(void)updateVisiblePlaylistsCell {

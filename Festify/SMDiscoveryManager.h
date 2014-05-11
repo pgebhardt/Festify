@@ -16,10 +16,8 @@ static NSString* const SMDiscoveryManagerPropertyUUIDString = @"be1e3455-4ca0-48
 static NSString* const SMDiscoveryManagerDevicenameUUIDString = @"bebf2065-a207-4f21-a048-85e84dd34a7f";
 
 // notification strings
-static NSString* const SMDiscoveryManagerDidStartAdvertising = @"SMDiscoveryManagerDidStartAdvertising";
-static NSString* const SMDiscoveryManagerDidStopAdvertising = @"SMDiscoveryManagerDidStopAdvertising";
-static NSString* const SMDiscoveryManagerDidStartDiscovering = @"SMDiscoveryManagerDidStartDiscovering";
-static NSString* const SMDiscoveryManagerDidStopDiscovering = @"SMDiscoveryManagerDidStopDiscovering";
+static NSString* const SMDiscoveryManagerDidUpdateAdvertisementState = @"SMDiscoveryManagerDidUpdateAdvertisementState";
+static NSString* const SMDiscoveryManagerDidUpdateDiscoveryState = @"SMDiscoveryManagerDidUpdateDiscoveryState";
 
 @class SMDiscoveryManager;
 

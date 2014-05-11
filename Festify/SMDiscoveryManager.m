@@ -89,7 +89,7 @@
     self.advertising = YES;
     
     // post notification
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidStartAdvertising object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidUpdateAdvertisementState object:self];
     
     return YES;
 }
@@ -102,7 +102,7 @@
     self.advertising = NO;
 
     // post notification
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidStopAdvertising object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidUpdateAdvertisementState object:self];
 }
 
 -(BOOL)startDiscovering {
@@ -117,7 +117,7 @@
     self.discovering = YES;
     
     // post notification
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidStartDiscovering object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidUpdateDiscoveryState object:self];
 
     return YES;
 }
@@ -129,7 +129,7 @@
     self.discovering = NO;
 
     // post notification
-    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidStopDiscovering object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SMDiscoveryManagerDidUpdateDiscoveryState object:self];
 }
 
 #pragma mark - CBPeripheralManagerDelegate

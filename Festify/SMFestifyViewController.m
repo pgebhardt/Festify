@@ -31,8 +31,8 @@
     [SMDiscoveryManager sharedInstance].delegate = self;
     
     // listen to notifications to update application state correctly
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStartDiscovering object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFestifyButton:) name:SMDiscoveryManagerDidStopDiscovering object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateAdvertisementState object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateDiscoveryState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTrackPlayer:) name:SMTrackProviderDidUpdateTracksArray object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreApplicationState) name:SMFestifyViewControllerRestoreApplicationState object:nil];
 
@@ -102,12 +102,7 @@
             [[SMDiscoveryManager sharedInstance] stopDiscovering];
         }
         else {
-            if ([[SMDiscoveryManager sharedInstance] startDiscovering] &&
-                [SMDiscoveryManager sharedInstance].isAdvertising) {
-                // add own selected songs, if advertising is turned on
-                MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
-                [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:-1];
-            }
+            [[SMDiscoveryManager sharedInstance] startDiscovering];
         }
     }
     else {
@@ -140,7 +135,15 @@
     [self performSegueWithIdentifier:@"showUsers" sender:self];
 }
 
--(void)updateFestifyButton:(id)sender {
+-(void)discoveryManagerDidUpdateState:(id)sender {
+    // add all currently advertised songs, if festify and advertisement modes are active
+    if ([SMDiscoveryManager sharedInstance].isDiscovering &&
+        [SMDiscoveryManager sharedInstance].isAdvertising) {
+        MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
+        [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:0];
+    }
+    
+    // update UI
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([SMDiscoveryManager sharedInstance].isDiscovering) {
             [self.festifyButton setTitleColor:SMAlertColor forState:UIControlStateNormal];
@@ -218,29 +221,15 @@
     [self performSegueWithIdentifier:@"showLogin" sender:self];
 }
 
--(BOOL)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
-    BOOL success = [self setAdvertisementState:advertising];
-    
-    // add all currently advertised songs, if festify and advertisement modes are active
-    if ([SMDiscoveryManager sharedInstance].isDiscovering &&
-        [SMDiscoveryManager sharedInstance].isAdvertising) {
-        MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
-        [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:-1];
-    }
-    
-    return success;
+-(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisementState:(BOOL)advertising {
+    [self setAdvertisementState:advertising];
 }
 
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisedPlaylistSelection:(NSArray *)selectedPlaylists {
     self.advertisedPlaylists = selectedPlaylists;
     [SMUserDefaults setAdvertisedPlaylists:self.advertisedPlaylists];
-    
-    // reset user playlists and restart advertisement
-    MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
-    if ([self.trackProvider.users.allKeys containsObject:@"self"]) {
-        [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:-1];
-    }
 
+    // reset advertisement state to update advertised playlist selection
     [self setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertising];
 }
 
@@ -249,12 +238,14 @@
 -(void)restoreApplicationState {
     [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     
-    // load stored session and advertised playlists, and try to enable playback,
-    // if possible
+    // load stored session and try to enable playback, if possible
     self.session = [SMUserDefaults session];
     [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
+        // load remaining user sessings and try to enable playback, if no valid user settings are
+        // available, show login screen
         if (advertisedPlaylists) {
             self.advertisedPlaylists = advertisedPlaylists;
+            [self setAdvertisementState:[SMUserDefaults advertisementState]];
             
             [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
                 [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
@@ -272,25 +263,17 @@
     }];
 }
 
--(BOOL)setAdvertisementState:(BOOL)advertising {
-    BOOL success = NO;
-    
+-(void)setAdvertisementState:(BOOL)advertising {
     if (advertising && self.advertisedPlaylists && self.session) {
         // create broadcast dictionary with username and all playlists
         NSDictionary* broadcastData = @{@"username": self.session.canonicalUsername,
                                         @"playlists": self.advertisedPlaylists };
         NSData* jsonString = [NSJSONSerialization dataWithJSONObject:broadcastData options:0 error:nil];
-        success = [[SMDiscoveryManager sharedInstance] advertiseProperty:jsonString];
+        [[SMDiscoveryManager sharedInstance] advertiseProperty:jsonString];
     }
     else if (!advertising) {
         [[SMDiscoveryManager sharedInstance] stopAdvertising];
-        success = YES;
     }
-    
-    // store advertisement state
-    [SMUserDefaults setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertising];
-    
-    return success;
 }
 
 -(void)setPlaylists:(NSArray*)playlistURIs forUser:(NSString*)username withTimeout:(NSInteger)timeout {
