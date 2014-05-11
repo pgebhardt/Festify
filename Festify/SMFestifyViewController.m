@@ -145,9 +145,7 @@
     
     // update UI
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-            [self animateFestifyButton];
-        }
+        // TODO: animate button
     });
 }
 
@@ -171,31 +169,6 @@
             self.usersButton.badgeValue = @"";
         }
     });
-}
-
--(void)animateFestifyButton {
-    [UIView animateWithDuration:0.6 delay:0.0
-                        options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
-                     animations:^{
-        self.festifyButton.transform = CGAffineTransformMakeRotation(-20.0 * M_PI / 180.0);
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.6 delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
-                         animations:^{
-            self.festifyButton.transform = CGAffineTransformMakeRotation(20.0 * M_PI / 180.0);
-        } completion:^(BOOL finished) {
-            if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-                [self animateFestifyButton];
-            }
-            else {
-                [UIView animateWithDuration:0.3 delay:0.0
-                                    options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
-                                 animations:^{
-                    self.festifyButton.transform = CGAffineTransformMakeRotation(0.0);
-                } completion:nil];
-            }
-        }];
-    }];
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
