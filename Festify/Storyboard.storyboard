@@ -569,11 +569,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P6e-RL-Qf1">
-                                <rect key="frame" x="93" y="252" width="135" height="65"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P6e-RL-Qf1">
+                                <rect key="frame" x="32" y="156" width="256" height="256"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="44"/>
-                                <state key="normal" title="Festify">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="256" id="jqf-H5-TXC"/>
+                                    <constraint firstAttribute="width" constant="256" id="nYz-Mn-Scf"/>
+                                </constraints>
+                                <state key="normal" image="FestifyButton">
                                     <color key="titleColor" red="0.5647059083" green="0.74117648599999997" blue="0.26274511220000002" alpha="1" colorSpace="deviceRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -852,6 +855,7 @@
     </scenes>
     <resources>
         <image name="DefaultCoverArt" width="320" height="320"/>
+        <image name="FestifyButton" width="256" height="256"/>
         <image name="Forward" width="30" height="22"/>
         <image name="List" width="27" height="23"/>
         <image name="Pause" width="16" height="22"/>

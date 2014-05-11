@@ -153,13 +153,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5F1E97B21902E5880009B675 /* Extensions */ = {
+		5F1E97B21902E5880009B675 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				5F14580F19127DAE00F5A80C /* MWLogging.h */,
+				5F14581019127DAE00F5A80C /* MWLogging.m */,
 				5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */,
 				5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */,
 			);
-			name = Extensions;
+			name = Libraries;
 			sourceTree = "<group>";
 		};
 		5F1E97B31902E5A20009B675 /* View Controller */ = {
@@ -234,10 +236,8 @@
 		5F423A6618FC115200C3ED75 /* Festify */ = {
 			isa = PBXGroup;
 			children = (
-				5F1E97B21902E5880009B675 /* Extensions */,
+				5F1E97B21902E5880009B675 /* Libraries */,
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
-				5F14580F19127DAE00F5A80C /* MWLogging.h */,
-				5F14581019127DAE00F5A80C /* MWLogging.m */,
 				5F423A6F18FC115200C3ED75 /* SMAppDelegate.h */,
 				5F423A7018FC115200C3ED75 /* SMAppDelegate.m */,
 				5F5A162118FC535100E408DC /* SMDiscoveryManager.h */,

@@ -22,6 +22,7 @@
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, strong) BBBadgeBarButtonItem* usersButton;
+@property (nonatomic, strong) NSTimer* festifyButtonTimer;
 @end
 
 @implementation SMFestifyViewController
@@ -146,10 +147,10 @@
     // update UI
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-            [self.festifyButton setTitleColor:SMAlertColor forState:UIControlStateNormal];
+            [self animateFestifyButton];
         }
         else {
-            [self.festifyButton setTitleColor:SMTintColor forState:UIControlStateNormal];
+            [self.festifyButtonTimer invalidate];
         }
     });
 }
@@ -174,6 +175,36 @@
             self.usersButton.badgeValue = @"";
         }
     });
+}
+
+-(void)animateFestifyButton {
+    [UIView animateWithDuration:0.6 delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+        self.festifyButton.transform = CGAffineTransformMakeRotation(-20.0 * M_PI / 180.0);
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.6 delay:0.0
+                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
+                         animations:^{
+            self.festifyButton.transform = CGAffineTransformMakeRotation(20.0 * M_PI / 180.0);
+        } completion:^(BOOL finished) {
+            if ([SMDiscoveryManager sharedInstance].isDiscovering) {
+                if (!self.festifyButtonTimer) {
+                    self.festifyButtonTimer = self.festifyButtonTimer = [NSTimer scheduledTimerWithTimeInterval:1.2 target:self selector:@selector(animateFestifyButton)
+                                                                                                       userInfo:nil repeats:YES];
+                    [self.festifyButtonTimer fire];
+                }
+            }
+            else {
+                self.festifyButtonTimer = nil;
+                [UIView animateWithDuration:0.3 delay:0.0
+                                    options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
+                                 animations:^{
+                    self.festifyButton.transform = CGAffineTransformMakeRotation(0.0);
+                } completion:nil];
+            }
+        }];
+    }];
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
