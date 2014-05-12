@@ -565,25 +565,35 @@
                         <viewControllerLayoutGuide type="top" id="Phf-Bt-TKc"/>
                         <viewControllerLayoutGuide type="bottom" id="VUn-oR-idf"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="PCZ-8i-4by">
+                    <view key="view" opaque="NO" contentMode="scaleToFill" id="PCZ-8i-4by">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P6e-RL-Qf1">
+                            <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P6e-RL-Qf1">
                                 <rect key="frame" x="32" y="156" width="256" height="256"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="256" id="jqf-H5-TXC"/>
                                     <constraint firstAttribute="width" constant="256" id="nYz-Mn-Scf"/>
                                 </constraints>
-                                <state key="normal" image="FestifyButton">
-                                    <color key="titleColor" red="0.5647059083" green="0.74117648599999997" blue="0.26274511220000002" alpha="1" colorSpace="deviceRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <state key="normal" image="FestifyButtonBackground">
+                                    <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="festify:" destination="fyQ-f5-bAt" eventType="touchUpInside" id="aRV-5W-shG"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FestifyButtonForeground" translatesAutoresizingMaskIntoConstraints="NO" id="qvS-rR-eB5">
+                                <rect key="frame" x="32" y="156" width="256" height="256"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="256" id="T78-q6-gtO"/>
+                                    <constraint firstAttribute="height" constant="256" id="VTw-1S-hgU"/>
+                                </constraints>
+                            </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="powered by" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O8Q-I5-IEW">
                                 <rect key="frame" x="125" y="488" width="71" height="16"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -617,6 +627,8 @@
                             <constraint firstItem="VUn-oR-idf" firstAttribute="top" secondItem="qJh-uw-pKw" secondAttribute="bottom" constant="20" id="Bha-Mp-m2d"/>
                             <constraint firstAttribute="centerX" secondItem="qJh-uw-pKw" secondAttribute="centerX" constant="-0.5" id="Eke-eL-ccc"/>
                             <constraint firstAttribute="centerX" secondItem="P6e-RL-Qf1" secondAttribute="centerX" id="Owh-zZ-LN5"/>
+                            <constraint firstAttribute="centerY" secondItem="qvS-rR-eB5" secondAttribute="centerY" id="Rpe-yr-Idx"/>
+                            <constraint firstAttribute="centerX" secondItem="qvS-rR-eB5" secondAttribute="centerX" id="lHW-5c-7iy"/>
                             <constraint firstAttribute="centerX" secondItem="O8Q-I5-IEW" secondAttribute="centerX" constant="-0.5" id="m5F-Ft-VFx"/>
                         </constraints>
                     </view>
@@ -628,7 +640,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="festifyButton" destination="P6e-RL-Qf1" id="JjL-jA-GbU"/>
+                        <outlet property="festifyButtonOverlay" destination="qvS-rR-eB5" id="DCZ-gi-dtw"/>
                         <outlet property="playButton" destination="nIj-e3-MG1" id="y9n-S3-NkF"/>
                         <segue destination="8Rl-HL-ow2" kind="custom" identifier="showLogin" customClass="BlurryModalSegue" id="sN6-9t-lxE"/>
                         <segue destination="fq2-e2-DGI" kind="custom" identifier="showUsers" customClass="BlurryModalSegue" id="Drq-H5-tYl"/>
@@ -855,7 +867,8 @@
     </scenes>
     <resources>
         <image name="DefaultCoverArt" width="320" height="320"/>
-        <image name="FestifyButton" width="256" height="256"/>
+        <image name="FestifyButtonBackground" width="256" height="256"/>
+        <image name="FestifyButtonForeground" width="256" height="256"/>
         <image name="Forward" width="30" height="22"/>
         <image name="List" width="27" height="23"/>
         <image name="Pause" width="16" height="22"/>

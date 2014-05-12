@@ -35,7 +35,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateDiscoveryState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTrackPlayer:) name:SMTrackProviderDidUpdateTracksArray object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreApplicationState) name:SMFestifyViewControllerRestoreApplicationState object:nil];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(animateFestifyButton:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    
     // init properties
     self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     self.trackProvider = [[SMTrackProvider alloc] init];
@@ -43,6 +44,12 @@
     
     [self initializeUI];
     [self restoreApplicationState];
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self animateFestifyButton:self];
 }
 
 -(void)initializeUI {
@@ -135,7 +142,7 @@
     [self performSegueWithIdentifier:@"showUsers" sender:self];
 }
 
--(void)discoveryManagerDidUpdateState:(id)sender {
+-(void)discoveryManagerDidUpdateState:(NSNotification*)notification {
     // add all currently advertised songs, if festify and advertisement modes are active
     if ([SMDiscoveryManager sharedInstance].isDiscovering &&
         [SMDiscoveryManager sharedInstance].isAdvertising) {
@@ -145,7 +152,9 @@
     
     // update UI
     dispatch_async(dispatch_get_main_queue(), ^{
-        // TODO: animate button
+        if ([notification.name isEqualToString:SMDiscoveryManagerDidUpdateDiscoveryState]) {
+            [self animateFestifyButton:self];
+        }
     });
 }
 
@@ -169,6 +178,28 @@
             self.usersButton.badgeValue = @"";
         }
     });
+}
+
+-(void)animateFestifyButton:(id)notification {
+    // animate festify button, to indicate discovering mode
+    [self.festifyButtonOverlay.layer removeAllAnimations];
+    if ([SMDiscoveryManager sharedInstance].isDiscovering) {
+        self.festifyButtonOverlay.transform = CGAffineTransformMakeRotation(0.0);
+        [UIView animateWithDuration:0.6 delay:0.0
+                            options:UIViewAnimationOptionAutoreverse | UIViewAnimationCurveEaseInOut |
+            UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionRepeat
+                         animations:^{
+                             self.festifyButtonOverlay.transform = CGAffineTransformMakeRotation(-60.0 * M_PI / 180.0);
+                         } completion:nil];
+    }
+    else {
+        self.festifyButtonOverlay.transform = [self.festifyButtonOverlay.layer.presentationLayer affineTransform];
+        [UIView animateWithDuration:0.6 delay:0.0
+                            options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionBeginFromCurrentState
+                         animations:^{
+                             self.festifyButtonOverlay.transform = CGAffineTransformMakeRotation(0.0);
+                         } completion:nil];
+    }
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
