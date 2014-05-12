@@ -1007,6 +1007,121 @@
             </objects>
             <point key="canvasLocation" x="2456" y="348"/>
         </scene>
+        <!--Navigation Controller - Item-->
+        <scene sceneID="qZW-8G-TKZ">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Pbg-RD-dY4" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="kca-DL-0kI"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="C2A-78-eh1"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="8wI-jd-kEV">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.33725491169999999" green="0.33725491169999999" blue="0.33725491169999999" alpha="1" colorSpace="deviceRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <offsetWrapper key="textShadowOffset" horizontal="0.0" vertical="0.0"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Krs-Ya-Eeo" kind="relationship" relationship="rootViewController" id="0Rd-9e-d8w"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="999-WK-F92" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="898" y="1052"/>
+        </scene>
+        <!--View Controller - Festify-->
+        <scene sceneID="Ebq-hh-yRQ">
+            <objects>
+                <viewController id="Krs-Ya-Eeo" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="2M3-pC-jwH"/>
+                        <viewControllerLayoutGuide type="bottom" id="d6g-uh-cRY"/>
+                    </layoutGuides>
+                    <view key="view" opaque="NO" contentMode="scaleToFill" id="dxz-or-SsV">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r8Q-I9-o1N">
+                                <rect key="frame" x="32" y="156" width="256" height="256"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="256" id="FoF-JB-OlY"/>
+                                    <constraint firstAttribute="width" constant="256" id="tz2-rD-Sz3"/>
+                                </constraints>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <state key="normal" image="FestifyButtonBackground">
+                                    <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U2O-6e-3wN">
+                                <rect key="frame" x="0.0" y="568" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="CSB-sA-Gly"/>
+                                </constraints>
+                            </containerView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3nT-Dw-MYi">
+                                <rect key="frame" x="61" y="512" width="198" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="powered by" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dw4-rG-oWm">
+                                        <rect key="frame" x="0.0" y="10" width="71" height="16"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="71" id="hFB-Qm-0yb"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L25-H6-yQE">
+                                        <rect key="frame" x="79" y="0.0" width="119" height="36"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="119" id="QUc-Ff-eQF"/>
+                                        </constraints>
+                                        <state key="normal" image="SpotifyLogo">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="198" id="00T-tE-jog"/>
+                                    <constraint firstAttribute="trailing" secondItem="L25-H6-yQE" secondAttribute="trailing" id="Kyu-zo-lSp"/>
+                                    <constraint firstAttribute="bottom" secondItem="L25-H6-yQE" secondAttribute="bottom" id="NxN-yP-MeR"/>
+                                    <constraint firstAttribute="height" constant="36" id="XuK-sl-Lyo"/>
+                                    <constraint firstItem="dw4-rG-oWm" firstAttribute="top" secondItem="3nT-Dw-MYi" secondAttribute="top" constant="10" id="Yun-7y-waR"/>
+                                    <constraint firstItem="dw4-rG-oWm" firstAttribute="leading" secondItem="3nT-Dw-MYi" secondAttribute="leading" id="bGf-pn-6cS"/>
+                                    <constraint firstAttribute="bottom" secondItem="dw4-rG-oWm" secondAttribute="bottom" constant="10" id="ksI-zh-Yv9"/>
+                                    <constraint firstItem="L25-H6-yQE" firstAttribute="top" secondItem="3nT-Dw-MYi" secondAttribute="top" id="vFC-MD-hsx"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.1019607931" green="0.1019607931" blue="0.1019607931" alpha="1" colorSpace="deviceRGB"/>
+                        <constraints>
+                            <constraint firstItem="U2O-6e-3wN" firstAttribute="top" secondItem="3nT-Dw-MYi" secondAttribute="bottom" constant="20" id="ADc-zE-vWg"/>
+                            <constraint firstAttribute="centerX" secondItem="r8Q-I9-o1N" secondAttribute="centerX" id="OvJ-Hb-0vw"/>
+                            <constraint firstAttribute="centerY" secondItem="r8Q-I9-o1N" secondAttribute="centerY" id="URx-HR-avI"/>
+                            <constraint firstAttribute="centerX" secondItem="3nT-Dw-MYi" secondAttribute="centerX" id="gBg-ud-azg"/>
+                            <constraint firstAttribute="trailing" secondItem="U2O-6e-3wN" secondAttribute="trailing" id="gzZ-dH-rec"/>
+                            <constraint firstItem="d6g-uh-cRY" firstAttribute="top" secondItem="U2O-6e-3wN" secondAttribute="bottom" constant="-44" id="lh1-0Q-VDp"/>
+                            <constraint firstItem="U2O-6e-3wN" firstAttribute="leading" secondItem="dxz-or-SsV" secondAttribute="leading" id="t1P-BL-BIU"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Festify" id="fGk-rH-bV4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="syk-HV-M3A" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1404" y="1052"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Cog" width="25" height="25"/>
