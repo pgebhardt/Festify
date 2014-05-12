@@ -75,7 +75,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
                                                                              blue:26.0/255.0 alpha:0.7]];
 
     // config appirater rating request system
-    // TODO: [Appirater setAppId:@"123456789"];
+    [Appirater setAppId:@"877580227"];
     [Appirater setDebug:NO];
     [Appirater appLaunched:YES];
     
