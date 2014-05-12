@@ -222,12 +222,12 @@
             [self enablePlaybackWithSession:self.session callback:^(NSError *error) {
                 if (!error) {
                     action();
-                    
-                    [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
                 }
                 else {
                     MWLogError(@"%@", error);
                 }
+                
+                [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
             }];
         }
         else {
