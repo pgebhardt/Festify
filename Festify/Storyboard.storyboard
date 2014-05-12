@@ -271,7 +271,7 @@
                                 <dataDetectorType key="dataDetectorTypes" link="YES"/>
                             </textView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.10196079313755035" green="0.10196079313755035" blue="0.10196079313755035" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
                             <constraint firstItem="ob2-oD-O5v" firstAttribute="leading" secondItem="a22-je-7Hz" secondAttribute="leading" id="MQw-3w-hhH"/>
                             <constraint firstItem="4dA-gD-6mz" firstAttribute="top" secondItem="ob2-oD-O5v" secondAttribute="bottom" id="W6I-ay-2Y8"/>

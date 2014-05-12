@@ -71,9 +71,6 @@
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
-    UIImageView* backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
-
     if ([segue.identifier isEqualToString:@"showVisiblePlaylists"]) {
         SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)segue.destinationViewController;
         settingsView.delegate = self;
@@ -88,7 +85,6 @@
             return [item name];
         };
         
-        settingsView.tableView.backgroundView = backgroundImageView;
         settingsView.navigationItem.title = @"Visible Playlists";
         settingsView.subtitle = @"Selected playlists are visible to other users nearby. These playlists must be public in your Spotify profile.";
     }
@@ -104,7 +100,6 @@
         settingsView.indexOfSelectedItem = self.indexOfSelectedUserTimout;
         settingsView.allowMultipleSelections = NO;
         
-        settingsView.tableView.backgroundView = backgroundImageView;
         settingsView.navigationItem.title = @"Delete Users";
         settingsView.subtitle = @"When a user is not available for the selcted time interval, it's songs are deleted from the playlist.";        
     }
@@ -122,9 +117,7 @@
         }
 
         ((UITextView*)[viewController.view subviews][0]).text = acknowledgementsText;
-        ((UITextView*)[viewController.view subviews][0]).textContainerInset = UIEdgeInsetsMake(40.0, 10.0, 12.0, 10.0);
-        [viewController.view addSubview:backgroundImageView];
-        [viewController.view sendSubviewToBack:backgroundImageView];
+        ((UITextView*)[viewController.view subviews][0]).textContainerInset = UIEdgeInsetsMake(0.0, 10.0, 12.0, 10.0);
     }
 }
 
