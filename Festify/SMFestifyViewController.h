@@ -22,6 +22,6 @@ static NSString* const SMFestifyViewControllerRestoreApplicationState = @"SMFest
 - (IBAction)festify:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UIImageView *festifyButtonOverlay;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *playButton;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *trackPlayerBarPosition;
 
 @end

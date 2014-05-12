@@ -7,8 +7,8 @@
 //
 
 #import "SMFestifyViewController.h"
-#import "SMPlayerViewController.h"
 #import "SMUsersViewController.h"
+#import "SMTrackPlayerBarViewController.h"
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
 #import "SMTrackPlayer.h"
@@ -22,6 +22,7 @@
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, strong) BBBadgeBarButtonItem* usersButton;
+@property (nonatomic, strong) SMTrackPlayerBarViewController* trackPlayerBar;
 @end
 
 @implementation SMFestifyViewController
@@ -33,12 +34,13 @@
     // listen to notifications to update application state correctly
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateAdvertisementState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateDiscoveryState object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTrackPlayer:) name:SMTrackProviderDidUpdateTracksArray object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackProviderDidUpdateTracks:) name:SMTrackProviderDidUpdateTracksArray object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreApplicationState) name:SMFestifyViewControllerRestoreApplicationState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(animateFestifyButton:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
     // init properties
     self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
+    self.trackPlayerBar.trackPlayer = self.trackPlayer;
     self.trackProvider = [[SMTrackProvider alloc] init];
     self.trackProvider.delegate = self;
     
@@ -64,11 +66,7 @@
     self.usersButton.badgeOriginX = [userButton imageForState:UIControlStateNormal].size.width / 2.0;
     self.usersButton.enabled = NO;
     
-    UIBarButtonItem* settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Cog"]
-                                                                       style:UIBarButtonItemStylePlain target:self
-                                                                      action:@selector(settingsButtonPressed:)];
-    
-    self.navigationItem.leftBarButtonItems = @[settingsButton, self.usersButton];
+    self.navigationItem.rightBarButtonItem = self.usersButton;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -87,15 +85,15 @@
         viewController.delegate = self;
         viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
-    else if ([segue.identifier isEqualToString:@"showTrackPlayer"]) {
-        ((SMPlayerViewController*)segue.destinationViewController).trackPlayer = self.trackPlayer;
-    }
     else if ([segue.identifier isEqualToString:@"showUsers"]) {
         UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
         SMUsersViewController* viewController = (SMUsersViewController*)navController.viewControllers[0];
         
         viewController.trackProvider = self.trackProvider;
         self.usersButton.badgeValue = @"";
+    }
+    else if ([segue.identifier isEqualToString:@"loadPlayerBar"]) {
+        self.trackPlayerBar = (SMTrackPlayerBarViewController*)segue.destinationViewController;
     }
 }
 
@@ -134,10 +132,6 @@
     [[UIApplication sharedApplication] openURL:url];
 }
 
--(void)settingsButtonPressed:(id)sender {
-    [self performSegueWithIdentifier:@"showSettings" sender:self];
-}
-
 -(void)usersButtonPressed:(id)sender {
     [self performSegueWithIdentifier:@"showUsers" sender:self];
 }
@@ -158,7 +152,7 @@
     });
 }
 
--(void)updateTrackPlayer:(id)sender {
+-(void)trackProviderDidUpdateTracks:(id)sender {
     // init track player, if neccessary
     if (!self.trackPlayer.currentProvider &&
         self.trackProvider.tracks.count != 0) {
@@ -172,11 +166,17 @@
 
     // update UI
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.playButton.enabled = (self.trackProvider.users.count != 0);
         self.usersButton.enabled = (self.trackProvider.users.count != 0);
         if (self.trackProvider.tracks.count == 0) {
             self.usersButton.badgeValue = @"";
         }
+        
+        // show or hide track player bar
+        [self.view layoutIfNeeded];
+        self.trackPlayerBarPosition.constant = self.trackProvider.users.count != 0 ? 0.0 : -44.0;
+        [UIView animateWithDuration:0.4 animations:^{
+            [self.view layoutIfNeeded];
+        }];
     });
 }
 

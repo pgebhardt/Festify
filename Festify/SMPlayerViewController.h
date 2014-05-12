@@ -16,6 +16,7 @@
 - (IBAction)playPause:(id)sender;
 - (IBAction)fastForward:(id)sender;
 - (IBAction)openInSpotify:(id)sender;
+- (IBAction)done:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *artistLabel;

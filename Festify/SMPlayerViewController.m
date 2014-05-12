@@ -62,6 +62,7 @@
         UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
         SMPlaylistViewController* viewController = (SMPlaylistViewController*)navigationController.viewControllers[0];
         
+        navigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         viewController.trackPlayer = self.trackPlayer;
     }
 }
@@ -94,6 +95,10 @@
         [self.trackPlayer pause];
         [[UIApplication sharedApplication] openURL:url];
     }
+}
+
+- (IBAction)done:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Logic
