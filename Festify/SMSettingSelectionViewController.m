@@ -56,23 +56,6 @@
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    if (self.delegate) {
-        if (self.allowMultipleSelections) {
-            NSMutableIndexSet* indicesOfSelectedItems = [NSMutableIndexSet indexSet];
-            for (NSUInteger i = 0; i < self.data.count; ++i) {
-                if ([self.itemIsSelected[i] boolValue]) {
-                    [indicesOfSelectedItems addIndex:i];
-                }
-            }
-
-            [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:indicesOfSelectedItems];
-        }
-    }
-}
-
 -(void)done:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -91,11 +74,12 @@
             self.itemIsSelected[i] = @NO;
         }
     }
-    
     [self.tableView reloadData];
+    
+    
+    // inform delegate about changes
+    [self itemSelectionDidChange];
 }
-
-
 
 #pragma mark - Table view data source
 
@@ -135,48 +119,35 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if (self.selectionAction) {
-        self.selectionAction(self.data[indexPath.row]);
-    }
-    else {
-        // update cell and itemIsSelected array
-        if (self.allowMultipleSelections) {
-            self.itemIsSelected[indexPath.row] = [self.itemIsSelected[indexPath.row] boolValue] ? @NO : @YES;
+    // update cell and itemIsSelected array
+    if (self.allowMultipleSelections) {
+        self.itemIsSelected[indexPath.row] = [self.itemIsSelected[indexPath.row] boolValue] ? @NO : @YES;
+        
+        // update UI
+        UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+        if ([self.itemIsSelected[indexPath.row] boolValue]) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
             
-            // update UI
-            UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
-            if ([self.itemIsSelected[indexPath.row] boolValue]) {
-                cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                
-                // check if all items are selected
-                BOOL allItemsSelected = YES;
-                for (NSNumber* itemIsSelected in self.itemIsSelected) {
-                    allItemsSelected &= itemIsSelected.boolValue;
-                }
-                self.navigationItem.rightBarButtonItem.title = allItemsSelected ? @"Clear All" : @"Select All";
+            // check if all items are selected
+            BOOL allItemsSelected = YES;
+            for (NSNumber* itemIsSelected in self.itemIsSelected) {
+                allItemsSelected &= itemIsSelected.boolValue;
             }
-            else {
-                cell.accessoryType = self.defaultAccessory;
-                self.navigationItem.rightBarButtonItem.title = @"Select All";
-            }
+            self.navigationItem.rightBarButtonItem.title = allItemsSelected ? @"Clear All" : @"Select All";
         }
         else {
-            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryType = UITableViewCellAccessoryNone;
-            self.indexOfSelectedItem = indexPath.row;
-            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
-            
-            // inform delegate only on selection changes in single selection mode
-            if (self.delegate) {
-                [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:[NSIndexSet indexSetWithIndex:self.indexOfSelectedItem]];
-            }
+            cell.accessoryType = self.defaultAccessory;
+            self.navigationItem.rightBarButtonItem.title = @"Select All";
         }
     }
-}
-
--(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    if (self.accessoryAction) {
-        self.accessoryAction(self.data[indexPath.row]);
+    else {
+        [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryType = UITableViewCellAccessoryNone;
+        self.indexOfSelectedItem = indexPath.row;
+        [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.indexOfSelectedItem inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
     }
+    
+    // inform delegate about changes
+    [self itemSelectionDidChange];
 }
 
 -(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
@@ -193,6 +164,29 @@
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return nil;
+}
+
+#pragma mark - Helper
+
+-(void)itemSelectionDidChange {
+    // update selection array and inform delegate about changes
+    if (self.allowMultipleSelections) {
+        NSMutableIndexSet* indicesOfSelectedItems = [NSMutableIndexSet indexSet];
+        for (NSUInteger i = 0; i < self.data.count; ++i) {
+            if ([self.itemIsSelected[i] boolValue]) {
+                [indicesOfSelectedItems addIndex:i];
+            }
+        }
+        
+        if (self.delegate) {
+            [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:indicesOfSelectedItems];
+        }
+    }
+    else {
+        if (self.delegate) {
+            [self.delegate settingsSelectionView:self didChangeIndicesOfSelectedItems:[NSIndexSet indexSetWithIndex:self.indexOfSelectedItem]];
+        }
+    }
 }
 
 @end
