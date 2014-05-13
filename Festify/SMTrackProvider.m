@@ -144,18 +144,19 @@
 
 -(void)updateTracksArray {
     // select maximum 100 random songs of each user
-    NSMutableArray* tracksOfUser = [NSMutableArray array];
+    NSMutableArray* tracksOfUsers = [NSMutableArray array];
     for (NSInteger i = 0; i < self.users.count; ++i) {
-        [tracksOfUser addObject:[NSMutableArray array]];
-        
+        NSMutableArray* tracksOfUser = [NSMutableArray array];
         for (SPTPlaylistSnapshot* playlist in self.users.allValues[i][SMTrackProviderPlaylistsKey]) {
-            [tracksOfUser[i] addObjectsFromArray:playlist.tracks];
+            [tracksOfUser addObjectsFromArray:playlist.tracks];
         }
+        
         [tracksOfUser shuffle];
+        [tracksOfUsers addObject:tracksOfUser];
     }
 
     [self.tracks removeAllObjects];
-    for (NSArray* tracks in tracksOfUser) {
+    for (NSArray* tracks in tracksOfUsers) {
         NSIndexSet* indicesOfTracks = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0,
             tracks.count < 100 ? tracks.count : 100)];
         [self.tracks addObjectsFromArray:[tracks objectsAtIndexes:indicesOfTracks]];
