@@ -60,10 +60,6 @@
 
 #pragma mark - Actions
 
-- (IBAction)barPressed:(id)sender {
-    
-}
-
 - (IBAction)playButtonPressed:(id)sender {
     if (self.trackPlayer.playing) {
         [self.trackPlayer pause];

@@ -17,7 +17,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (nonatomic, strong) SMTrackPlayer* trackPlayer;
 
-- (IBAction)barPressed:(id)sender;
 - (IBAction)playButtonPressed:(id)sender;
 
 @end
