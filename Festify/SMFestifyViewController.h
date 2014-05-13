@@ -19,9 +19,6 @@ static NSString* const SMFestifyViewControllerRestoreApplicationState = @"SMFest
     SMTrackProviderDelegate, SMLoginViewDelegate, SMSettingsViewDelegate>
 
 - (IBAction)spotifyButton:(id)sender;
-- (IBAction)festify:(id)sender;
-
-@property (weak, nonatomic) IBOutlet UIImageView *festifyButtonOverlay;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *trackPlayerBarPosition;
 
 @end

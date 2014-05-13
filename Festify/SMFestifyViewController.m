@@ -36,7 +36,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateDiscoveryState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackProviderDidUpdateTracks:) name:SMTrackProviderDidUpdateTracksArray object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreApplicationState) name:SMFestifyViewControllerRestoreApplicationState object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(animateFestifyButton:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
     // init properties
     self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
@@ -46,12 +45,6 @@
     
     [self initializeUI];
     [self restoreApplicationState];
-}
-
--(void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    [self animateFestifyButton:self];
 }
 
 -(void)initializeUI {
@@ -99,27 +92,6 @@
 
 #pragma  mark - Actions
 
-- (IBAction)festify:(id)sender {
-    // only enable festify mode, if user has a premium spotify account
-    if (self.trackPlayer.session) {
-        // start or stop discovering mode
-        if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-            [[SMDiscoveryManager sharedInstance] stopDiscovering];
-        }
-        else {
-            [[SMDiscoveryManager sharedInstance] startDiscovering];
-        }
-    }
-    else {
-        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Discovering other users requires a Spotify Premium account."
-                                                            message:nil
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-        [alertView show];
-    }
-}
-
 - (IBAction)spotifyButton:(id)sender {
     NSURL* url = nil;
     if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
@@ -136,6 +108,8 @@
     [self performSegueWithIdentifier:@"showUsers" sender:self];
 }
 
+#pragma mark - Notification Hanlder
+
 -(void)discoveryManagerDidUpdateState:(NSNotification*)notification {
     // add all currently advertised songs, if festify and advertisement modes are active
     if ([SMDiscoveryManager sharedInstance].isDiscovering &&
@@ -143,22 +117,28 @@
         MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
         [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:0];
     }
-    
-    // update UI
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([notification.name isEqualToString:SMDiscoveryManagerDidUpdateDiscoveryState]) {
-            [self animateFestifyButton:self];
-        }
-    });
 }
 
 -(void)trackProviderDidUpdateTracks:(id)sender {
-    // init track player, if neccessary
-    if (!self.trackPlayer.currentProvider &&
-        self.trackProvider.tracks.count != 0) {
-        [self.trackPlayer playTrackProvider:self.trackProvider];
+    // init track player, if neccessary, and inform user,
+    // when playback cannot be enabled due to its account status,
+    // and update UI accordingly
+    if (self.trackProvider.tracks.count != 0) {
+        if (self.trackPlayer.session) {
+            if (!self.trackPlayer.currentProvider) {
+                [self.trackPlayer playTrackProvider:self.trackProvider];
+            }
+        }
+        else {
+            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Music playback requires a Spotify Premium account!"
+                                                                message:nil
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+        }
     }
-    else if (self.trackProvider.tracks.count == 0) {
+    else {
         [self.trackPlayer clear];
         [self dismissViewControllerAnimated:YES completion:nil];
         [self.navigationController popToRootViewControllerAnimated:YES];
@@ -173,33 +153,11 @@
         
         // show or hide track player bar
         [self.view layoutIfNeeded];
-        self.trackPlayerBarPosition.constant = self.trackProvider.users.count != 0 ? 0.0 : -44.0;
+        self.trackPlayerBarPosition.constant = self.trackPlayer.currentProvider ? 0.0 : -44.0;
         [UIView animateWithDuration:0.4 animations:^{
             [self.view layoutIfNeeded];
         }];
     });
-}
-
--(void)animateFestifyButton:(id)notification {
-    // animate festify button, to indicate discovering mode
-    [self.festifyButtonOverlay.layer removeAllAnimations];
-    if ([SMDiscoveryManager sharedInstance].isDiscovering) {
-        self.festifyButtonOverlay.transform = CGAffineTransformMakeRotation(0.0);
-        [UIView animateWithDuration:0.6 delay:0.0
-                            options:UIViewAnimationOptionAutoreverse | UIViewAnimationCurveEaseInOut |
-            UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionRepeat
-                         animations:^{
-                             self.festifyButtonOverlay.transform = CGAffineTransformMakeRotation(-60.0 * M_PI / 180.0);
-                         } completion:nil];
-    }
-    else {
-        self.festifyButtonOverlay.transform = [self.festifyButtonOverlay.layer.presentationLayer affineTransform];
-        [UIView animateWithDuration:0.6 delay:0.0
-                            options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionBeginFromCurrentState
-                         animations:^{
-                             self.festifyButtonOverlay.transform = CGAffineTransformMakeRotation(0.0);
-                         } completion:nil];
-    }
 }
 
 #pragma mark - PGDiscoveryManagerDelegate
@@ -262,7 +220,9 @@
             [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
                 // load remaining user sessings and try to enable playback
                 self.advertisedPlaylists = advertisedPlaylists;
-                [self setAdvertisementState:[SMUserDefaults advertisementState]];
+                if ([SMDiscoveryManager sharedInstance].isAdvertising != [SMUserDefaults advertisementState]) {
+                    [self setAdvertisementState:[SMUserDefaults advertisementState]];
+                }
                 
                 [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
                     [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];

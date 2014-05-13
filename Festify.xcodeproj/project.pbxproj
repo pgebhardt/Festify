@@ -36,6 +36,7 @@
 		5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */; };
 		5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* SMDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
+		5F6F14691922750500F5EAC6 /* SMFestifyButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F6F14681922750500F5EAC6 /* SMFestifyButtonViewController.m */; };
 		5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BD190C55790077F648 /* QuartzCore.framework */; };
 		5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */; };
 		5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F88928F18FEFA6000620589 /* SMLoginViewController.m */; };
@@ -106,6 +107,8 @@
 		5F5A162118FC535100E408DC /* SMDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMDiscoveryManager.h; sourceTree = "<group>"; };
 		5F5A162218FC535100E408DC /* SMDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		5F6F14671922750500F5EAC6 /* SMFestifyButtonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMFestifyButtonViewController.h; sourceTree = "<group>"; };
+		5F6F14681922750500F5EAC6 /* SMFestifyButtonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMFestifyButtonViewController.m; sourceTree = "<group>"; };
 		5F7DB9B5190C55530077F648 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		5F7DB9B7190C555B0077F648 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		5F7DB9B9190C55640077F648 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -170,6 +173,8 @@
 		5F1E97B31902E5A20009B675 /* View Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5F6F14671922750500F5EAC6 /* SMFestifyButtonViewController.h */,
+				5F6F14681922750500F5EAC6 /* SMFestifyButtonViewController.m */,
 				5F521D2C18FF013800B915B7 /* SMFestifyViewController.h */,
 				5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */,
 				5F88928E18FEFA6000620589 /* SMLoginViewController.h */,
@@ -178,14 +183,14 @@
 				5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */,
 				5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */,
 				5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */,
-				5F089B5D18FD169B002476CB /* SMSettingsViewController.h */,
-				5F089B5E18FD169B002476CB /* SMSettingsViewController.m */,
 				5F15E0B719124BC8006CDDBF /* SMSettingSelectionViewController.h */,
 				5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */,
-				5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */,
-				5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */,
+				5F089B5D18FD169B002476CB /* SMSettingsViewController.h */,
+				5F089B5E18FD169B002476CB /* SMSettingsViewController.m */,
 				5FAD80601921487D0086DABD /* SMTrackPlayerBarViewController.h */,
 				5FAD80611921487D0086DABD /* SMTrackPlayerBarViewController.m */,
+				5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */,
+				5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */,
 			);
 			name = "View Controller";
 			sourceTree = "<group>";
@@ -455,6 +460,7 @@
 				5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */,
 				5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */,
 				5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */,
+				5F6F14691922750500F5EAC6 /* SMFestifyButtonViewController.m in Sources */,
 				5F423A6D18FC115200C3ED75 /* main.m in Sources */,
 				5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */,
 				5F423A7118FC115200C3ED75 /* SMAppDelegate.m in Sources */,

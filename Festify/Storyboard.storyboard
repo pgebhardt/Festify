@@ -574,31 +574,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P6e-RL-Qf1">
-                                <rect key="frame" x="32" y="156" width="256" height="256"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="256" id="jqf-H5-TXC"/>
-                                    <constraint firstAttribute="width" constant="256" id="nYz-Mn-Scf"/>
-                                </constraints>
-                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <state key="normal" image="FestifyButtonBackground">
-                                    <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="festify:" destination="fyQ-f5-bAt" eventType="touchUpInside" id="aRV-5W-shG"/>
-                                </connections>
-                            </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FestifyButtonForeground" translatesAutoresizingMaskIntoConstraints="NO" id="qvS-rR-eB5">
-                                <rect key="frame" x="32" y="156" width="256" height="256"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="256" id="T78-q6-gtO"/>
-                                    <constraint firstAttribute="height" constant="256" id="VTw-1S-hgU"/>
-                                </constraints>
-                            </imageView>
                             <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q2T-aC-Zqi">
                                 <rect key="frame" x="0.0" y="568" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -650,16 +625,26 @@
                                     <constraint firstItem="O8Q-I5-IEW" firstAttribute="top" secondItem="e4a-tO-OHt" secondAttribute="top" constant="10" id="x20-pn-sbI"/>
                                 </constraints>
                             </view>
+                            <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LgK-RB-c0B">
+                                <rect key="frame" x="10" y="134" width="300" height="300"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="300" id="JLc-ds-sI0"/>
+                                    <constraint firstAttribute="width" constant="300" id="q5q-IU-uOT"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="m9Z-we-wkn" kind="embed" id="y3G-pq-ZgF"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" red="0.10196079313755035" green="0.10196079313755035" blue="0.10196079313755035" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="P6e-RL-Qf1" secondAttribute="centerY" id="18x-WE-Rr9"/>
                             <constraint firstAttribute="trailing" secondItem="q2T-aC-Zqi" secondAttribute="trailing" id="3nZ-eC-f6E"/>
-                            <constraint firstAttribute="centerX" secondItem="P6e-RL-Qf1" secondAttribute="centerX" id="Owh-zZ-LN5"/>
-                            <constraint firstAttribute="centerY" secondItem="qvS-rR-eB5" secondAttribute="centerY" id="Rpe-yr-Idx"/>
+                            <constraint firstAttribute="centerX" secondItem="LgK-RB-c0B" secondAttribute="centerX" id="FAF-AV-6ly"/>
                             <constraint firstAttribute="centerX" secondItem="e4a-tO-OHt" secondAttribute="centerX" id="Xto-Sf-UOu"/>
                             <constraint firstItem="q2T-aC-Zqi" firstAttribute="top" secondItem="e4a-tO-OHt" secondAttribute="bottom" constant="20" id="chD-Iv-02M"/>
-                            <constraint firstAttribute="centerX" secondItem="qvS-rR-eB5" secondAttribute="centerX" id="lHW-5c-7iy"/>
+                            <constraint firstAttribute="centerY" secondItem="LgK-RB-c0B" secondAttribute="centerY" id="qmg-Ia-g0P"/>
                             <constraint firstItem="q2T-aC-Zqi" firstAttribute="leading" secondItem="PCZ-8i-4by" secondAttribute="leading" id="rBZ-Tc-OXR"/>
                             <constraint firstItem="VUn-oR-idf" firstAttribute="top" secondItem="q2T-aC-Zqi" secondAttribute="bottom" constant="-44" id="vgJ-GE-SOH"/>
                         </constraints>
@@ -672,7 +657,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="festifyButtonOverlay" destination="qvS-rR-eB5" id="DCZ-gi-dtw"/>
                         <outlet property="trackPlayerBarPosition" destination="vgJ-GE-SOH" id="RQk-B4-6W3"/>
                         <segue destination="8Rl-HL-ow2" kind="custom" identifier="showLogin" customClass="BlurryModalSegue" id="sN6-9t-lxE"/>
                         <segue destination="fq2-e2-DGI" kind="custom" identifier="showUsers" customClass="BlurryModalSegue" id="Drq-H5-tYl"/>
@@ -985,7 +969,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3gh-DG-aaT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1946" y="610"/>
+            <point key="canvasLocation" x="1930" y="872"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Y9Y-7N-shd">
@@ -1121,6 +1105,53 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="syk-HV-M3A" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1404" y="1052"/>
+        </scene>
+        <!--Festify Button View Controller-->
+        <scene sceneID="ERg-9r-yVm">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="m9Z-we-wkn" customClass="SMFestifyButtonViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="pks-IO-8S0"/>
+                        <viewControllerLayoutGuide type="bottom" id="otm-u6-GUB"/>
+                    </layoutGuides>
+                    <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="7pX-XJ-51l">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P6e-RL-Qf1">
+                                <rect key="frame" x="22" y="22" width="256" height="256"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <state key="normal" image="FestifyButtonBackground">
+                                    <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonPressed:" destination="m9Z-we-wkn" eventType="touchUpInside" id="zN8-Nn-ewW"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FestifyButtonForeground" translatesAutoresizingMaskIntoConstraints="NO" id="qvS-rR-eB5">
+                                <rect key="frame" x="22" y="22" width="256" height="256"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="P6e-RL-Qf1" secondAttribute="centerY" id="PqC-Sg-uoG"/>
+                            <constraint firstAttribute="centerX" secondItem="qvS-rR-eB5" secondAttribute="centerX" id="Yde-1D-zLF"/>
+                            <constraint firstAttribute="centerY" secondItem="qvS-rR-eB5" secondAttribute="centerY" id="fxJ-XT-916"/>
+                            <constraint firstAttribute="centerX" secondItem="P6e-RL-Qf1" secondAttribute="centerX" id="kPW-RO-m4H"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <connections>
+                        <outlet property="buttonOverlay" destination="qvS-rR-eB5" id="X4O-E9-dIY"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JQP-qt-xiN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1940" y="348"/>
         </scene>
     </scenes>
     <resources>
