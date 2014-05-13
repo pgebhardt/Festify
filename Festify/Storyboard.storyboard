@@ -146,7 +146,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="Zmt-zk-YEv">
                         <nil key="title"/>
-                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="Vo5-x8-Lva">
+                        <barButtonItem key="leftBarButtonItem" image="Previous" id="Vo5-x8-Lva">
                             <connections>
                                 <action selector="done:" destination="EVF-cW-P26" id="JQr-Ca-koy"/>
                             </connections>
@@ -517,7 +517,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK">
-                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="Zas-sK-O9k">
+                        <barButtonItem key="leftBarButtonItem" image="Previous" id="Zas-sK-O9k">
                             <connections>
                                 <action selector="done:" destination="xvL-cP-knz" id="r5Z-B3-BPV"/>
                             </connections>
@@ -655,11 +655,22 @@
                                 <segue destination="Nyb-38-KAh" kind="custom" identifier="showSettings" customClass="BlurryModalSegue" id="VxZ-dY-Hvs"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" id="qDO-lM-VAv" customClass="BBBadgeBarButtonItem">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="mB6-3T-Lw3">
+                                <rect key="frame" x="273" y="7" width="31" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="Group"/>
+                                <connections>
+                                    <segue destination="fq2-e2-DGI" kind="custom" identifier="showUsers" customClass="BlurryModalSegue" id="zNY-pn-QT5"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="trackPlayerBarPosition" destination="vgJ-GE-SOH" id="RQk-B4-6W3"/>
+                        <outlet property="usersBarButtonItem" destination="qDO-lM-VAv" id="7Ue-cu-xKX"/>
+                        <outlet property="usersButton" destination="mB6-3T-Lw3" id="r6z-Nq-uQD"/>
                         <segue destination="8Rl-HL-ow2" kind="custom" identifier="showLogin" customClass="BlurryModalSegue" id="sN6-9t-lxE"/>
-                        <segue destination="fq2-e2-DGI" kind="custom" identifier="showUsers" customClass="BlurryModalSegue" id="Drq-H5-tYl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="exX-nK-8kW" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -726,7 +737,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Discovered Users" id="wJp-Ox-y6D">
-                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="PS5-Qs-ofp">
+                        <barButtonItem key="leftBarButtonItem" image="Previous" id="PS5-Qs-ofp">
                             <connections>
                                 <action selector="done:" destination="GbN-8d-cNT" id="Yu5-Wv-dVR"/>
                             </connections>
@@ -1160,9 +1171,11 @@
         <image name="FestifyButtonBackground" width="256" height="256"/>
         <image name="FestifyButtonForeground" width="256" height="256"/>
         <image name="Forward" width="30" height="22"/>
+        <image name="Group" width="31" height="29"/>
         <image name="List" width="27" height="23"/>
         <image name="Pause" width="16" height="22"/>
         <image name="Play" width="17" height="22"/>
+        <image name="Previous" width="20" height="12"/>
         <image name="Rewind" width="30" height="22"/>
         <image name="SpotifyLogo" width="119" height="36"/>
         <image name="SpotifyLogoWhite" width="35" height="35"/>
