@@ -8,7 +8,6 @@
 
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
-#import "SMFestifyViewController.h"
 #import "Appirater.h"
 #import "BlurryModalSegue.h"
 
@@ -22,28 +21,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 @end
 
 @implementation SMAppDelegate
-
--(void)remoteControlReceivedWithEvent:(UIEvent *)event {
-    // control track player by remote events
-    if (event.type == UIEventTypeRemoteControl) {
-        if (event.subtype == UIEventSubtypeRemoteControlPlay ||
-            event.subtype == UIEventSubtypeRemoteControlPause ||
-            event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
-            if (self.trackPlayer.playing) {
-                [self.trackPlayer pause];
-            }
-            else {
-                [self.trackPlayer play];
-            }
-        }
-        else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
-            [self.trackPlayer skipForward];
-        }
-        else if (event.subtype == UIEventSubtypeRemoteControlPreviousTrack) {
-            [self.trackPlayer skipBackward];
-        }
-    }
-}
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(SPTSession*, NSError *))completion {
     // set login callback
@@ -61,9 +38,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 #pragma mark - UIApplicationDelegate
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    self.trackPlayer = [SMTrackPlayer trackPlayerWithCompanyName:[NSBundle mainBundle].bundleIdentifier
-                                                         appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
-
     // start receiving remote control events
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 
@@ -112,11 +86,6 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 }
 
 -(void)applicationWillEnterForeground:(UIApplication *)application {
-    // assume spotify did logout when player is not playing
-    if (!self.trackPlayer.playing && self.trackPlayer.session) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SMFestifyViewControllerRestoreApplicationState object:nil];
-    }
-    
     [Appirater appEnteredForeground:YES];
 }
 

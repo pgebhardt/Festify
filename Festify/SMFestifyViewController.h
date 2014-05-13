@@ -11,14 +11,14 @@
 #import "SMTrackProvider.h"
 #import "SMLoginViewController.h"
 #import "SMSettingsViewController.h"
-
-// notification center strings
-static NSString* const SMFestifyViewControllerRestoreApplicationState = @"SMFestifyViewControllerRestoreApplicationState";
+#import "BBBadgeBarButtonItem.h"
 
 @interface SMFestifyViewController : UIViewController<SMDiscoveryManagerDelegate,
     SMTrackProviderDelegate, SMLoginViewDelegate, SMSettingsViewDelegate>
 
 - (IBAction)spotifyButton:(id)sender;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *trackPlayerBarPosition;
+@property (strong, nonatomic) IBOutlet BBBadgeBarButtonItem *usersBarButtonItem;
+@property (weak, nonatomic) IBOutlet UIButton *usersButton;
 
 @end

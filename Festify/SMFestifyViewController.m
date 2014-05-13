@@ -7,22 +7,19 @@
 //
 
 #import "SMFestifyViewController.h"
-#import "SMUsersViewController.h"
 #import "SMTrackPlayerBarViewController.h"
-#import "SMAppDelegate.h"
+#import "SMUsersViewController.h"
 #import "SMUserDefaults.h"
 #import "SMTrackPlayer.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
-#import "BBBadgeBarButtonItem.h"
 
 @interface SMFestifyViewController ()
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SMTrackPlayer* trackPlayer;
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
-@property (nonatomic, strong) NSArray* advertisedPlaylists;
-@property (nonatomic, strong) BBBadgeBarButtonItem* usersButton;
 @property (nonatomic, strong) SMTrackPlayerBarViewController* trackPlayerBar;
+@property (nonatomic, strong) NSArray* advertisedPlaylists;
 @end
 
 @implementation SMFestifyViewController
@@ -35,31 +32,21 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateAdvertisementState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateDiscoveryState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackProviderDidUpdateTracks:) name:SMTrackProviderDidUpdateTracksArray object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreApplicationState) name:SMFestifyViewControllerRestoreApplicationState object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
     
     // init properties
-    self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
+    self.trackPlayer = [SMTrackPlayer trackPlayerWithCompanyName:[NSBundle mainBundle].bundleIdentifier
+                                                         appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
     self.trackPlayerBar.trackPlayer = self.trackPlayer;
     self.trackProvider = [[SMTrackProvider alloc] init];
     self.trackProvider.delegate = self;
     
-    [self initializeUI];
-    [self restoreApplicationState];
-}
+    // initialize users bar button item
+    self.usersBarButtonItem = [self.usersBarButtonItem initWithCustomUIButton:self.usersButton];
+    self.usersBarButtonItem.badgeOriginX = [self.usersButton imageForState:UIControlStateNormal].size.width / 2.0;
+    self.usersBarButtonItem.enabled = NO;
 
--(void)initializeUI {
-    // create bar button item with badge to indicate newly discovered users
-    UIButton* userButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [userButton addTarget:self action:@selector(usersButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [userButton setImage:[UIImage imageNamed:@"Group"] forState:UIControlStateNormal];
-    [userButton sizeToFit];
-    userButton.tintColor = SMTintColor;
-    
-    self.usersButton = [[BBBadgeBarButtonItem alloc] initWithCustomUIButton:userButton];
-    self.usersButton.badgeOriginX = [userButton imageForState:UIControlStateNormal].size.width / 2.0;
-    self.usersButton.enabled = NO;
-    
-    self.navigationItem.rightBarButtonItem = self.usersButton;
+    [self restoreApplicationState];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -83,34 +70,49 @@
         SMUsersViewController* viewController = (SMUsersViewController*)navController.viewControllers[0];
         
         viewController.trackProvider = self.trackProvider;
-        self.usersButton.badgeValue = @"";
+        self.usersBarButtonItem.badgeValue = @"";
     }
     else if ([segue.identifier isEqualToString:@"loadPlayerBar"]) {
         self.trackPlayerBar = (SMTrackPlayerBarViewController*)segue.destinationViewController;
     }
 }
 
+-(void)remoteControlReceivedWithEvent:(UIEvent *)event {
+    // control track player by remote events
+    if (event.type == UIEventTypeRemoteControl) {
+        if (event.subtype == UIEventSubtypeRemoteControlPlay ||
+            event.subtype == UIEventSubtypeRemoteControlPause ||
+            event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
+            if (self.trackPlayer.playing) {
+                [self.trackPlayer pause];
+            }
+            else {
+                [self.trackPlayer play];
+            }
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
+            [self.trackPlayer skipForward];
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlPreviousTrack) {
+            [self.trackPlayer skipBackward];
+        }
+    }
+}
+
 #pragma  mark - Actions
 
 - (IBAction)spotifyButton:(id)sender {
-    NSURL* url = nil;
+    NSURL* url = [NSURL URLWithString:@"http://www.spotify.com"];
     if ([SPTAuth defaultInstance].spotifyApplicationIsInstalled) {
         url = [NSURL URLWithString:@"spotify://open"];
-    }
-    else {
-        url = [NSURL URLWithString:@"http://www.spotify.com"];
     }
     
     [[UIApplication sharedApplication] openURL:url];
 }
 
--(void)usersButtonPressed:(id)sender {
-    [self performSegueWithIdentifier:@"showUsers" sender:self];
-}
-
 #pragma mark - Notification Hanlder
 
--(void)discoveryManagerDidUpdateState:(NSNotification*)notification {
+-(void)discoveryManagerDidUpdateState:(id)notification {
     // add all currently advertised songs, if festify and advertisement modes are active
     if ([SMDiscoveryManager sharedInstance].isDiscovering &&
         [SMDiscoveryManager sharedInstance].isAdvertising) {
@@ -119,7 +121,7 @@
     }
 }
 
--(void)trackProviderDidUpdateTracks:(id)sender {
+-(void)trackProviderDidUpdateTracks:(id)notification {
     // init track player, if neccessary, and inform user,
     // when playback cannot be enabled due to its account status,
     // and update UI accordingly
@@ -130,12 +132,8 @@
             }
         }
         else {
-            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Music playback requires a Spotify Premium account!"
-                                                                message:nil
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles:nil];
-            [alertView show];
+            [[[UIAlertView alloc] initWithTitle:@"Music playback requires a Spotify Premium account!"
+                                       message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
         }
     }
     else {
@@ -148,11 +146,10 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         self.usersButton.enabled = (self.trackProvider.users.count != 0);
         if (self.trackProvider.tracks.count == 0) {
-            self.usersButton.badgeValue = @"";
+            self.usersBarButtonItem.badgeValue = @"";
         }
         
         // show or hide track player bar
-        [self.view layoutIfNeeded];
         self.trackPlayerBarPosition.constant = self.trackPlayer.currentProvider ? 0.0 : -44.0;
         [UIView animateWithDuration:0.4 animations:^{
             [self.view layoutIfNeeded];
@@ -160,12 +157,18 @@
     });
 }
 
+-(void)applicationWillEnterForeground:(id)notification {
+    // assume spotify did logout when player is not playing
+    if (!self.trackPlayer.playing && self.trackPlayer.session) {
+        [self restoreApplicationState];
+    }
+}
+
 #pragma mark - PGDiscoveryManagerDelegate
 
 -(void)discoveryManager:(SMDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
     // extract spotify username and indicesOfSelectedPlaylists from device property
     NSDictionary* advertisedData = [NSJSONSerialization JSONObjectWithData:property options:0 error:nil];
-
     [self setPlaylists:advertisedData[@"playlists"] forUser:advertisedData[@"username"] withTimeout:[SMUserDefaults userTimeout]];
 }
 
@@ -201,7 +204,6 @@
 
 -(void)settingsView:(SMSettingsViewController *)settingsView didChangeAdvertisedPlaylistSelection:(NSArray *)selectedPlaylists {
     self.advertisedPlaylists = selectedPlaylists;
-    [SMUserDefaults setAdvertisedPlaylists:self.advertisedPlaylists];
 
     // reset advertisement state to update advertised playlist selection
     [self setAdvertisementState:[SMDiscoveryManager sharedInstance].isAdvertising];
@@ -255,7 +257,7 @@
 }
 
 -(void)setAdvertisementState:(BOOL)advertising {
-    if (advertising && self.advertisedPlaylists && self.session) {
+    if (advertising) {
         // create broadcast dictionary with username and all playlists
         NSDictionary* broadcastData = @{@"username": self.session.canonicalUsername,
                                         @"playlists": self.advertisedPlaylists };
@@ -282,8 +284,8 @@
                 // increase badge value, if user is not already known
                 if (!self.trackProvider.users[username]) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        NSInteger value = [self.usersButton.badgeValue integerValue] + 1;
-                        self.usersButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)value];
+                        NSInteger value = [self.usersBarButtonItem.badgeValue integerValue] + 1;
+                        self.usersBarButtonItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)value];
                     });
                 }
                 

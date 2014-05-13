@@ -214,7 +214,8 @@
 -(void)settingsSelectionView:(SMSettingSelectionViewController *)settingsSelectionView didChangeIndicesOfSelectedItems:(NSIndexSet*)indicesOfSelectedItems {
     if ([settingsSelectionView.navigationItem.title isEqualToString:@"Visible Playlists"]) {
         self.advertisedPlaylists = [[[self.playlists objectsAtIndexes:indicesOfSelectedItems] valueForKey:@"uri"] valueForKey:@"absoluteString"];
-        
+        [SMUserDefaults setAdvertisedPlaylists:self.advertisedPlaylists];
+
         // update UI
         [self updateVisiblePlaylistsCell];
         
