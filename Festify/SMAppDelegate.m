@@ -8,6 +8,7 @@
 
 #import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
+#import "SMTrackPlayer.h"
 #import "Appirater.h"
 #import "BlurryModalSegue.h"
 
@@ -35,9 +36,35 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     [[UIApplication sharedApplication] openURL:loginURL];
 }
 
+-(void)remoteControlReceivedWithEvent:(UIEvent *)event {
+    // control track player by remote events
+    if (event.type == UIEventTypeRemoteControl) {
+        if (event.subtype == UIEventSubtypeRemoteControlPlay ||
+            event.subtype == UIEventSubtypeRemoteControlPause ||
+            event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
+            if (self.trackPlayer.playing) {
+                [self.trackPlayer pause];
+            }
+            else {
+                [self.trackPlayer play];
+            }
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
+            [self.trackPlayer skipForward];
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlPreviousTrack) {
+            [self.trackPlayer skipBackward];
+        }
+    }
+}
+
 #pragma mark - UIApplicationDelegate
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // create shared track player object
+    self.trackPlayer = [SMTrackPlayer trackPlayerWithCompanyName:[NSBundle mainBundle].bundleIdentifier
+                                                         appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
+    
     // start receiving remote control events
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 

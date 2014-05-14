@@ -9,9 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <Spotify/Spotify.h>
 
+@class SMTrackPlayer;
+
 @interface SMAppDelegate : UIResponder <UIApplicationDelegate>
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(SPTSession* session, NSError* error))completion;
 @property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, strong) SMTrackPlayer* trackPlayer;
 
 @end

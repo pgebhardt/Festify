@@ -9,6 +9,7 @@
 #import "SMFestifyViewController.h"
 #import "SMTrackPlayerBarViewController.h"
 #import "SMUsersViewController.h"
+#import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
 #import "SMTrackPlayer.h"
 #import "MBProgressHUD.h"
@@ -35,8 +36,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
     
     // init properties
-    self.trackPlayer = [SMTrackPlayer trackPlayerWithCompanyName:[NSBundle mainBundle].bundleIdentifier
-                                                         appName:[NSBundle mainBundle].infoDictionary[(NSString*)kCFBundleNameKey]];
+    self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     self.trackPlayerBar.trackPlayer = self.trackPlayer;
     self.trackProvider = [[SMTrackProvider alloc] init];
     self.trackProvider.delegate = self;
@@ -74,28 +74,6 @@
     }
     else if ([segue.identifier isEqualToString:@"loadPlayerBar"]) {
         self.trackPlayerBar = (SMTrackPlayerBarViewController*)segue.destinationViewController;
-    }
-}
-
--(void)remoteControlReceivedWithEvent:(UIEvent *)event {
-    // control track player by remote events
-    if (event.type == UIEventTypeRemoteControl) {
-        if (event.subtype == UIEventSubtypeRemoteControlPlay ||
-            event.subtype == UIEventSubtypeRemoteControlPause ||
-            event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
-            if (self.trackPlayer.playing) {
-                [self.trackPlayer pause];
-            }
-            else {
-                [self.trackPlayer play];
-            }
-        }
-        else if (event.subtype == UIEventSubtypeRemoteControlNextTrack) {
-            [self.trackPlayer skipForward];
-        }
-        else if (event.subtype == UIEventSubtypeRemoteControlPreviousTrack) {
-            [self.trackPlayer skipBackward];
-        }
     }
 }
 
