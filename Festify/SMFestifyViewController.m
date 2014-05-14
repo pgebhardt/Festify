@@ -21,6 +21,7 @@
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
 @property (nonatomic, strong) SMTrackPlayerBarViewController* trackPlayerBar;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
+@property (nonatomic, assign) BOOL updateUsersBadgeValue;
 @end
 
 @implementation SMFestifyViewController
@@ -49,6 +50,13 @@
     [self restoreApplicationState];
 }
 
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    // reenable update of users badge value
+    self.updateUsersBadgeValue = YES;
+}
+
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showSettings"]) {
         UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
@@ -71,6 +79,7 @@
         
         viewController.trackProvider = self.trackProvider;
         self.usersBarButtonItem.badgeValue = @"";
+        self.updateUsersBadgeValue = NO;
     }
     else if ([segue.identifier isEqualToString:@"loadPlayerBar"]) {
         self.trackPlayerBar = (SMTrackPlayerBarViewController*)segue.destinationViewController;
@@ -260,7 +269,7 @@
             // when all playlists are requested, add them to track provider
             if (requestCompletCount == playlistURIs.count) {
                 // increase badge value, if user is not already known
-                if (!self.trackProvider.users[username]) {
+                if (!self.trackProvider.users[username] && self.updateUsersBadgeValue) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         NSInteger value = [self.usersBarButtonItem.badgeValue integerValue] + 1;
                         self.usersBarButtonItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)value];
