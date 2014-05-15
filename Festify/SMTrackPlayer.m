@@ -75,7 +75,7 @@
 }
 
 -(void)playTrackProvider:(id<SPTTrackProvider>)provider fromIndex:(NSInteger)index {
-    [self performActionWithBackgroundCheck:^{
+    [self performActionWithConnectivityCheck:^{
         self.indexOfCurrentTrack = index;
         self.currentProvider = provider;
         
@@ -116,7 +116,7 @@
 
 -(void)play {
     if (self.currentProvider) {
-        [self performActionWithBackgroundCheck:^{
+        [self performActionWithConnectivityCheck:^{
             [self.trackPlayer resumePlayback];
             self.playing = YES;
             
@@ -130,7 +130,7 @@
 
 -(void)pause {
     if (self.currentProvider) {
-        [self performActionWithBackgroundCheck:^{
+        [self performActionWithConnectivityCheck:^{
             [self.trackPlayer pausePlayback];
             self.playing = NO;
             
@@ -144,7 +144,7 @@
 
 -(void)skipToTrack:(NSInteger)index {
     if (self.currentProvider) {
-        [self performActionWithBackgroundCheck:^{
+        [self performActionWithConnectivityCheck:^{
             [self.trackPlayer playTrackProvider:self.currentProvider fromIndex:index];
             [self play];
         }];
@@ -153,7 +153,7 @@
 
 -(void)skipForward {
     if (self.currentProvider) {
-        [self performActionWithBackgroundCheck:^{
+        [self performActionWithConnectivityCheck:^{
             [self.trackPlayer skipToNextTrack];
             [self play];
         }];
@@ -162,7 +162,7 @@
 
 -(void)skipBackward {
     if (self.currentProvider) {
-        [self performActionWithBackgroundCheck:^{
+        [self performActionWithConnectivityCheck:^{
             [self.trackPlayer skipToPreviousTrack:NO];
             [self play];
         }];
@@ -213,10 +213,10 @@
 
 #pragma mark - Helper
 
--(void)performActionWithBackgroundCheck:(void (^)(void))action {
+-(void)performActionWithConnectivityCheck:(void (^)(void))action {
     if (action) {
-        if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive &&
-            !self.playing) {
+        if (!self.trackPlayer.playbackIsAvailable ||
+            ([UIApplication sharedApplication].applicationState != UIApplicationStateActive && !self.playing)) {
             UIBackgroundTaskIdentifier backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
             
             [self enablePlaybackWithSession:self.session callback:^(NSError *error) {

@@ -11,6 +11,9 @@
 #import "SMTrackPlayer.h"
 #import "Appirater.h"
 #import "BlurryModalSegue.h"
+#import "Reachability.h"
+#import "MBProgressHUD.h"
+#import "MWLogging.h"
 
 // spotify authentication constants
 // TODO: replace with post-beta IDs and adjust the App's URL type
@@ -19,6 +22,8 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 
 @interface SMAppDelegate ()
 @property (nonatomic, copy) void (^loginCallback)(SPTSession* session, NSError* error);
+@property (nonatomic, strong) Reachability* reachability;
+@property (nonatomic, strong) MBProgressHUD* progressHUD;
 @end
 
 @implementation SMAppDelegate
@@ -58,6 +63,30 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     }
 }
 
+#pragma mark - Notification handler
+
+-(void)reachabilityChanged:(id)notification {
+    // block UI with progress HUD and inform user about missing internet connection,
+    // also stop playback, to prevent any glitches with the Spotify service.
+    if (self.trackPlayer.session) {
+        if (!self.reachability.isReachable) {
+            if (!self.progressHUD) {
+                self.progressHUD = [MBProgressHUD showHUDAddedTo:self.window.subviews[0] animated:YES];
+                self.progressHUD.labelText = @"Connecting...";
+            }
+            
+            [self.trackPlayer pause];
+        }
+        else if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+            // try to enable playback for trackplayer, if authenticated session is available
+            [self.trackPlayer enablePlaybackWithSession:self.trackPlayer.session callback:^(NSError *error) {
+                [self.progressHUD hide:YES];
+                self.progressHUD = nil;
+            }];
+        }
+    }
+}
+
 #pragma mark - UIApplicationDelegate
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -68,6 +97,11 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     // start receiving remote control events
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 
+    // check active network connection using reachability framework
+    self.reachability = [Reachability reachabilityForInternetConnection];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+    [self.reachability startNotifier];
+    
     // adjust default colors to match spotify color schema
     [[UITableView appearance] setSeparatorColor:[UIColor colorWithRed:86.0/255.0 green:86.0/255.0 blue:86.0/255.0 alpha:1.0]];
     [[BlurryModalSegue appearance] setBackingImageBlurRadius:@15];
@@ -113,6 +147,23 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 }
 
 -(void)applicationWillEnterForeground:(UIApplication *)application {
+    // try to enable playback for trackplayer, if authenticated session is available
+    if (!self.trackPlayer.playing && self.trackPlayer.session && self.reachability.isReachable) {
+        if (!self.progressHUD) {
+            self.progressHUD = [MBProgressHUD showHUDAddedTo:self.window.subviews[0] animated:YES];
+            self.progressHUD.labelText = @"Connecting...";
+        }
+        
+        [self.trackPlayer enablePlaybackWithSession:self.trackPlayer.session callback:^(NSError *error) {
+            [self.progressHUD hide:YES];
+            self.progressHUD = nil;
+
+            if (error) {
+                MWLogWarning(@"%@", error);
+            }
+        }];
+    }
+    
     [Appirater appEnteredForeground:YES];
 }
 

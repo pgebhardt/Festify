@@ -34,7 +34,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateAdvertisementState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(discoveryManagerDidUpdateState:) name:SMDiscoveryManagerDidUpdateDiscoveryState object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackProviderDidUpdateTracks:) name:SMTrackProviderDidUpdateTracksArray object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
     
     // init properties
     self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
@@ -47,7 +46,7 @@
     self.usersBarButtonItem.badgeOriginX = [self.usersButton imageForState:UIControlStateNormal].size.width / 2.0;
     self.usersBarButtonItem.enabled = NO;
 
-    [self restoreApplicationState];
+    [self loadUserDefaults];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -144,13 +143,6 @@
     });
 }
 
--(void)applicationWillEnterForeground:(id)notification {
-    // assume spotify did logout when player is not playing
-    if (!self.trackPlayer.playing && self.trackPlayer.session) {
-        [self restoreApplicationState];
-    }
-}
-
 #pragma mark - PGDiscoveryManagerDelegate
 
 -(void)discoveryManager:(SMDiscoveryManager *)discoveryManager didDiscoverDevice:(NSString *)devicename withProperty:(NSData *)property {
@@ -175,7 +167,7 @@
     [loginView dismissViewControllerAnimated:YES completion:^{
         // store new session to users defaults and restore application state
         [SMUserDefaults setSession:session];
-        [self restoreApplicationState];
+        [self loadUserDefaults];
     }];
 }
 
@@ -198,44 +190,33 @@
 
 #pragma mark - Helper
 
--(void)restoreApplicationState {
-    [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+-(void)loadUserDefaults {
+    MBProgressHUD* progressHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    progressHUD.labelText = @"Connecting...";
     
-    // callback to logout of spotify and show login screen, which is called on any error
-    void (^errorCallback)(void) = ^{
+    // load stored session and check, if session is valid with simple API call,
+    // otherwise show login screen
+    self.session = [SMUserDefaults session];
+    if (self.session) {
+        [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
+            // load remaining user sessings and try to enable playback
+            self.advertisedPlaylists = advertisedPlaylists;
+            if ([SMDiscoveryManager sharedInstance].isAdvertising != [SMUserDefaults advertisementState]) {
+                [self setAdvertisementState:[SMUserDefaults advertisementState]];
+            }
+            
+            [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+                [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+            }];
+        }];
+    }
+    else {
         [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.navigationController popToRootViewControllerAnimated:YES];
             [self logoutOfSpotify];
         });
-    };
-    
-    // load stored session and check, if session is valid with simple API call,
-    // otherwise show login screen
-    self.session = [SMUserDefaults session];
-    if (self.session) {
-        [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
-            if (!error) {
-                [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
-                    // load remaining user sessings and try to enable playback
-                    self.advertisedPlaylists = advertisedPlaylists;
-                    if ([SMDiscoveryManager sharedInstance].isAdvertising != [SMUserDefaults advertisementState]) {
-                        [self setAdvertisementState:[SMUserDefaults advertisementState]];
-                    }
-                    
-                    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-                        [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-                    }];
-                }];
-            }
-            else {
-                errorCallback();
-            }
-        }];
-    }
-    else {
-        errorCallback();
     }
 }
 
