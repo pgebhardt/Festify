@@ -201,32 +201,42 @@
 -(void)restoreApplicationState {
     [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     
+    // callback to logout of spotify and show login screen, which is called on any error
+    void (^errorCallback)(void) = ^{
+        [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.navigationController popToRootViewControllerAnimated:YES];
+            [self logoutOfSpotify];
+        });
+    };
+    
     // load stored session and check, if session is valid with simple API call,
     // otherwise show login screen
     self.session = [SMUserDefaults session];
-    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
-        if (!error) {
-            [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
-                // load remaining user sessings and try to enable playback
-                self.advertisedPlaylists = advertisedPlaylists;
-                if ([SMDiscoveryManager sharedInstance].isAdvertising != [SMUserDefaults advertisementState]) {
-                    [self setAdvertisementState:[SMUserDefaults advertisementState]];
-                }
-                
-                [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
-                    [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+    if (self.session) {
+        [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
+            if (!error) {
+                [SMUserDefaults advertisedPlaylists:^(NSArray *advertisedPlaylists) {
+                    // load remaining user sessings and try to enable playback
+                    self.advertisedPlaylists = advertisedPlaylists;
+                    if ([SMDiscoveryManager sharedInstance].isAdvertising != [SMUserDefaults advertisementState]) {
+                        [self setAdvertisementState:[SMUserDefaults advertisementState]];
+                    }
+                    
+                    [self.trackPlayer enablePlaybackWithSession:self.session callback:^(NSError *error) {
+                        [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
+                    }];
                 }];
-            }];
-        }
-        else {
-            [MBProgressHUD hideAllHUDsForView:self.navigationController.view animated:YES];
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self.navigationController popToRootViewControllerAnimated:YES];
-                [self logoutOfSpotify];
-            });
-        }
-    }];
+            }
+            else {
+                errorCallback();
+            }
+        }];
+    }
+    else {
+        errorCallback();
+    }
 }
 
 -(void)logoutOfSpotify {
