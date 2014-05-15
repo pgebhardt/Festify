@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* SMSettingsViewController.m */; };
 		5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMTrackProvider.m */; };
-		5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */; };
 		5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */; };
 		5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
@@ -63,8 +62,6 @@
 		5F089B6018FD2B5F002476CB /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		5F089B6518FD56A3002476CB /* SMTrackProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackProvider.h; sourceTree = "<group>"; };
 		5F089B6618FD56A3002476CB /* SMTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackProvider.m; sourceTree = "<group>"; };
-		5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Shuffling.h"; sourceTree = "<group>"; };
-		5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Shuffling.m"; sourceTree = "<group>"; };
 		5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackPlayer.h; sourceTree = "<group>"; };
 		5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackPlayer.m; sourceTree = "<group>"; };
 		5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlaylistViewController.h; sourceTree = "<group>"; };
@@ -161,8 +158,6 @@
 			children = (
 				5F14580F19127DAE00F5A80C /* MWLogging.h */,
 				5F14581019127DAE00F5A80C /* MWLogging.m */,
-				5F0956C418FDAE5F00ECB853 /* NSMutableArray+Shuffling.h */,
-				5F0956C518FDAE5F00ECB853 /* NSMutableArray+Shuffling.m */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -463,7 +458,6 @@
 				5F423A6D18FC115200C3ED75 /* main.m in Sources */,
 				5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */,
 				5F423A7118FC115200C3ED75 /* SMAppDelegate.m in Sources */,
-				5F0956C618FDAE5F00ECB853 /* NSMutableArray+Shuffling.m in Sources */,
 				5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */,
 				5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */,
 			);

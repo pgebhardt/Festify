@@ -7,13 +7,10 @@
 //
 
 #import "SMTrackProvider.h"
-#import "NSMutableArray+Shuffling.h"
 
 @interface SMTrackProvider ()
-
 @property (nonatomic, strong) NSMutableDictionary* users;
 @property (nonatomic, strong) NSMutableArray* tracks;
-
 @end
 
 @implementation SMTrackProvider
@@ -151,7 +148,7 @@
             [tracksOfUser addObjectsFromArray:playlist.tracks];
         }
         
-        [tracksOfUser shuffle];
+        [self shuffleArray:tracksOfUser];
         [tracksOfUsers addObject:tracksOfUser];
     }
 
@@ -162,8 +159,23 @@
         [self.tracks addObjectsFromArray:[tracks objectsAtIndexes:indicesOfTracks]];
     }
     
-    [self.tracks shuffle];
+    [self shuffleArray:self.tracks];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMTrackProviderDidUpdateTracksArray object:self];
+}
+
+-(void)shuffleArray:(NSMutableArray*)array {
+    static BOOL seeded = NO;
+    if(!seeded) {
+        seeded = YES;
+        srandom((unsigned int)time(NULL));
+    }
+    
+    for (NSUInteger i = 0; i < array.count; ++i) {
+        // Select a random element between i and end of array to swap with.
+        NSUInteger nElements = array.count - i;
+        NSUInteger n = (random() % nElements) + i;
+        [array exchangeObjectAtIndex:i withObjectAtIndex:n];
+    }
 }
 
 @end
