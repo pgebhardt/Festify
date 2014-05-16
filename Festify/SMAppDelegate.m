@@ -7,7 +7,6 @@
 //
 
 #import "SMAppDelegate.h"
-#import "SMUserDefaults.h"
 #import "SMTrackPlayer.h"
 #import "Appirater.h"
 #import "BlurryModalSegue.h"
@@ -68,21 +67,23 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 -(void)reachabilityChanged:(id)notification {
     // block UI with progress HUD and inform user about missing internet connection,
     // also stop playback, to prevent any glitches with the Spotify service.
-    if (self.trackPlayer.session) {
-        if (!self.reachability.isReachable) {
-            if (!self.progressHUD) {
-                self.progressHUD = [MBProgressHUD showHUDAddedTo:self.window.subviews[0] animated:YES];
-                self.progressHUD.labelText = @"Connecting...";
-            }
-            
+    if (!self.reachability.isReachable) {
+        if (!self.progressHUD) {
+            self.progressHUD = [MBProgressHUD showHUDAddedTo:self.window animated:YES];
+            self.progressHUD.labelText = @"Lost Connection ...";
+        }
+        
+        if (self.trackPlayer.playing) {
             [self.trackPlayer pause];
         }
-        else if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-            // try to enable playback for trackplayer, if authenticated session is available
-            [self.trackPlayer enablePlaybackWithSession:self.trackPlayer.session callback:^(NSError *error) {
-                [self.progressHUD hide:YES];
-                self.progressHUD = nil;
-            }];
+    }
+    else {
+        [self.progressHUD hide:YES];
+        self.progressHUD = nil;
+
+        // try to enable playback for trackplayer, if application is active
+        if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+            [self.trackPlayer enablePlaybackWithSession:self.trackPlayer.session callback:nil];
         }
     }
 }
@@ -138,30 +139,23 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 
 -(void)applicationWillTerminate:(UIApplication *)application {
     // save current application state
-    [SMUserDefaults saveApplicationState];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 -(void)applicationWillResignActive:(UIApplication *)application {
     // save current application state
-    [SMUserDefaults saveApplicationState];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 -(void)applicationWillEnterForeground:(UIApplication *)application {
     // try to enable playback for trackplayer, if authenticated session is available
     if (!self.trackPlayer.playing && self.trackPlayer.session && self.reachability.isReachable) {
-        if (!self.progressHUD) {
-            self.progressHUD = [MBProgressHUD showHUDAddedTo:self.window.subviews[0] animated:YES];
-            self.progressHUD.labelText = @"Connecting...";
-        }
-        
-        [self.trackPlayer enablePlaybackWithSession:self.trackPlayer.session callback:^(NSError *error) {
+        if (self.progressHUD) {
             [self.progressHUD hide:YES];
             self.progressHUD = nil;
-
-            if (error) {
-                MWLogWarning(@"%@", error);
-            }
-        }];
+        }
+        
+        [self.trackPlayer enablePlaybackWithSession:self.trackPlayer.session callback:nil];
     }
     
     [Appirater appEnteredForeground:YES];

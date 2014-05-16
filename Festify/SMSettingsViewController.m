@@ -17,7 +17,9 @@
 
 @interface SMSettingsViewController ()
 @property (nonatomic, strong) NSArray* playlists;
+@property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, assign) NSInteger indexOfSelectedUserTimout;
+@property (nonatomic, strong) NSArray* usersTimeoutSelection;
 @end
 
 @implementation SMSettingsViewController
@@ -25,11 +27,20 @@
 -(void)viewDidLoad {
     [super viewDidLoad];
 
+    // init properties
+    self.usersTimeoutSelection =  @[@{@"name": @"After 30 min", @"value": @30},
+                                    @{@"name": @"After 1 h", @"value": @60},
+                                    @{@"name": @"After 2 h", @"value": @120},
+                                    @{@"name": @"After 4 h", @"value": @240},
+                                    @{@"name": @"After 6 h", @"value": @360},
+                                    @{@"name": @"Never", @"value": @0}];
+    
     // connect switches to event handler and set them to correct state
     [self.advertisementSwitch addTarget:self action:@selector(toggleAdvertisementState:) forControlEvents:UIControlEventValueChanged];
     [self updateAdvertisiementSwitch];
 
     // collect playlists from currently logged in user to pass to playlist selection screen
+    self.advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
     [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
         if (!error) {
             self.playlists = [object items];
@@ -45,11 +56,12 @@
     }];
     
     // update UI
-    self.indexOfSelectedUserTimout = [[SMUserDefaults userTimeoutSelections] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-        return [[obj objectForKey:@"value"] doubleValue] == [SMUserDefaults userTimeout];
+    NSInteger usersTimeout = [[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsUserTimeoutKey] integerValue];
+    self.indexOfSelectedUserTimout = [self.usersTimeoutSelection indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [[obj objectForKey:@"value"] doubleValue] == usersTimeout;
     }];
     
-    self.timeoutLabel.text = [SMUserDefaults userTimeoutSelections][self.indexOfSelectedUserTimout][@"name"];
+    self.timeoutLabel.text = self.usersTimeoutSelection[self.indexOfSelectedUserTimout][@"name"];
     self.logoutLabel.text = [NSString stringWithFormat:@"Log Out %@", self.session.canonicalUsername];
     self.versionLabel.text = [NSString stringWithFormat:@"%@ (%@)",
                               [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"],
@@ -93,7 +105,7 @@
         settingsView.delegate = self;
         
         // adjust settings view to let user select which playlists are broadcasted
-        settingsView.data = [SMUserDefaults userTimeoutSelections];
+        settingsView.data = self.usersTimeoutSelection;
         settingsView.dataAccessor = ^NSString*(id item) {
             return [item objectForKey:@"name"];
         };
@@ -145,9 +157,6 @@
     if (![SMDiscoveryManager sharedInstance].isAdvertising) {
         [self.advertisementSwitch setOn:NO animated:YES];
     }
-
-    // store advertisement state
-    [SMUserDefaults setAdvertisementState:self.advertisementSwitch.isOn];
 }
 
 -(void)updateVisiblePlaylistsCell {
@@ -215,8 +224,7 @@
 -(void)settingsSelectionView:(SMSettingSelectionViewController *)settingsSelectionView didChangeIndicesOfSelectedItems:(NSIndexSet*)indicesOfSelectedItems {
     if ([settingsSelectionView.navigationItem.title isEqualToString:@"Visible Playlists"]) {
         self.advertisedPlaylists = [[[self.playlists objectsAtIndexes:indicesOfSelectedItems] valueForKey:@"uri"] valueForKey:@"absoluteString"];
-        [SMUserDefaults setAdvertisedPlaylists:self.advertisedPlaylists];
-
+        
         // update UI
         [self updateVisiblePlaylistsCell];
         
@@ -226,19 +234,17 @@
         }
     }
     else if ([settingsSelectionView.navigationItem.title isEqualToString:@"Delete Users"]) {
-        // update track provider
-        NSInteger timeout = [[SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"value"] integerValue];
-        [SMUserDefaults setUserTimeout:timeout];
-        
-        for (NSString* username in self.trackProvider.users.allKeys) {
-            [self.trackProvider updateTimeoutInterval:timeout forUser:username];
-        }
-
         // update UI
-        self.timeoutLabel.text = [SMUserDefaults userTimeoutSelections][indicesOfSelectedItems.firstIndex][@"name"];
-        self.indexOfSelectedUserTimout = [[SMUserDefaults userTimeoutSelections] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-            return [[obj objectForKey:@"value"] doubleValue] == timeout;
+        NSNumber* timeout = self.usersTimeoutSelection[indicesOfSelectedItems.firstIndex][@"value"];
+        self.timeoutLabel.text = self.usersTimeoutSelection[indicesOfSelectedItems.firstIndex][@"name"];
+        self.indexOfSelectedUserTimout = [self.usersTimeoutSelection indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            return [[obj objectForKey:@"value"] doubleValue] == [timeout integerValue];
         }];
+        
+        // inform delegate
+        if (self.delegate) {
+            [self.delegate settingsView:self didChangeUsersTimeout:[timeout integerValue]];
+        }
     }
 }
 

@@ -14,23 +14,3 @@ static NSString* const SMUserDefaultsSpotifySessionKey = @"SMUserDefaultsSpotify
 static NSString* const SMUserDefaultsAdvertisementStateKey = @"SMUserDefaultsAdvertisementStateKey";
 static NSString* const SMUserDefaultsAdvertisedPlaylistsKey = @"SMUserDefaultsAdvertisedPlaylistsKey";
 static NSString* const SMUserDefaultsUserTimeoutKey = @"SMUserDefaultsUserTimeoutKey";
-
-@interface SMUserDefaults : NSObject
-
-+(void)saveApplicationState;
-+(void)clear;
-
-+(SPTSession*)session;
-+(void)setSession:(SPTSession*)session;
-
-+(BOOL)advertisementState;
-+(void)setAdvertisementState:(BOOL)state;
-
-+(void)advertisedPlaylists:(void (^)(NSArray* advertisedPlaylists))completion;
-+(void)setAdvertisedPlaylists:(NSArray*)advertisedPlaylists;
-
-+(NSInteger)userTimeout;
-+(void)setUserTimeout:(NSInteger)timeout;
-+(NSArray*)userTimeoutSelections;
-
-@end

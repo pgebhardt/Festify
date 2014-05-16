@@ -9,6 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <Spotify/Spotify.h>
 
+@class SMTrackPlayer;
+
+@protocol SMTrackPlayerDelegate <NSObject>
+-(void)trackPlayer:(SMTrackPlayer*)trackPlayer willEnablePlaybackWithSession:(SPTSession*)session;
+-(void)trackPlayer:(SMTrackPlayer*)trackPlayer didEnablePlaybackWithSession:(SPTSession *)session;
+-(void)trackPlayer:(SMTrackPlayer*)trackPlayer couldNotEnablePlaybackWithSession:(SPTSession*)session error:(NSError*)error;
+@end
+
 @interface SMTrackPlayer : NSObject<SPTTrackPlayerDelegate>
 
 +(instancetype)trackPlayerWithCompanyName:(NSString*)companyName appName:(NSString*)appName;
@@ -33,5 +41,6 @@
 @property (nonatomic, readonly) SPTTrack* currentTrack;
 @property (nonatomic, readonly) UIImage* coverArtOfCurrentTrack;
 @property (nonatomic, readonly) SPTSession* session;
+@property (nonatomic, weak) id<SMTrackPlayerDelegate> delegate;
 
 @end

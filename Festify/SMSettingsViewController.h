@@ -10,16 +10,14 @@
 #import <MessageUI/MessageUI.h>
 #import <Spotify/Spotify.h>
 #import "SMSettingSelectionViewController.h"
-#import "SMTrackProvider.h"
 
 @class SMSettingsViewController;
 
 @protocol SMSettingsViewDelegate <NSObject>
-
 -(void)settingsViewDidRequestLogout:(SMSettingsViewController*)settingsView;
 -(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisementState:(BOOL)advertising;
 -(void)settingsView:(SMSettingsViewController*)settingsView didChangeAdvertisedPlaylistSelection:(NSArray*)selectedPlaylists;
-
+-(void)settingsView:(SMSettingsViewController *)settingsView didChangeUsersTimeout:(NSInteger)usersTimeout;
 @end
 
 @interface SMSettingsViewController : UITableViewController<SMSettinsSelectionViewDelegate, MFMailComposeViewControllerDelegate>
@@ -34,8 +32,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 
 @property (nonatomic, strong) SPTSession* session;
-@property (nonatomic, strong) SMTrackProvider* trackProvider;
-@property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, weak) id<SMSettingsViewDelegate> delegate;
 
 @end

@@ -55,17 +55,31 @@
 }
 
 -(void)enablePlaybackWithSession:(SPTSession *)session callback:(SPTErrorableOperationCallback)block {
+    if (self.delegate) {
+        [self.delegate trackPlayer:self willEnablePlaybackWithSession:session];
+    }
+    
     [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
-        if (!error) {
-            self.session = session;
-        }
-
+        // save login session for relogin purpose
+        self.session = session;
+        
         // restore trackPlayer state
         [self.trackPlayer setCurrentProvider:self.currentProvider];
         [self.trackPlayer setIndexOfCurrentTrack:self.indexOfCurrentTrack];
         
+        // call completion block
         if (block) {
             block(error);
+        }
+
+        // inform delegate
+        if (self.delegate) {
+            if (!error) {
+                [self.delegate trackPlayer:self didEnablePlaybackWithSession:session];
+            }
+            else {
+                [self.delegate trackPlayer:self couldNotEnablePlaybackWithSession:session error:error];
+            }
         }
     }];
 }

@@ -39,7 +39,6 @@
 		5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BD190C55790077F648 /* QuartzCore.framework */; };
 		5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */; };
 		5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F88928F18FEFA6000620589 /* SMLoginViewController.m */; };
-		5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F89FD5C1906339A00752072 /* SMUserDefaults.m */; };
 		5FAD80621921487D0086DABD /* SMTrackPlayerBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FAD80611921487D0086DABD /* SMTrackPlayerBarViewController.m */; };
 		5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2079A1190C1DB700AAE15A /* MessageUI.framework */; };
 		A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CEA90CA33A460DB3A7DAF3 /* libPods.a */; };
@@ -115,7 +114,6 @@
 		5F88928E18FEFA6000620589 /* SMLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLoginViewController.h; sourceTree = "<group>"; };
 		5F88928F18FEFA6000620589 /* SMLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLoginViewController.m; sourceTree = "<group>"; };
 		5F89FD5B1906339A00752072 /* SMUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUserDefaults.h; sourceTree = "<group>"; };
-		5F89FD5C1906339A00752072 /* SMUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMUserDefaults.m; sourceTree = "<group>"; };
 		5FAD80601921487D0086DABD /* SMTrackPlayerBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackPlayerBarViewController.h; sourceTree = "<group>"; };
 		5FAD80611921487D0086DABD /* SMTrackPlayerBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackPlayerBarViewController.m; sourceTree = "<group>"; };
 		A413B68A804A40FDB5EB7BFA /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
@@ -248,7 +246,6 @@
 				5F089B6518FD56A3002476CB /* SMTrackProvider.h */,
 				5F089B6618FD56A3002476CB /* SMTrackProvider.m */,
 				5F89FD5B1906339A00752072 /* SMUserDefaults.h */,
-				5F89FD5C1906339A00752072 /* SMUserDefaults.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 				5F1E97B31902E5A20009B675 /* View Controller */,
@@ -449,7 +446,6 @@
 				5FAD80621921487D0086DABD /* SMTrackPlayerBarViewController.m in Sources */,
 				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
 				5F88929018FEFA6000620589 /* SMLoginViewController.m in Sources */,
-				5F89FD5D1906339A00752072 /* SMUserDefaults.m in Sources */,
 				5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */,
 				5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */,
 				5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */,
