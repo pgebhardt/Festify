@@ -129,7 +129,7 @@
 #pragma mark - playback contols
 
 -(void)play {
-    if (self.currentProvider) {
+    if (self.currentProvider && !self.playing) {
         [self performActionWithConnectivityCheck:^{
             [self.trackPlayer resumePlayback];
             self.playing = YES;
@@ -143,16 +143,14 @@
 }
 
 -(void)pause {
-    if (self.currentProvider) {
-        [self performActionWithConnectivityCheck:^{
-            [self.trackPlayer pausePlayback];
-            self.playing = NO;
-            
-            // update playback position and rate to avoid apple tv and lockscreen glitches
-            self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
-            self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
-            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
-        }];
+    if (self.currentProvider && self.playing) {
+        [self.trackPlayer pausePlayback];
+        self.playing = NO;
+        
+        // update playback position and rate to avoid apple tv and lockscreen glitches
+        self.trackInfo[MPNowPlayingInfoPropertyPlaybackRate] = @0.0;
+        self.trackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = [NSNumber numberWithDouble:self.trackPlayer.currentPlaybackPosition];
+        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
     }
 }
 

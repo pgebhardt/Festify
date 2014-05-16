@@ -73,9 +73,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
             self.progressHUD.labelText = @"Lost Connection ...";
         }
         
-        if (self.trackPlayer.playing) {
-            [self.trackPlayer pause];
-        }
+        [self.trackPlayer pause];
     }
     else {
         [self.progressHUD hide:YES];
