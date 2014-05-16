@@ -13,6 +13,7 @@
 #import "SMUserDefaults.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
+#import "SPTRequest+MultipleItems.h"
 
 @interface SMFestifyViewController ()
 @property (nonatomic, strong) SPTSession* session;
@@ -121,7 +122,7 @@
     if ([SMDiscoveryManager sharedInstance].isDiscovering &&
         [SMDiscoveryManager sharedInstance].isAdvertising) {
         MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
-        [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:0];
+        [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:self.usersTimeout];
     }
 }
 
@@ -178,7 +179,7 @@
 -(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithSession:(SPTSession *)session {
     [loginView dismissViewControllerAnimated:YES completion:^{
         self.progressHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
-        self.progressHUD.labelText = @"Connecting ...";
+        self.progressHUD.labelText = @"Logging in ...";
         
         // store new session to users defaults, initialize user defaults and try to enable playback
         self.session = session;
@@ -228,10 +229,8 @@
 
 -(void)trackPlayer:(SMTrackPlayer *)trackPlayer couldNotEnablePlaybackWithSession:(SPTSession *)session error:(NSError *)error {
     // hide progress hud
-    if (self.progressHUD) {
-        [self.progressHUD hide:YES];
-        self.progressHUD = nil;
-    }
+    [self.progressHUD hide:YES];
+    self.progressHUD = nil;
     
     // logout, when error is not related to a missing premium subscription
     if (error.code != 9) {
@@ -241,10 +240,8 @@
 
 -(void)trackPlayer:(SMTrackPlayer *)trackPlayer didEnablePlaybackWithSession:(SPTSession *)session {
     // hide progress hud
-    if (self.progressHUD) {
-        [self.progressHUD hide:YES];
-        self.progressHUD = nil;
-    }
+    [self.progressHUD hide:YES];
+    self.progressHUD = nil;
 }
 
 -(void)trackPlayer:(SMTrackPlayer *)trackPlayer willEnablePlaybackWithSession:(SPTSession *)session {
@@ -304,29 +301,24 @@
 }
 
 -(void)setPlaylists:(NSArray*)playlistURIs forUser:(NSString*)username withTimeout:(NSInteger)timeout {
-    __block NSInteger requestCompletCount = 0;
-    __block NSMutableArray* playlists = [NSMutableArray array];
-    for (NSString* playlistURI in playlistURIs) {
-        [SPTRequest requestItemAtURI:[NSURL URLWithString:playlistURI] withSession:self.session callback:^(NSError *error, id object) {
-            requestCompletCount += 1;
-            if (!error) {
-                [playlists addObject:object];
-            }
-            
-            // when all playlists are requested, add them to track provider
-            if (requestCompletCount == playlistURIs.count) {
-                // increase badge value, if user is not already known
-                if (!self.trackProvider.users[username] && self.updateUsersBadgeValue) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSInteger value = [self.usersBarButtonItem.badgeValue integerValue] + 1;
-                        self.usersBarButtonItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)value];
-                    });
-                }
-                
-                [self.trackProvider setPlaylists:playlists forUser:username withTimeoutInterval:timeout];
-            }
-        }];
-    }
+    // convert url strings to array of NSURL objects
+    __block NSMutableArray* URLs = [NSMutableArray array];
+    [playlistURIs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [URLs addObject:[NSURL URLWithString:obj]];
+    }];
+    
+    // request all playlists and add them to the track provider
+    [SPTRequest requestItemsAtURIs:URLs withSession:self.session callback:^(NSError *error, id object) {
+        // increase badge value, if user is not already known
+        if (!self.trackProvider.users[username] && self.updateUsersBadgeValue) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSInteger value = [self.usersBarButtonItem.badgeValue integerValue] + 1;
+                self.usersBarButtonItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)value];
+            });
+        }
+        
+        [self.trackProvider setPlaylists:object forUser:username withTimeoutInterval:timeout];
+    }];
 }
 
 @end

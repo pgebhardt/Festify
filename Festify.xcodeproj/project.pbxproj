@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F036AB21926C16900B4F3B9 /* SPTRequest+MultipleItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F036AB11926C16900B4F3B9 /* SPTRequest+MultipleItems.m */; };
 		5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* SMSettingsViewController.m */; };
 		5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMTrackProvider.m */; };
 		5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */; };
@@ -56,6 +57,8 @@
 
 /* Begin PBXFileReference section */
 		15CEA90CA33A460DB3A7DAF3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F036AB01926C16900B4F3B9 /* SPTRequest+MultipleItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPTRequest+MultipleItems.h"; sourceTree = "<group>"; };
+		5F036AB11926C16900B4F3B9 /* SPTRequest+MultipleItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SPTRequest+MultipleItems.m"; sourceTree = "<group>"; };
 		5F089B5D18FD169B002476CB /* SMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMSettingsViewController.h; sourceTree = "<group>"; };
 		5F089B5E18FD169B002476CB /* SMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSettingsViewController.m; sourceTree = "<group>"; };
 		5F089B6018FD2B5F002476CB /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
@@ -154,6 +157,8 @@
 		5F1E97B21902E5880009B675 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				5F036AB01926C16900B4F3B9 /* SPTRequest+MultipleItems.h */,
+				5F036AB11926C16900B4F3B9 /* SPTRequest+MultipleItems.m */,
 				5F14580F19127DAE00F5A80C /* MWLogging.h */,
 				5F14581019127DAE00F5A80C /* MWLogging.m */,
 			);
@@ -455,6 +460,7 @@
 				5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */,
 				5F423A7118FC115200C3ED75 /* SMAppDelegate.m in Sources */,
 				5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */,
+				5F036AB21926C16900B4F3B9 /* SPTRequest+MultipleItems.m in Sources */,
 				5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

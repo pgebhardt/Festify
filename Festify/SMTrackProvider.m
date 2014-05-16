@@ -148,10 +148,11 @@
 }
 
 -(void)restoreTimersAfterSuspension:(id)notification {
+    // TODO: Creates Crash!!
     // check all fire dates of the timers and either delete user or restart timer
     for (NSInteger i = 0; i < self.users.count; ++i) {
-        NSMutableDictionary* userInfo = self.users.allValues[i];
-        NSTimer* timer = userInfo[SMTrackProviderTimerKey];
+        NSMutableDictionary* userInfo = [self.users.allValues objectAtIndex:i];
+        NSTimer* timer = [userInfo objectForKey:SMTrackProviderTimerKey];
         
         if (timer) {
             NSTimeInterval timeInterval = [timer.fireDate timeIntervalSinceNow];

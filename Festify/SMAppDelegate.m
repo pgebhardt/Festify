@@ -148,10 +148,8 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
 -(void)applicationWillEnterForeground:(UIApplication *)application {
     // try to enable playback for trackplayer, if authenticated session is available
     if (!self.trackPlayer.playing && self.trackPlayer.session && self.reachability.isReachable) {
-        if (self.progressHUD) {
-            [self.progressHUD hide:YES];
-            self.progressHUD = nil;
-        }
+        [self.progressHUD hide:YES];
+        self.progressHUD = nil;
         
         [self.trackPlayer enablePlaybackWithSession:self.trackPlayer.session callback:nil];
     }
