@@ -19,9 +19,17 @@
     if (self = [super init]) {
         self.users = [NSMutableDictionary dictionary];
         self.tracks = [NSMutableArray array];
+        
+        // register to enter foreground notification to check and restart all timers
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreTimersAfterSuspension:)
+                                                     name:UIApplicationDidBecomeActiveNotification object:nil];
     }
     
     return self;
+}
+
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)setPlaylists:(NSArray *)playlists forUser:(NSString *)username withTimeoutInterval:(NSInteger)timeout {
@@ -136,6 +144,30 @@
     }
     else {
         [self removePlaylistsForUser:timer.userInfo];
+    }
+}
+
+-(void)restoreTimersAfterSuspension:(id)notification {
+    // check all fire dates of the timers and either delete user or restart timer
+    for (NSInteger i = 0; i < self.users.count; ++i) {
+        NSMutableDictionary* userInfo = self.users.allValues[i];
+        NSTimer* timer = userInfo[SMTrackProviderTimerKey];
+        
+        if (timer) {
+            NSTimeInterval timeInterval = [timer.fireDate timeIntervalSinceNow];
+            
+            if (timeInterval <= 0.0) {
+                [self timerHasExpired:timer];
+            }
+            else {
+                [timer invalidate];
+                userInfo[SMTrackProviderTimerKey] = [NSTimer scheduledTimerWithTimeInterval:timeInterval
+                                                                                     target:self
+                                                                                   selector:@selector(timerHasExpired:)
+                                                                                   userInfo:self.users.allKeys[i]
+                                                                                    repeats:NO];
+            }
+        }
     }
 }
 
