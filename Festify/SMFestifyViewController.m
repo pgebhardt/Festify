@@ -122,7 +122,7 @@
     if ([SMDiscoveryManager sharedInstance].isDiscovering &&
         [SMDiscoveryManager sharedInstance].isAdvertising) {
         MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
-        [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:self.usersTimeout];
+        [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:0];
     }
 }
 
