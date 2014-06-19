@@ -26,6 +26,10 @@
 /** This class represents a track on the Spotify service. */
 @interface SPTTrack : NSObject <SPTJSONObject>
 
+///----------------------------
+/// @name Requesting Tracks
+///----------------------------
+
 /** Request the track at the given Spotify URI.
 
  @note This method takes Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
@@ -35,6 +39,10 @@
  @param block The block to be called when the operation is complete. The block will pass a Spotify SDK metadata object on success, otherwise an error.
  */
 +(void)trackWithURI:(NSURL *)uri session:(SPTSession *)session callback:(SPTRequestCallback)block;
+
+///----------------------------
+/// @name Properties
+///----------------------------
 
 /** The name of the track. */
 @property (nonatomic, readonly, copy) NSString *name;

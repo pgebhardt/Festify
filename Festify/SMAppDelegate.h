@@ -14,6 +14,7 @@
 @interface SMAppDelegate : UIResponder <UIApplicationDelegate>
 
 -(void)requestSpotifySessionWithCompletionHandler:(void (^)(SPTSession* session, NSError* error))completion;
+-(void)renewSpotifySession:(SPTSession*)session WithCompletionHandler:(void (^)(SPTSession* session, NSError* error))completion;
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) SMTrackPlayer* trackPlayer;
 

@@ -16,8 +16,10 @@
 
 // spotify authentication constants
 // TODO: replace with post-beta IDs and adjust the App's URL type
-static NSString* const kClientID = @"spotify-ios-sdk-beta";
-static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
+static NSString * const kClientId = @"742dc3048abc43a6b5f2297fe07e6ae4";
+static NSString * const kCallbackURL = @"festify://callback";
+static NSString * const kTokenSwapServiceURL = @"http://192.168.178.28:1234/swap";
+static NSString * const kTokenRefreshServiceURL = @"http://192.168.178.28:1234/refresh";
 
 @interface SMAppDelegate ()
 @property (nonatomic, copy) void (^loginCallback)(SPTSession* session, NSError* error);
@@ -32,12 +34,20 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     self.loginCallback = completion;
     
     // get login url
-    NSURL* loginURL = [[SPTAuth defaultInstance] loginURLForClientId:kClientID
+    NSURL* loginURL = [[SPTAuth defaultInstance] loginURLForClientId:kClientId
                                                  declaredRedirectURL:[NSURL URLWithString:kCallbackURL]
-                                                              scopes:@[@"login"]];
+                                                              scopes:@[SPTAuthStreamingScope, SPTAuthPlaylistReadScope]];
     
     // open url in safari to login to spotify api
     [[UIApplication sharedApplication] openURL:loginURL];
+}
+
+-(void)renewSpotifySession:(SPTSession*)session WithCompletionHandler:(void (^)(SPTSession* session, NSError* error))completion {
+    [[SPTAuth defaultInstance] renewSession:session withServiceEndpointAtURL:[NSURL URLWithString:kTokenRefreshServiceURL] callback:^(NSError *error, SPTSession *session) {
+        if (completion) {
+            completion(session, error);
+        }
+    }];
 }
 
 -(void)remoteControlReceivedWithEvent:(UIEvent *)event {
@@ -121,7 +131,7 @@ static NSString * const kCallbackURL = @"spotify-ios-sdk-beta://callback";
     // so completion happens here
     if ([[SPTAuth defaultInstance] canHandleURL:url withDeclaredRedirectURL:[NSURL URLWithString:kCallbackURL]]) {
         [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url
-                                            tokenSwapServiceEndpointAtURL:[NSURL URLWithString:@"http://192.168.178.28:1234/swap"]
+                                            tokenSwapServiceEndpointAtURL:[NSURL URLWithString:kTokenSwapServiceURL]
                                                                  callback:^(NSError *error, SPTSession *session) {
             // call callback to inform about completed session request
             if (self.loginCallback) {

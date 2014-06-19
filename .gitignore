@@ -1,3 +1,4 @@
 *.xcworkspace
 *.lock
 Pods
+*.db

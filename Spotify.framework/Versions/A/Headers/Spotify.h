@@ -19,9 +19,7 @@
  limitations under the License.
  */
 
-
 #import <Foundation/Foundation.h>
-
 #import "SPTTypes.h"
 
 // Auth and Session Handling
@@ -48,6 +46,8 @@
 #import "SPTPlaylistSnapshot.h"
 #import "SPTTrack.h"
 #import "SPTImage.h"
+#import "SPTUser.h"
+#import "SPTListPage.h"
 
 // Audio playback
 

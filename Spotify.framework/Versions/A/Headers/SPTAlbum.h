@@ -26,6 +26,7 @@
 
 @class SPTImage;
 @class SPTPartialArtist;
+@class SPTListPage;
 
 /// Defines the various types albums can be in relation to a given artist.
 typedef NS_ENUM(NSUInteger, SPTAlbumType) {
@@ -42,6 +43,10 @@ typedef NS_ENUM(NSUInteger, SPTAlbumType) {
 /** This class represents an album on the Spotify service. */
 @interface SPTAlbum : NSObject <SPTJSONObject, SPTTrackProvider>
 
+///----------------------------
+/// @name Requesting Albums
+///----------------------------
+
 /** Request the album at the given Spotify URI.
 
  @note This method takes Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
@@ -51,6 +56,10 @@ typedef NS_ENUM(NSUInteger, SPTAlbumType) {
  @param block The block to be called when the operation is complete. The block will pass a Spotify SDK metadata object on success, otherwise an error.
  */
 +(void)albumWithURI:(NSURL *)uri session:(SPTSession *)session callback:(SPTRequestCallback)block;
+
+///----------------------------
+/// @name Properties
+///----------------------------
 
 /** The name of the album. */
 @property (nonatomic, readonly, copy) NSString *name;
@@ -70,11 +79,14 @@ typedef NS_ENUM(NSUInteger, SPTAlbumType) {
 /** An array of artists for this album, as `SPTPartialArtist` objects. */
 @property (nonatomic, readonly) NSArray *artists;
 
-/** An array of tracks contained by this album, as `SPTPartialTrack` objects. */
-@property (nonatomic, readonly, copy) NSArray *tracks;
+/** The tracks contained by this album, as a page of `SPTPartialTrack` objects. */
+@property (nonatomic, readonly) SPTListPage *firstTrackPage;
 
 /** The release year of the album if known, otherwise `0`. */
 @property (nonatomic, readonly) NSInteger releaseYear;
+
+/** Day-accurate release date of the track if known, otherwise `nil`. */
+@property (nonatomic, readonly) NSDate *releaseDate;
 
 /** Returns the album type of this album. */
 @property (nonatomic, readonly) SPTAlbumType type;

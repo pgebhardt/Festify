@@ -16,10 +16,11 @@
 		5F14581119127DAE00F5A80C /* MWLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F14581019127DAE00F5A80C /* MWLogging.m */; };
 		5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */; };
 		5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */; };
-		5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD418FC31B10030A64B /* Spotify.framework */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
 		5F2123B6191E815D00849778 /* Pods-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F2123B5191E815D00849778 /* Pods-acknowledgements.plist */; };
 		5F28F7631901288D00A0468A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7621901288D00A0468A /* libz.dylib */; };
+		5F3297591952CAAB007D8999 /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F3297581952CAAB007D8999 /* Spotify.framework */; };
+		5F32975C1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F32975B1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m */; };
 		5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6218FC115200C3ED75 /* CoreGraphics.framework */; };
 		5F423A6518FC115200C3ED75 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6418FC115200C3ED75 /* UIKit.framework */; };
 		5F423A6B18FC115200C3ED75 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A6918FC115200C3ED75 /* InfoPlist.strings */; };
@@ -75,12 +76,14 @@
 		5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSettingSelectionViewController.m; sourceTree = "<group>"; };
 		5F1CF46118FD9782009E4791 /* SMPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlayerViewController.h; sourceTree = "<group>"; };
 		5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPlayerViewController.m; sourceTree = "<group>"; };
-		5F1F9BD418FC31B10030A64B /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5F20799F190C1DB000AAE15A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		5F2079A1190C1DB700AAE15A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		5F2123B5191E815D00849778 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-acknowledgements.plist"; path = "../Pods/Pods-acknowledgements.plist"; sourceTree = "<group>"; };
 		5F28F7621901288D00A0468A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		5F3297581952CAAB007D8999 /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
+		5F32975A1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPTPlaylistSnapshot+AllTracks.h"; sourceTree = "<group>"; };
+		5F32975B1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SPTPlaylistSnapshot+AllTracks.m"; sourceTree = "<group>"; };
 		5F423A5D18FC115200C3ED75 /* Festify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Festify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F423A6018FC115200C3ED75 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5F423A6218FC115200C3ED75 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -129,6 +132,7 @@
 			files = (
 				5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */,
 				5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */,
+				5F3297591952CAAB007D8999 /* Spotify.framework in Frameworks */,
 				5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */,
 				5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */,
 				5F28F7631901288D00A0468A /* libz.dylib in Frameworks */,
@@ -136,7 +140,6 @@
 				5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */,
 				5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */,
 				5F423A6518FC115200C3ED75 /* UIKit.framework in Frameworks */,
-				5F1F9BD518FC31B10030A64B /* Spotify.framework in Frameworks */,
 				A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -154,15 +157,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5F1E97B21902E5880009B675 /* Libraries */ = {
+		5F1E97B21902E5880009B675 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				5F036AB01926C16900B4F3B9 /* SPTRequest+MultipleItems.h */,
 				5F036AB11926C16900B4F3B9 /* SPTRequest+MultipleItems.m */,
 				5F14580F19127DAE00F5A80C /* MWLogging.h */,
 				5F14581019127DAE00F5A80C /* MWLogging.m */,
+				5F32975A1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.h */,
+				5F32975B1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m */,
 			);
-			name = Libraries;
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 		5F1E97B31902E5A20009B675 /* View Controller */ = {
@@ -213,6 +218,7 @@
 		5F423A5F18FC115200C3ED75 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5F3297581952CAAB007D8999 /* Spotify.framework */,
 				5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */,
 				5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */,
 				5F7DB9BD190C55790077F648 /* QuartzCore.framework */,
@@ -227,7 +233,6 @@
 				5F089B6018FD2B5F002476CB /* iAd.framework */,
 				5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */,
 				5F1F9BD618FC31B70030A64B /* AVFoundation.framework */,
-				5F1F9BD418FC31B10030A64B /* Spotify.framework */,
 				5F423A6018FC115200C3ED75 /* Foundation.framework */,
 				5F423A6218FC115200C3ED75 /* CoreGraphics.framework */,
 				5F423A6418FC115200C3ED75 /* UIKit.framework */,
@@ -241,7 +246,7 @@
 			isa = PBXGroup;
 			children = (
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
-				5F1E97B21902E5880009B675 /* Libraries */,
+				5F1E97B21902E5880009B675 /* Extensions */,
 				5F423A6F18FC115200C3ED75 /* SMAppDelegate.h */,
 				5F423A7018FC115200C3ED75 /* SMAppDelegate.m */,
 				5F5A162118FC535100E408DC /* SMDiscoveryManager.h */,
@@ -446,6 +451,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F32975C1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m in Sources */,
 				5F14581119127DAE00F5A80C /* MWLogging.m in Sources */,
 				5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */,
 				5FAD80621921487D0086DABD /* SMTrackPlayerBarViewController.m in Sources */,

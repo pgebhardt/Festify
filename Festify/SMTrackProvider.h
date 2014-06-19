@@ -27,7 +27,7 @@ static NSString* const SMTrackProviderDeletionWarningSentKey = @"SMTrackProvider
 @interface SMTrackProvider : NSObject<SPTTrackProvider>
 
 -(id)init;
--(void)setPlaylists:(NSArray*)playlists forUser:(NSString*)username withTimeoutInterval:(NSInteger)timeout;
+-(void)setPlaylists:(NSArray*)playlists forUser:(NSString*)username withTimeoutInterval:(NSInteger)timeout session:(SPTSession*)session;
 -(void)updateTimeoutInterval:(NSInteger)timeout forUser:(NSString*)username;
 -(void)removePlaylistsForUser:(NSString*)username;
 -(void)clear;

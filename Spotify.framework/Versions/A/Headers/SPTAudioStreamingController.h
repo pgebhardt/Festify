@@ -23,15 +23,25 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import "SPTTypes.h"
 
-typedef double SPVolume;
+typedef double SPTVolume;
 
-extern NSString * const SPTAudioStreamingMetadataTrackName;
-extern NSString * const SPTAudioStreamingMetadataTrackURI;
-extern NSString * const SPTAudioStreamingMetadataArtistName;
-extern NSString * const SPTAudioStreamingMetadataArtistURI;
-extern NSString * const SPTAudioStreamingMetadataAlbumName;
-extern NSString * const SPTAudioStreamingMetadataAlbumURI;
-extern NSString * const SPTAudioStreamingMetadataTrackDuration;
+/** The playback bitrates availabe. */
+typedef NS_ENUM(NSUInteger, SPTBitrate) {
+	/** The lowest bitrate. */
+	SPTBitrateLow = 0,
+	/** The normal bitrate. */
+	SPTBitrateNormal = 1,
+	/** The highest bitrate. */
+	SPTBitrateHigh = 2,
+};
+
+FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackName;
+FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackURI;
+FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataArtistName;
+FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataArtistURI;
+FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataAlbumName;
+FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataAlbumURI;
+FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
 
 @class SPTSession;
 @class SPTCoreAudioController;
@@ -40,6 +50,10 @@ extern NSString * const SPTAudioStreamingMetadataTrackDuration;
 
 /// This class manages audio streaming from Spotify.
 @interface SPTAudioStreamingController : NSObject
+
+///----------------------------
+/// @name Initialisation and Setup
+///----------------------------
 
 /** Initialise a new `SPAudioStreamingController`.
  
@@ -64,11 +78,16 @@ extern NSString * const SPTAudioStreamingMetadataTrackDuration;
  
  Audio playback will not be available until the receiver is successfully logged in.
  
- @param session The session to log in with.
- @param block The callback block to be executed when login succeeds of fails. In the cause of
+ @param session The session to log in with. Must be valid and authenticated with the
+ `SPTAuthStreamingScope` scope.
+ @param block The callback block to be executed when login succeeds or fails. In the cause of
  failure, an `NSError` object will be passed.
  */
 -(void)loginWithSession:(SPTSession *)session callback:(SPTErrorableOperationCallback)block;
+
+///----------------------------
+/// @name Properties
+///----------------------------
 
 /** Returns `YES` if the receiver is logged into the Spotify service, otherwise `NO`. */
 @property (nonatomic, readonly) BOOL loggedIn;
@@ -90,7 +109,19 @@ extern NSString * const SPTAudioStreamingMetadataTrackDuration;
  received, which will pass back an `NSError` object if an error ocurred.
  @see -volume
  */
--(void)setVolume:(SPVolume)volume callback:(SPTErrorableOperationCallback)block;
+-(void)setVolume:(SPTVolume)volume callback:(SPTErrorableOperationCallback)block;
+
+/** Set the target streaming bitrate.
+ 
+ The library will attempt to stream audio at the given bitrate. If the given
+ bitrate is not available, the closest match will be used. This process is
+ completely transparent, but you should be aware that data usage isn't guaranteed.
+ 
+ @param bitrate The bitrate to target.
+ @param block The callback block to be executed when the command has been
+ received, which will pass back an `NSError` object if an error ocurred.
+ */
+-(void)setTargetBitrate:(SPTBitrate)bitrate callback:(SPTErrorableOperationCallback)block;
 
 /** Seek playback to a given location in the current track.
 
@@ -127,13 +158,13 @@ extern NSString * const SPTAudioStreamingMetadataTrackDuration;
  
  Metadata is under the following keys:
  
- - `SPAudioStreamingMetadataTrackName`: The track's name.
- - `SPAudioStreamingMetadataTrackURI`: The track's Spotify URI.
- - `SPAudioStreamingMetadataArtistName`: The track's artist's name.
- - `SPAudioStreamingMetadataArtistURI`: The track's artist's Spotify URI.
- - `SPAudioStreamingMetadataAlbumName`: The track's album's name.
- - `SPAudioStreamingMetadataAlbumURI`: The track's album's URI.
- - `SPAudioStreamingMetadataTrackDuration`: The track's duration as an `NSTimeInterval` boxed in an `NSNumber`.
+ - `SPTAudioStreamingMetadataTrackName`: The track's name.
+ - `SPTAudioStreamingMetadataTrackURI`: The track's Spotify URI.
+ - `SPTAudioStreamingMetadataArtistName`: The track's artist's name.
+ - `SPTAudioStreamingMetadataArtistURI`: The track's artist's Spotify URI.
+ - `SPTAudioStreamingMetadataAlbumName`: The track's album's name.
+ - `SPTAudioStreamingMetadataAlbumURI`: The track's album's URI.
+ - `SPTAudioStreamingMetadataTrackDuration`: The track's duration as an `NSTimeInterval` boxed in an `NSNumber`.
 
  */
 @property (nonatomic, readonly, copy) NSDictionary *currentTrackMetadata;
@@ -142,7 +173,7 @@ extern NSString * const SPTAudioStreamingMetadataTrackDuration;
 @property (nonatomic, readonly) BOOL isPlaying;
 
 /** Returns `YES` if repeat is on, otherwise `NO`. */
-@property (nonatomic, readonly) SPVolume volume;
+@property (nonatomic, readonly) SPTVolume volume;
 
 /** Returns `YES` if the receiver expects shuffled playback, otherwise `NO`. */
 @property (nonatomic, readonly) BOOL shuffle;
@@ -158,6 +189,8 @@ extern NSString * const SPTAudioStreamingMetadataTrackDuration;
 
 /// Defines events relating to the connection to the Spotify service.
 @protocol SPTAudioStreamingDelegate <NSObject>
+
+@optional
 
 /** Called when the streaming controller logs in successfully.
  @param audioStreaming The object that sent the message.
@@ -201,6 +234,8 @@ extern NSString * const SPTAudioStreamingMetadataTrackDuration;
 /// Defines events relating to audio playback.
 @protocol SPTAudioStreamingPlaybackDelegate <NSObject>
 
+@optional
+
 /** Called when playback status changes.
  @param audioStreaming The object that sent the message.
  @param isPlaying Set to `YES` if the object is playing audio, `NO` if it is paused.
@@ -217,7 +252,7 @@ extern NSString * const SPTAudioStreamingMetadataTrackDuration;
  @param audioStreaming The object that sent the message.
  @param volume The new volume.
  */
--(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeVolume:(SPVolume)volume;
+-(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeVolume:(SPTVolume)volume;
 
 /** Called when shuffle status changes.
  @param audioStreaming The object that sent the message.

@@ -50,7 +50,7 @@ typedef NS_ENUM(NSUInteger, SPTPlaybackEndReason) {
 @interface SPTTrackPlayer : NSObject
 
 ///----------------------------
-/// @name Initialization and Setup
+/// @name Initialisation and Setup
 ///----------------------------
 
 /** Initialises a new track player.
@@ -77,7 +77,8 @@ typedef NS_ENUM(NSUInteger, SPTPlaybackEndReason) {
 
 /** Attempts to enable playback with the given session.
  
- @param session The session to use for audio playback. Must be valid and authenticated.
+ @param session The session to use for audio playback. Must be valid and authenticated with the 
+ `SPTAuthStreamingScope` scope.
  @param block The block to call when playback is enabled (or not). If playback could not be enabled, 
  the block's `error` parameter will contain information.
  */
@@ -181,7 +182,9 @@ typedef NS_ENUM(NSUInteger, SPTPlaybackEndReason) {
 
 /** This protocol defines methods used by `SPTTrackPlayer` to inform delegates of playback events. */
 @protocol SPTTrackPlayerDelegate <NSObject>
+
 @optional
+
 /** Called when a new track started playing.
  
  @param player The player that sent the message. 
@@ -225,7 +228,7 @@ typedef NS_ENUM(NSUInteger, SPTPlaybackEndReason) {
  @param player The player that sent the message.
  @param message The message to display to the user.
  */
--(void)trackPlayer:(SPTTrackPlayer *)player didDidReceiveMessageForEndUser:(NSString *)message;
+-(void)trackPlayer:(SPTTrackPlayer *)player didReceiveMessageForEndUser:(NSString *)message;
 
 @end
 

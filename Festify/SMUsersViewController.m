@@ -72,7 +72,7 @@
     }
     else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"playlistCell" forIndexPath:indexPath];
-        cell.textLabel.text = [[self.trackProvider.users.allValues[indexPath.section][SMTrackProviderPlaylistsKey] objectAtIndex:(indexPath.row - 1)] name];
+        cell.textLabel.text = [[self.trackProvider.users.allValues[indexPath.section][SMTrackProviderPlaylistsKey] allKeys] objectAtIndex:(indexPath.row - 1)];
     }
     
     return cell;

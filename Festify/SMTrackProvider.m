@@ -7,10 +7,11 @@
 //
 
 #import "SMTrackProvider.h"
+#import "SPTPlaylistSnapshot+AllTracks.h"
 
 @interface SMTrackProvider ()
 @property (nonatomic, strong) NSMutableDictionary* users;
-@property (nonatomic, strong) NSMutableArray* tracks;
+@property (nonatomic, strong) NSMutableArray* tracksForPlayback;
 @end
 
 @implementation SMTrackProvider
@@ -18,7 +19,7 @@
 -(id)init {
     if (self = [super init]) {
         self.users = [NSMutableDictionary dictionary];
-        self.tracks = [NSMutableArray array];
+        self.tracksForPlayback = [NSMutableArray array];
         
         // register to enter foreground notification to check and restart all timers
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreTimersAfterSuspension:)
@@ -32,7 +33,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
--(void)setPlaylists:(NSArray *)playlists forUser:(NSString *)username withTimeoutInterval:(NSInteger)timeout {
+-(void)setPlaylists:(NSArray *)playlists forUser:(NSString *)username withTimeoutInterval:(NSInteger)timeout session:(SPTSession*)session {
     NSMutableDictionary* userInfo = self.users[username];
     if (!userInfo) {
         userInfo = [NSMutableDictionary dictionary];
@@ -41,17 +42,28 @@
     
     // only update tracks array, if playlists are not identical
     if (userInfo[SMTrackProviderPlaylistsKey]) {
-        NSArray* oldPlaylistURIs = [[[userInfo[SMTrackProviderPlaylistsKey] valueForKey:@"uri"] valueForKey:@"absoluteString"] sortedArrayUsingSelector:@selector(compare:)];
-        NSArray* newPlaylistURIs = [[[playlists valueForKey:@"uri"] valueForKey:@"absoluteString"] sortedArrayUsingSelector:@selector(compare:)];
+        NSArray* oldPlaylistNames = [[userInfo[SMTrackProviderPlaylistsKey] allKeys] sortedArrayUsingSelector:@selector(compare:)];
+        NSArray* newPlaylistNames = [[playlists valueForKey:@"name"] sortedArrayUsingSelector:@selector(compare:)];
         
-        if (![newPlaylistURIs isEqualToArray:oldPlaylistURIs]) {
+        if (![newPlaylistNames isEqualToArray:oldPlaylistNames]) {
             userInfo[SMTrackProviderPlaylistsKey] = playlists;
             [self updateTracksArray];
         }
     }
     else {
-        userInfo[SMTrackProviderPlaylistsKey] = playlists;
-        [self updateTracksArray];
+        NSMutableDictionary* playlistsDict = [NSMutableDictionary dictionary];
+        userInfo[SMTrackProviderPlaylistsKey] = playlistsDict;
+
+        for (NSUInteger i = 0; i < playlists.count; ++i) {
+            [playlists[i] allTracksWithSession:session completion:^(NSArray *tracks, NSError *error) {
+                if (!error) {
+                    playlistsDict[[playlists[i] name]] = tracks;
+                    if (i == playlists.count - 1) {
+                        [self updateTracksArray];
+                    }
+                }
+            }];
+        }
     }
     
     userInfo[SMTrackProviderDateUpdatedKey] = [NSDate date];
@@ -109,7 +121,7 @@
         [userInfo[SMTrackProviderTimerKey] invalidate];
     }
 
-    [self.tracks removeAllObjects];
+    [self.tracksForPlayback removeAllObjects];
     [self.users removeAllObjects];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SMTrackProviderDidUpdateTracksArray object:self];
@@ -117,8 +129,8 @@
 
 #pragma mark - SPTTrackProvider
 
--(NSArray *)tracks {
-    return _tracks;
+-(NSArray *)tracksForPlayback {
+    return _tracksForPlayback;
 }
 
 -(NSURL *)uri {
@@ -177,22 +189,22 @@
     NSMutableArray* tracksOfUsers = [NSMutableArray array];
     for (NSInteger i = 0; i < self.users.count; ++i) {
         NSMutableArray* tracksOfUser = [NSMutableArray array];
-        for (SPTPlaylistSnapshot* playlist in self.users.allValues[i][SMTrackProviderPlaylistsKey]) {
-            [tracksOfUser addObjectsFromArray:playlist.tracks];
+        for (NSArray* playlist in [self.users.allValues[i][SMTrackProviderPlaylistsKey] allValues]) {
+            [tracksOfUser addObjectsFromArray:playlist];
         }
         
         [self shuffleArray:tracksOfUser];
         [tracksOfUsers addObject:tracksOfUser];
     }
 
-    [self.tracks removeAllObjects];
+    [self.tracksForPlayback removeAllObjects];
     for (NSArray* tracks in tracksOfUsers) {
         NSIndexSet* indicesOfTracks = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0,
             tracks.count < 100 ? tracks.count : 100)];
-        [self.tracks addObjectsFromArray:[tracks objectsAtIndexes:indicesOfTracks]];
+        [self.tracksForPlayback addObjectsFromArray:[tracks objectsAtIndexes:indicesOfTracks]];
     }
     
-    [self shuffleArray:self.tracks];
+    [self shuffleArray:self.tracksForPlayback];
     [[NSNotificationCenter defaultCenter] postNotificationName:SMTrackProviderDidUpdateTracksArray object:self];
 }
 

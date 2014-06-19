@@ -39,6 +39,10 @@ typedef NS_ENUM(NSUInteger, SPTSearchQueryType) {
 /** This class provides methods to get Spotify SDK metadata objects. */
 @interface SPTRequest : NSObject
 
+///----------------------------
+/// @name Generic Requests
+///----------------------------
+
 /** Request the item at the given Spotify URI.
  
  @note This method takes Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
@@ -57,13 +61,42 @@ typedef NS_ENUM(NSUInteger, SPTSearchQueryType) {
  */
 +(void)requestItemFromPartialObject:(id <SPTPartialObject>)partialObject withSession:(SPTSession *)session callback:(SPTRequestCallback)block;
 
+///----------------------------
+/// @name Playlists
+///----------------------------
+
 /** Get the authenticated user's playlist list.
- 
- @param userName The username of the user to get playlists for. 
- @param session An authenticated session.
+
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthPlaylistReadScope` or `SPTAuthPlaylistReadPrivateScope` scope as necessary.
  @param block The block to be called when the operation is complete. The block will pass an `SPTPlaylistList` object on success, otherwise an error.
  */
-+(void)playlistsForUser:(NSString *)userName withSession:(SPTSession *)session callback:(SPTRequestCallback)block;
++(void)playlistsForUserInSession:(SPTSession *)session callback:(SPTRequestCallback)block;
+
+/** Get the authenticated user's starred playlist.
+
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthPlaylistReadScope` or `SPTAuthPlaylistReadPrivateScope` scope as necessary.
+ @param block The block to be called when the operation is complete. The block will pass an `SPTPlaylistSnapshot` object on success, otherwise an error.
+ */
++(void)starredListForUserInSession:(SPTSession *)session callback:(SPTRequestCallback)block;
+
+///----------------------------
+/// @name User Information
+///----------------------------
+
+/** Get the authenticated user's information.
+
+ @param session An authenticated session. Must be valid and authenticated with the
+ scopes required for the information you require. See the `SPTUser` documentation for details.
+ @param block The block to be called when the operation is complete. The block will pass an `SPTUser` object on success, otherwise an error.
+ @see SPTUser
+ */
++(void)userInformationForUserInSession:(SPTSession *)session callback:(SPTRequestCallback)block;
+
+///----------------------------
+/// @name Search
+///----------------------------
 
 /** Performs a search with a given query and offset
  
@@ -71,7 +104,7 @@ typedef NS_ENUM(NSUInteger, SPTSearchQueryType) {
  @param searchQueryType The type of search to do.
  @param offset The index at which to start returning results.
  @param session An authenticated session. Can be `nil`.
- @param block The block to be called when the operation is complete. The block will pass a Spotify SDK metadata object on success, otherwise an error.
+ @param block The block to be called when the operation is complete. The block will pass an `SPTListPage` containing results on success, otherwise an error.
  */
 +(void)performSearchWithQuery:(NSString *)searchQuery queryType:(SPTSearchQueryType)searchQueryType offset:(NSInteger)offset session:(SPTSession *)session callback:(SPTRequestCallback)block;
 
@@ -80,7 +113,7 @@ typedef NS_ENUM(NSUInteger, SPTSearchQueryType) {
  @param searchQuery The query to pass to the search.
  @param searchQueryType The type of search to do.
  @param session An authenticated session. Can be `nil`.
- @param block The block to be called when the operation is complete. The block will pass a Spotify SDK metadata object on success, otherwise an error.
+ @param block The block to be called when the operation is complete. The block will pass an `SPTListPage` containing results on success, otherwise an error.
  */
 +(void)performSearchWithQuery:(NSString *)searchQuery queryType:(SPTSearchQueryType)searchQueryType session:(SPTSession *)session callback:(SPTRequestCallback)block;
 

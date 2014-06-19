@@ -24,6 +24,7 @@
 @property (nonatomic, assign) BOOL updateUsersBadgeValue;
 @property (nonatomic, assign) NSInteger usersTimeout;
 @property (nonatomic, strong) MBProgressHUD* progressHUD;
+@property (nonatomic, strong) NSString* username;
 @end
 
 @implementation SMFestifyViewController
@@ -52,17 +53,35 @@
 
     // load spotify session from userdefaults and restore application state,
     // or show login screen if no session is available
-    id plistRepresentation = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsSpotifySessionKey];
-    self.session = [[SPTSession alloc] initWithPropertyListRepresentation:plistRepresentation];
+    id sessionData = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsSpotifySessionKey];
+    self.session = sessionData ? [NSKeyedUnarchiver unarchiveObjectWithData:sessionData] : nil;
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (self.session) {
-            self.advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
-            [self setAdvertisementState:[[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisementStateKey] boolValue]];
-            self.usersTimeout = [[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsUserTimeoutKey] integerValue];
+            void (^initSession)() = ^{
+                // try to enable playback
+                [self.trackPlayer enablePlaybackWithSession:self.session callback:nil];
+                [self getUsernameWithSession:self.session completion:^(NSString *username) {
+                    self.username = username;
+                    
+                    self.advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
+                    [self setAdvertisementState:[[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisementStateKey] boolValue]];
+                    self.usersTimeout = [[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsUserTimeoutKey] integerValue];
+                }];
+            };
             
-            // try to enable playback
-            [self.trackPlayer enablePlaybackWithSession:self.session callback:nil];
+            if (self.session.isValid) {
+                initSession();
+            }
+            else {
+                [((SMAppDelegate*)[UIApplication sharedApplication].delegate) renewSpotifySession:self.session WithCompletionHandler:^(SPTSession *session, NSError *error) {
+                    // store new session to users defaults, initialize user defaults and try to enable playback
+                    self.session = session;
+                    [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session] forKey:SMUserDefaultsSpotifySessionKey];
+
+                    initSession();
+                }];
+            }
         }
         else {
             [self performSegueWithIdentifier:@"showLogin" sender:self];
@@ -121,8 +140,7 @@
     // add all currently advertised songs, if festify and advertisement modes are active
     if ([SMDiscoveryManager sharedInstance].isDiscovering &&
         [SMDiscoveryManager sharedInstance].isAdvertising) {
-        MWLogDebug(@"TODO: replace user name with correct one, this is only for debug");
-        [self setPlaylists:self.advertisedPlaylists forUser:@"self" withTimeout:0];
+        [self setPlaylists:self.advertisedPlaylists forUser:self.username withTimeout:0];
     }
 }
 
@@ -130,7 +148,7 @@
     // init track player, if neccessary, and inform user,
     // when playback cannot be enabled due to its account status,
     // and update UI accordingly
-    if (self.trackProvider.tracks.count != 0) {
+    if (self.trackProvider.tracksForPlayback.count != 0) {
         if (!self.trackPlayer.currentProvider) {
             [self.trackPlayer playTrackProvider:self.trackProvider];
         }
@@ -144,7 +162,7 @@
     // update UI
     dispatch_async(dispatch_get_main_queue(), ^{
         self.usersButton.enabled = (self.trackProvider.users.count != 0);
-        if (self.trackProvider.tracks.count == 0) {
+        if (self.trackProvider.tracksForPlayback.count == 0) {
             self.usersBarButtonItem.badgeValue = @"";
         }
         
@@ -183,14 +201,16 @@
         
         // store new session to users defaults, initialize user defaults and try to enable playback
         self.session = session;
-        [[NSUserDefaults standardUserDefaults] setValue:session.propertyListRepresentation forKey:SMUserDefaultsSpotifySessionKey];
-        
-        [self initStandardUserDefaults:^{
-            [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
-                if (error) {
-                    [[[UIAlertView alloc] initWithTitle:@"Music playback requires a Spotify Premium account!"
-                                                message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-                }
+        [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session] forKey:SMUserDefaultsSpotifySessionKey];
+        [self getUsernameWithSession:self.session completion:^(NSString *username) {
+            self.username = username;
+            [self initStandardUserDefaults:^{
+                [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
+                    if (error) {
+                        [[[UIAlertView alloc] initWithTitle:@"Music playback requires a Spotify Premium account!"
+                                                    message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                    }
+                }];
             }];
         }];
     }];
@@ -257,7 +277,7 @@
 
 -(void)initStandardUserDefaults:(void (^)(void))completion {
     // initialize user defaults to common standard values
-    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
+    [SPTRequest playlistsForUserInSession:self.session callback:^(NSError *error, id object) {
         self.advertisedPlaylists = [[[object items] valueForKey:@"uri"] valueForKey:@"absoluteString"];
         [[NSUserDefaults standardUserDefaults] setValue:self.advertisedPlaylists forKey:SMUserDefaultsAdvertisedPlaylistsKey];
         
@@ -290,7 +310,7 @@
 -(void)setAdvertisementState:(BOOL)advertising {
     if (advertising) {
         // create broadcast dictionary with username and all playlists
-        NSDictionary* broadcastData = @{@"username": self.session.canonicalUsername,
+        NSDictionary* broadcastData = @{@"username": self.username,
                                         @"playlists": self.advertisedPlaylists };
         NSData* jsonString = [NSJSONSerialization dataWithJSONObject:broadcastData options:0 error:nil];
         [[SMDiscoveryManager sharedInstance] advertiseProperty:jsonString];
@@ -317,8 +337,15 @@
             });
         }
         
-        [self.trackProvider setPlaylists:object forUser:username withTimeoutInterval:timeout];
+        [self.trackProvider setPlaylists:object forUser:username withTimeoutInterval:timeout session:self.session];
     }];
 }
 
+-(void)getUsernameWithSession:(SPTSession*)session completion:(void (^)(NSString* username))completion {
+    [SPTRequest userInformationForUserInSession:session callback:^(NSError *error, id object) {
+        if (!error && completion) {
+            completion([object displayName] ? [object displayName] : [object canonicalUserName]);
+        }
+    }];
+}
 @end

@@ -22,24 +22,23 @@
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 
-/// Defines Spotify image sizes in relative terms.
-typedef NS_ENUM(NSUInteger, SPTImageSize) {
-	/// Specifies that the image is small.
-	SPTImageSizeSmall,
-	/// Specifies that the image is medium.
-	SPTImageSizeMedium,
-	/// Specifies that the image is large.
-	SPTImageSizeLarge,
-	/// Specifies that the image is extra large.
-	SPTImageSizeExtraLarge
-};
-
+/** This class represents an image from the Spotify service. It could be an
+ album's cover art or a user image, for example. */
 @interface SPTImage : NSObject
 
-@property (nonatomic, readonly) CGSize aspect;
+///----------------------------
+/// @name Properties
+///----------------------------
 
-@property (nonatomic, readonly) SPTImageSize imageSize;
+/** The image's size as reported from the backed.
+ 
+@warning This property may be `CGSizeZero` if the size of the image is unknown
+ by the backend. This is particularly the case with images not owned by Spotify, for
+ example if a user's image is taken from their Facebook account.
+ */
+@property (nonatomic, readonly) CGSize size;
 
+/** The HTTP URL to the image. */
 @property (nonatomic, readonly, copy) NSURL *imageURL;
 
 @end

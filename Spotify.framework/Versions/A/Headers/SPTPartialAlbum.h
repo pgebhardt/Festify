@@ -23,8 +23,23 @@
 #import "SPTPartialObject.h"
 #import "SPTJSONDecoding.h"
 
+@class SPTImage;
+
 /** Represents a "partial" album on the Spotify service. You can promote this
  to a full album object using `SPTRequest`. */
 @interface SPTPartialAlbum : NSObject <SPTPartialObject, SPTJSONObject>
+
+///----------------------------
+/// @name Properties
+///----------------------------
+
+/** Returns a list of album covers in various sizes, as `SPTImage` objects. */
+@property (nonatomic, readonly, copy) NSArray *covers;
+
+/** Convenience method that returns the smallest available cover image. */
+@property (nonatomic, readonly) SPTImage *smallestCover;
+
+/** Convenience method that returns the largest available cover image. */
+@property (nonatomic, readonly) SPTImage *largestCover;
 
 @end

@@ -25,6 +25,10 @@
  objects to a full objects using `SPTRequest`. */
 @protocol SPTPartialObject <NSObject>
 
+///----------------------------
+/// @name Properties
+///----------------------------
+
 /** The name of the object. */
 @property (nonatomic, readonly, copy) NSString *name;
 

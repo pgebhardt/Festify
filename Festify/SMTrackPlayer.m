@@ -185,7 +185,7 @@
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didStartPlaybackOfTrackAtIndex:(NSInteger)index ofProvider:(id<SPTTrackProvider>)provider {
     // update properties
-    self.currentTrack = provider.tracks[index];
+    self.currentTrack = provider.tracksForPlayback[index];
     self.indexOfCurrentTrack = index;
     self.playing = YES;
     

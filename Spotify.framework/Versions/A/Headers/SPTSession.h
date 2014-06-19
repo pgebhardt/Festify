@@ -22,38 +22,57 @@
 #import <Foundation/Foundation.h>
 
 /**
- This class represents a user logged in using the Spotify oAuth service.
+ @brief SPTSession is a class that represents a user session authenticated through the Spotify OAuth service.
+ @discussion For persisting the session, you may use `NSKeyedArchiver` to obtain an `NSData` instance, which can
+  be stored securely using Keychain Services.
+ @note A session is valid for a certain period of time, and may be renewed without user intervention using `SPTAuth`.
+ @see SPTAuth
  */
-@interface SPTSession : NSObject
+@interface SPTSession : NSObject <NSSecureCoding>
+
+///----------------------------
+/// @name Initialisation
+///----------------------------
 
 /**
- Initialise an SPTSession. 
- 
+ @brief The deignated initializer for `SPTSession`.
  @param userName The username of the user.
- @param credential The login token of the user. 
- @return Returns the initialised session.
+ @param accessToken The access token of the user.
+ @param expirationDate The expiration date of the access token.
+ @return An initialized `SPTSession` object.
  */
--(id)initWithUserName:(NSString *)userName credential:(NSString *)credential;
+- (instancetype)initWithUserName:(NSString *)userName accessToken:(NSString *)accessToken expirationDate:(NSDate *)expirationDate;
 
 /**
- Initialise an SPTSession from a previously stored state.
- 
- @param plistRep A representation of the session as obtained from -propertyListRepresentation.
- @return Returns the initialised session, or `nil` if an invalid representation is given.
+ @brief Initializer that takes an `NSTimeInterval` until the access token expires, instead of an `NSDate`.
+ @param userName The username of the user.
+ @param accessToken The access token of the user.
+ @param timeInterval The time interval until the access token expires.
+ @return An initialized `SPTSession` object.
  */
--(id)initWithPropertyListRepresentation:(id)plistRep;
+- (instancetype)initWithUserName:(NSString *)userName accessToken:(NSString *)accessToken expirationTimeInterval:(NSTimeInterval)timeInterval;
 
-/** Returns a representation of the session for serialising.
- 
- The value returned by this method is suitable for storing without further encryption,
- such as in `NSUserDefaults` or similar.
+///----------------------------
+/// @name Properties
+///----------------------------
+
+/**
+ @brief Returns whether the session is still valid.
+ @discussion Determining validity is done by comparing the current date and time with the expiration date of the `SPTSession` object.
+ @return `YES` if valid, otherwise `NO`.
  */
--(id)propertyListRepresentation;
+- (BOOL)isValid;
 
-/** Returns the canonical username of the user. */
+/** @brief The canonical username of the authenticated user. */
 @property (nonatomic, copy, readonly) NSString *canonicalUsername;
 
-/** Returns the login token of the user. */
-@property (nonatomic, copy, readonly) NSString *credential;
+/** @brief The access token of the authenticated user. */
+@property (nonatomic, copy, readonly) NSString *accessToken;
+
+/** @brief The expiration date of the access token. */
+@property (nonatomic, copy, readonly) NSDate *expirationDate;
+
+/** @brief The access token type. */
+@property (nonatomic, copy, readonly) NSString *tokenType;
 
 @end

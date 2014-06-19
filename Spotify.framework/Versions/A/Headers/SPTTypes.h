@@ -32,7 +32,7 @@ typedef void (^SPTErrorableOperationCallback)(NSError *error);
 @protocol SPTTrackProvider <NSObject>
 
 /** Returns the tracks for playback. */
--(NSArray *)tracks;
+-(NSArray *)tracksForPlayback;
 
 /** Returns the URI of the object. */
 -(NSURL *)uri;

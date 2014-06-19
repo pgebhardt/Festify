@@ -6,6 +6,33 @@
 
 #import <Foundation/Foundation.h>
 
+/** Scope that lets you stream music. */
+FOUNDATION_EXPORT NSString * const SPTAuthStreamingScope;
+
+/** Scope that lets you read public playlists. */
+FOUNDATION_EXPORT NSString * const SPTAuthPlaylistReadScope;
+
+/** Scope that lets you read private playlists of the authenticated user. */
+FOUNDATION_EXPORT NSString * const SPTAuthPlaylistReadPrivateScope;
+
+/** Scope that lets you modify public playlists of the authenticated user. */
+FOUNDATION_EXPORT NSString * const SPTAuthPlaylistModifyScope;
+
+/** Scope that lets you modify private playlists of the authenticated user. */
+FOUNDATION_EXPORT NSString * const SPTAuthPlaylistModifyPrivateScope;
+
+/** Scope that lets you read private information about the authenticated user. */
+FOUNDATION_EXPORT NSString * const SPTAuthUserReadPrivateScope;
+
+/** Scope that lets you modify user information for the authenticated user. */
+FOUNDATION_EXPORT NSString * const SPTAuthUserModifyScope;
+
+/** Scope that lets you modify private user information for the authenticated user. */
+FOUNDATION_EXPORT NSString * const SPTAuthUserModifyPrivateScope;
+
+/** Scope that lets you read the email address of the authenticated user. */
+FOUNDATION_EXPORT NSString * const SPTAuthUserReadEmailScope;
+
 @class SPTSession;
 
 /**
@@ -98,5 +125,18 @@ typedef void (^SPTAuthCallback)(NSError *error, SPTSession *session);
  @param block The callback block to be triggered when authentication succeeds or fails.
  */
 -(void)handleAuthCallbackWithTriggeredAuthURL:(NSURL *)url tokenSwapServiceEndpointAtURL:(NSURL *)tokenSwapURL callback:(SPTAuthCallback)block;
+
+///----------------------------
+/// @name Renewing Sessions
+///----------------------------
+
+/**
+ Request a new access token using an existing SPTSession object containing a refresh token.
+
+ @param session An SPTSession object with a valid refresh token.
+ @param endpointURL The URL of the service that requests an access token using the refresh token.
+ @param block The callback block that will be invoked when the request has been performed.
+ */
+-(void)renewSession:(SPTSession *)session withServiceEndpointAtURL:(NSURL *)endpointURL callback:(SPTAuthCallback)block;
 
 @end

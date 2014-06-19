@@ -48,7 +48,7 @@
         return self.searchResults.count;
     }
     else {
-        return self.trackPlayer.currentProvider.tracks.count;
+        return self.trackPlayer.currentProvider.tracksForPlayback.count;
     }
 }
 
@@ -62,8 +62,8 @@
         track = self.searchResults[indexPath.row];
     }
     else {
-        NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
-        track = self.trackPlayer.currentProvider.tracks[trackIndex];
+        NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback.count;
+        track = self.trackPlayer.currentProvider.tracksForPlayback[trackIndex];
     }
     cell.textLabel.text = track.name;
     cell.detailTextLabel.text = [track.artists[0] name];
@@ -74,10 +74,10 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUInteger trackIndex = 0;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        trackIndex = [self.trackPlayer.currentProvider.tracks indexOfObject:self.searchResults[indexPath.row]];
+        trackIndex = [self.trackPlayer.currentProvider.tracksForPlayback indexOfObject:self.searchResults[indexPath.row]];
     }
     else {
-        trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracks.count;
+        trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback.count;
     }
     
     [self.trackPlayer skipToTrack:trackIndex];
@@ -86,7 +86,7 @@
 
 - (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope {
     NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"(name contains[c] %@) || (artists[0].name contains[c] %@)", searchText, searchText];
-    self.searchResults = [self.trackPlayer.currentProvider.tracks filteredArrayUsingPredicate:resultPredicate];
+    self.searchResults = [self.trackPlayer.currentProvider.tracksForPlayback filteredArrayUsingPredicate:resultPredicate];
 }
 
 -(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {

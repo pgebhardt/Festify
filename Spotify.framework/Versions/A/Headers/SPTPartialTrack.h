@@ -28,12 +28,12 @@
  to a full track object using `SPTRequest`. */
 @interface SPTPartialTrack : NSObject <SPTJSONObject, SPTPartialObject>
 
+///----------------------------
+/// @name Properties
+///----------------------------
+
 /** The duration of the track. */
 @property (nonatomic, readonly) NSTimeInterval duration;
-
-/** If applicable, returns the modification date of this track in its parent context (i.e.,
- the date is was added to a playlist). */
-@property (nonatomic, readonly, copy) NSDate *dateModifiedInParentContext;
 
 /** The artists of the track, as `SPTPartialArtist` objects. */
 @property (nonatomic, readonly, copy) NSArray *artists;

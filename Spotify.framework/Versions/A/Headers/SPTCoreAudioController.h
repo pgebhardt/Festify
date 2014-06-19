@@ -33,6 +33,8 @@
 
 @protocol SPTCoreAudioControllerDelegate <NSObject>
 
+@optional
+
 /** Called repeatedly during audio playback when audio is pushed to the system's audio output.
  
  This can be used to keep track of how much audio has been played back for progress indicators and so on.

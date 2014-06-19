@@ -31,6 +31,10 @@
  in your application — use `SPTRequest` instead. */
 @interface SPTJSONDecoding : NSObject
 
+///----------------------------
+/// @name JSON Decoding
+///----------------------------
+
 /** Convert an object decoded from JSON into a Spotify SDK metadata object.
  
  @param decodedJson The object decoded from JSON.

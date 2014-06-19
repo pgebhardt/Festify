@@ -41,7 +41,7 @@
 
     // collect playlists from currently logged in user to pass to playlist selection screen
     self.advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
-    [SPTRequest playlistsForUser:self.session.canonicalUsername withSession:self.session callback:^(NSError *error, id object) {
+    [SPTRequest playlistsForUserInSession:self.session callback:^(NSError *error, id object) {
         if (!error) {
             self.playlists = [object items];
             
