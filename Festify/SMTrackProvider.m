@@ -40,20 +40,11 @@
         self.users[username] = userInfo;
     }
     
-    // only update tracks array, if playlists are not identical
-    if (userInfo[SMTrackProviderPlaylistsKey]) {
-        NSArray* oldPlaylistNames = [[userInfo[SMTrackProviderPlaylistsKey] allKeys] sortedArrayUsingSelector:@selector(compare:)];
-        NSArray* newPlaylistNames = [[playlists valueForKey:@"name"] sortedArrayUsingSelector:@selector(compare:)];
-        
-        if (![newPlaylistNames isEqualToArray:oldPlaylistNames]) {
-            userInfo[SMTrackProviderPlaylistsKey] = playlists;
-            [self updateTracksArray];
-        }
-    }
-    else {
+    // add all tracks of all playlists to users track storage
+    void (^addAllPlaylists)() = ^{
         NSMutableDictionary* playlistsDict = [NSMutableDictionary dictionary];
         userInfo[SMTrackProviderPlaylistsKey] = playlistsDict;
-
+        
         for (NSUInteger i = 0; i < playlists.count; ++i) {
             [playlists[i] allTracksWithSession:session completion:^(NSArray *tracks, NSError *error) {
                 if (!error) {
@@ -64,6 +55,19 @@
                 }
             }];
         }
+    };
+    
+    // only update tracks array, if playlists are not identical
+    if (userInfo[SMTrackProviderPlaylistsKey]) {
+        NSArray* oldPlaylistNames = [[userInfo[SMTrackProviderPlaylistsKey] allKeys] sortedArrayUsingSelector:@selector(compare:)];
+        NSArray* newPlaylistNames = [[playlists valueForKey:@"name"] sortedArrayUsingSelector:@selector(compare:)];
+        
+        if (![newPlaylistNames isEqualToArray:oldPlaylistNames]) {
+            addAllPlaylists();
+        }
+    }
+    else {
+        addAllPlaylists();
     }
     
     userInfo[SMTrackProviderDateUpdatedKey] = [NSDate date];
