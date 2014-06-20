@@ -6,10 +6,11 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
+#import "Festify-Bridging-Header.h"
+#import "Festify-Swift.h"
 #import "SMFestifyViewController.h"
 #import "SMTrackPlayerBarViewController.h"
 #import "SMUsersViewController.h"
-#import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
@@ -39,7 +40,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trackProviderDidUpdateTracks:) name:SMTrackProviderDidUpdateTracksArray object:nil];
     
     // init properties
-    self.trackPlayer = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
+    self.trackPlayer = ((AppDelegate*)[UIApplication sharedApplication].delegate).trackPlayer;
     self.trackPlayerBar.trackPlayer = self.trackPlayer;
     self.trackPlayer.delegate = self;
     
@@ -74,7 +75,7 @@
                 initSession();
             }
             else {
-                [((SMAppDelegate*)[UIApplication sharedApplication].delegate) renewSpotifySession:self.session WithCompletionHandler:^(SPTSession *session, NSError *error) {
+                [((AppDelegate*)[UIApplication sharedApplication].delegate) renewSpotifySession:self.session withCompletionHandler:^(SPTSession *session, NSError *error) {
                     // store new session to users defaults, initialize user defaults and try to enable playback
                     self.session = session;
                     [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session] forKey:SMUserDefaultsSpotifySessionKey];
@@ -267,7 +268,7 @@
 -(void)trackPlayer:(SMTrackPlayer *)trackPlayer willEnablePlaybackWithSession:(SPTSession *)session {
     // show progress hud on top of the window to indicate connection status
     if (!self.progressHUD) {
-        UIWindow* window = ((SMAppDelegate*)[UIApplication sharedApplication].delegate).window;
+        UIWindow* window = ((AppDelegate*)[UIApplication sharedApplication].delegate).window;
         self.progressHUD = [MBProgressHUD showHUDAddedTo:window.subviews[0] animated:YES];
         self.progressHUD.labelText = @"Connecting ...";
     }

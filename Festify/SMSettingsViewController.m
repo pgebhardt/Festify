@@ -8,10 +8,8 @@
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
-#import <Spotify/Spotify.h>
 #import "SMSettingsViewController.h"
 #import "SMDiscoveryManager.h"
-#import "SMAppDelegate.h"
 #import "SMUserDefaults.h"
 #import "MWLogging.h"
 

@@ -21,11 +21,10 @@
 		5F28F7631901288D00A0468A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7621901288D00A0468A /* libz.dylib */; };
 		5F3297591952CAAB007D8999 /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F3297581952CAAB007D8999 /* Spotify.framework */; };
 		5F32975C1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F32975B1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m */; };
+		5F33D7301954C2D600FE67F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F33D72F1954C2D600FE67F0 /* AppDelegate.swift */; };
 		5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6218FC115200C3ED75 /* CoreGraphics.framework */; };
 		5F423A6518FC115200C3ED75 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6418FC115200C3ED75 /* UIKit.framework */; };
 		5F423A6B18FC115200C3ED75 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A6918FC115200C3ED75 /* InfoPlist.strings */; };
-		5F423A6D18FC115200C3ED75 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A6C18FC115200C3ED75 /* main.m */; };
-		5F423A7118FC115200C3ED75 /* SMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A7018FC115200C3ED75 /* SMAppDelegate.m */; };
 		5F423A7318FC115200C3ED75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A7218FC115200C3ED75 /* Images.xcassets */; };
 		5F423A7A18FC115200C3ED75 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A7918FC115200C3ED75 /* XCTest.framework */; };
 		5F423A7B18FC115200C3ED75 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6018FC115200C3ED75 /* Foundation.framework */; };
@@ -84,16 +83,15 @@
 		5F3297581952CAAB007D8999 /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		5F32975A1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPTPlaylistSnapshot+AllTracks.h"; sourceTree = "<group>"; };
 		5F32975B1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SPTPlaylistSnapshot+AllTracks.m"; sourceTree = "<group>"; };
+		5F33D72E1954C2D600FE67F0 /* Festify-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Festify-Bridging-Header.h"; sourceTree = "<group>"; };
+		5F33D72F1954C2D600FE67F0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5F423A5D18FC115200C3ED75 /* Festify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Festify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F423A6018FC115200C3ED75 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5F423A6218FC115200C3ED75 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		5F423A6418FC115200C3ED75 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5F423A6818FC115200C3ED75 /* Festify-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Festify-Info.plist"; sourceTree = "<group>"; };
 		5F423A6A18FC115200C3ED75 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		5F423A6C18FC115200C3ED75 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5F423A6E18FC115200C3ED75 /* Festify-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Festify-Prefix.pch"; sourceTree = "<group>"; };
-		5F423A6F18FC115200C3ED75 /* SMAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMAppDelegate.h; sourceTree = "<group>"; };
-		5F423A7018FC115200C3ED75 /* SMAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMAppDelegate.m; sourceTree = "<group>"; };
 		5F423A7218FC115200C3ED75 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		5F423A7818FC115200C3ED75 /* FestifyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FestifyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F423A7918FC115200C3ED75 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -247,8 +245,6 @@
 			children = (
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
 				5F1E97B21902E5880009B675 /* Extensions */,
-				5F423A6F18FC115200C3ED75 /* SMAppDelegate.h */,
-				5F423A7018FC115200C3ED75 /* SMAppDelegate.m */,
 				5F5A162118FC535100E408DC /* SMDiscoveryManager.h */,
 				5F5A162218FC535100E408DC /* SMDiscoveryManager.m */,
 				5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */,
@@ -259,6 +255,8 @@
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 				5F1E97B31902E5A20009B675 /* View Controller */,
+				5F33D72F1954C2D600FE67F0 /* AppDelegate.swift */,
+				5F33D72E1954C2D600FE67F0 /* Festify-Bridging-Header.h */,
 			);
 			path = Festify;
 			sourceTree = "<group>";
@@ -269,7 +267,6 @@
 				5F2123B5191E815D00849778 /* Pods-acknowledgements.plist */,
 				5F423A6818FC115200C3ED75 /* Festify-Info.plist */,
 				5F423A6918FC115200C3ED75 /* InfoPlist.strings */,
-				5F423A6C18FC115200C3ED75 /* main.m */,
 				5F423A6E18FC115200C3ED75 /* Festify-Prefix.pch */,
 			);
 			name = "Supporting Files";
@@ -462,9 +459,8 @@
 				5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */,
 				5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */,
 				5F6F14691922750500F5EAC6 /* SMFestifyButtonViewController.m in Sources */,
-				5F423A6D18FC115200C3ED75 /* main.m in Sources */,
+				5F33D7301954C2D600FE67F0 /* AppDelegate.swift in Sources */,
 				5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */,
-				5F423A7118FC115200C3ED75 /* SMAppDelegate.m in Sources */,
 				5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */,
 				5F036AB21926C16900B4F3B9 /* SPTRequest+MultipleItems.m in Sources */,
 				5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */,
@@ -585,6 +581,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -595,10 +592,13 @@
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Festify/Festify-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -609,6 +609,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -619,10 +620,12 @@
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Festify/Festify-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
