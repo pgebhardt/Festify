@@ -18,8 +18,8 @@
 // TODO: replace with post-beta IDs and adjust the App's URL type
 static NSString * const kClientId = @"742dc3048abc43a6b5f2297fe07e6ae4";
 static NSString * const kCallbackURL = @"festify://callback";
-static NSString * const kTokenSwapServiceURL = @"http://192.168.178.28:1234/swap";
-static NSString * const kTokenRefreshServiceURL = @"http://192.168.178.28:1234/refresh";
+static NSString * const kTokenSwapServiceURL = @"http://festify.schnuffm.fomalhaut.uberspace.de/swap";
+static NSString * const kTokenRefreshServiceURL = @"http://festify.schnuffm.fomalhaut.uberspace.de/refresh";
 
 @interface SMAppDelegate ()
 @property (nonatomic, copy) void (^loginCallback)(SPTSession* session, NSError* error);
