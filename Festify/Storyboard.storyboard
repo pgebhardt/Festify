@@ -728,7 +728,7 @@
         <!--Login View Controller - Login-->
         <scene sceneID="91b-vx-QUC">
             <objects>
-                <viewController id="8Rl-HL-ow2" customClass="SMLoginViewController" sceneMemberID="viewController">
+                <viewController id="8Rl-HL-ow2" customClass="LoginViewController" customModule="Festify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="msf-Fk-Dqr"/>
                         <viewControllerLayoutGuide type="bottom" id="bJ8-rL-Zu8"/>

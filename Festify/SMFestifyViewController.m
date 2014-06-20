@@ -105,7 +105,7 @@
         viewController.delegate = self;
     }
     else if ([segue.identifier isEqualToString:@"showLogin"]) {
-        SMLoginViewController* viewController = (SMLoginViewController*)segue.destinationViewController;
+        LoginViewController* viewController = (LoginViewController*)segue.destinationViewController;
         
         viewController.delegate = self;
         viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
@@ -194,7 +194,7 @@
 
 #pragma mark - PGLoginViewDelegate
 
--(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithSession:(SPTSession *)session {
+-(void)loginView:(LoginViewController *)loginView didCompleteLoginWithSession:(SPTSession *)session {
     [loginView dismissViewControllerAnimated:NO completion:^{
         self.progressHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
         self.progressHUD.labelText = @"Logging in ...";

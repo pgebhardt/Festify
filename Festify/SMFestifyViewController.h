@@ -10,12 +10,13 @@
 #import "SMDiscoveryManager.h"
 #import "SMTrackPlayer.h"
 #import "SMTrackProvider.h"
-#import "SMLoginViewController.h"
 #import "SMSettingsViewController.h"
 #import "BBBadgeBarButtonItem.h"
 
+@protocol LoginViewDelegate;
+
 @interface SMFestifyViewController : UIViewController<SMDiscoveryManagerDelegate,
-    SMTrackProviderDelegate, SMLoginViewDelegate, SMSettingsViewDelegate, SMTrackPlayerDelegate>
+    SMTrackProviderDelegate, LoginViewDelegate, SMSettingsViewDelegate, SMTrackPlayerDelegate>
 
 - (IBAction)spotifyButton:(id)sender;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *trackPlayerBarPosition;
