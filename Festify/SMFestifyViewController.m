@@ -56,38 +56,37 @@
     // or show login screen if no session is available
     id sessionData = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsSpotifySessionKey];
     self.session = sessionData ? [NSKeyedUnarchiver unarchiveObjectWithData:sessionData] : nil;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (self.session) {
-            void (^initSession)() = ^{
-                // try to enable playback
-                [self.trackPlayer enablePlaybackWithSession:self.session callback:nil];
-                [self getUsernameWithSession:self.session completion:^(NSString *username) {
-                    self.username = username;
-                    
-                    self.advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
-                    [self setAdvertisementState:[[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisementStateKey] boolValue]];
-                    self.usersTimeout = [[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsUserTimeoutKey] integerValue];
-                }];
-            };
-            
-            if (self.session.isValid) {
-                initSession();
-            }
-            else {
-                [((AppDelegate*)[UIApplication sharedApplication].delegate) renewSpotifySession:self.session withCompletionHandler:^(SPTSession *session, NSError *error) {
-                    // store new session to users defaults, initialize user defaults and try to enable playback
-                    self.session = session;
-                    [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session] forKey:SMUserDefaultsSpotifySessionKey];
-
-                    initSession();
-                }];
-            }
+    if (self.session) {
+        void (^initSession)() = ^{
+            // try to enable playback
+            [self.trackPlayer enablePlaybackWithSession:self.session callback:nil];
+            [self getUsernameWithSession:self.session completion:^(NSString *username) {
+                self.username = username;
+                
+                self.advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
+                [self setAdvertisementState:[[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisementStateKey] boolValue]];
+                self.usersTimeout = [[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsUserTimeoutKey] integerValue];
+            }];
+        };
+        
+        if (self.session.isValid) {
+            initSession();
         }
         else {
-            [self performSegueWithIdentifier:@"showLogin" sender:self];
+            [((AppDelegate*)[UIApplication sharedApplication].delegate) renewSpotifySession:self.session withCompletionHandler:^(SPTSession *session, NSError *error) {
+                // store new session to users defaults, initialize user defaults and try to enable playback
+                self.session = session;
+                [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session] forKey:SMUserDefaultsSpotifySessionKey];
+
+                initSession();
+            }];
         }
-    });
+    }
+    else {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self performSegueWithIdentifier:@"showLogin" sender:self];
+        });
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -196,7 +195,7 @@
 #pragma mark - PGLoginViewDelegate
 
 -(void)loginView:(SMLoginViewController *)loginView didCompleteLoginWithSession:(SPTSession *)session {
-    [loginView dismissViewControllerAnimated:YES completion:^{
+    [loginView dismissViewControllerAnimated:NO completion:^{
         self.progressHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
         self.progressHUD.labelText = @"Logging in ...";
         

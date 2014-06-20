@@ -243,8 +243,10 @@
 		5F423A6618FC115200C3ED75 /* Festify */ = {
 			isa = PBXGroup;
 			children = (
-				5F423A7218FC115200C3ED75 /* Images.xcassets */,
+				5F33D72F1954C2D600FE67F0 /* AppDelegate.swift */,
 				5F1E97B21902E5880009B675 /* Extensions */,
+				5F33D72E1954C2D600FE67F0 /* Festify-Bridging-Header.h */,
+				5F423A7218FC115200C3ED75 /* Images.xcassets */,
 				5F5A162118FC535100E408DC /* SMDiscoveryManager.h */,
 				5F5A162218FC535100E408DC /* SMDiscoveryManager.m */,
 				5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */,
@@ -255,8 +257,6 @@
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 				5F1E97B31902E5A20009B675 /* View Controller */,
-				5F33D72F1954C2D600FE67F0 /* AppDelegate.swift */,
-				5F33D72E1954C2D600FE67F0 /* Festify-Bridging-Header.h */,
 			);
 			path = Festify;
 			sourceTree = "<group>";
