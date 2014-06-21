@@ -11,7 +11,7 @@
 #import "SMPlayerViewController.h"
 #import "SMTrackPlayer.h"
 
-@interface SMPlaylistViewController : UITableViewController<UISearchBarDelegate>
+@interface SMPlaylistViewController : UITableViewController
 
 - (IBAction)done:(id)sender;
 @property (nonatomic, weak) SMTrackPlayer* trackPlayer;

@@ -9,10 +9,6 @@
 #import <Spotify/Spotify.h>
 #import "SMPlaylistViewController.h"
 
-@interface SMPlaylistViewController ()
-@property (nonatomic, strong) NSArray* searchResults;
-@end
-
 @implementation SMPlaylistViewController
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -21,16 +17,6 @@
     // update UI
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                           atScrollPosition:UITableViewScrollPositionTop animated:NO];
-}
-
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    // make search table view appear similar to playlist table view
-    UIImage* backgroundImage = ((UIImageView*)self.navigationController.view.subviews.firstObject).image;
-    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
-    self.searchDisplayController.searchResultsTableView.backgroundView = [[UIImageView alloc] initWithImage:backgroundImage];
-    self.searchDisplayController.searchBar.delegate = self;
 }
 
 - (IBAction)done:(id)sender {
@@ -44,12 +30,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        return self.searchResults.count;
-    }
-    else {
-        return self.trackPlayer.currentProvider.tracksForPlayback.count;
-    }
+    return self.trackPlayer.currentProvider.tracksForPlayback.count;
 }
 
 #pragma mark - Table view delegate
@@ -57,14 +38,8 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
-    SPTPartialTrack* track = nil;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        track = self.searchResults[indexPath.row];
-    }
-    else {
-        NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback.count;
-        track = self.trackPlayer.currentProvider.tracksForPlayback[trackIndex];
-    }
+    NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback.count;
+    SPTPartialTrack* track = self.trackPlayer.currentProvider.tracksForPlayback[trackIndex];
     cell.textLabel.text = track.name;
     cell.detailTextLabel.text = [track.artists[0] name];
     
@@ -72,37 +47,10 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSUInteger trackIndex = 0;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        trackIndex = [self.trackPlayer.currentProvider.tracksForPlayback indexOfObject:self.searchResults[indexPath.row]];
-    }
-    else {
-        trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback.count;
-    }
+    NSUInteger trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback.count;
     
     [self.trackPlayer skipToTrack:trackIndex];
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope {
-    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"(name contains[c] %@) || (artists[0].name contains[c] %@)", searchText, searchText];
-    self.searchResults = [self.trackPlayer.currentProvider.tracksForPlayback filteredArrayUsingPredicate:resultPredicate];
-}
-
--(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
-    [self filterContentForSearchText:searchString
-                               scope:[[self.searchDisplayController.searchBar scopeButtonTitles]
-                                      objectAtIndex:[self.searchDisplayController.searchBar
-                                                     selectedScopeButtonIndex]]];
-    
-    return YES;
-}
-
-#pragma mark - UISearchBarDelegate
-
--(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    // hide search table view, to avoid strange UI glitch
-    self.searchDisplayController.searchResultsTableView.hidden = YES;
 }
 
 #pragma mark - PGPlayerViewDelegate
