@@ -65,7 +65,7 @@ class TrackPlayerBarViewController: UIViewController {
 
     override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
         if segue.identifier == "showTrackPlayer" {
-            ((segue.destinationViewController as UINavigationController).viewControllers[0] as SMPlayerViewController).trackPlayer = self.trackPlayer
+            ((segue.destinationViewController as UINavigationController).viewControllers[0] as PlayerViewController).trackPlayer = self.trackPlayer
         }
     }
     

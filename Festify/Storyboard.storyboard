@@ -7,7 +7,7 @@
         <!--Player View Controller-->
         <scene sceneID="HN1-7L-aEX">
             <objects>
-                <viewController id="EVF-cW-P26" customClass="SMPlayerViewController" sceneMemberID="viewController">
+                <viewController id="EVF-cW-P26" customClass="PlayerViewController" customModule="Festify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MVI-oj-FLp"/>
                         <viewControllerLayoutGuide type="bottom" id="eaC-Iq-7qF"/>
@@ -161,9 +161,9 @@
                     <connections>
                         <outlet property="artistLabel" destination="IEn-sz-YgL" id="EKZ-Pf-6T7"/>
                         <outlet property="coverImage" destination="AuE-Vp-LKl" id="iD6-Dg-fZx"/>
-                        <outlet property="currentTimeView" destination="XnG-dv-DU8" id="sBD-SU-LDB"/>
+                        <outlet property="currentTimeLabel" destination="XnG-dv-DU8" id="cwR-3m-BSe"/>
                         <outlet property="playPauseButton" destination="6TH-cD-1sk" id="AtB-qd-0EQ"/>
-                        <outlet property="remainingTimeView" destination="SSx-vi-10x" id="EAU-84-5Gs"/>
+                        <outlet property="remainingTimeLabel" destination="SSx-vi-10x" id="2OQ-Py-cCi"/>
                         <outlet property="titleLabel" destination="wrL-am-jDI" id="dOo-gC-uKb"/>
                         <outlet property="trackPosition" destination="VmY-Xs-OEj" id="qZJ-jk-PmW"/>
                     </connections>
