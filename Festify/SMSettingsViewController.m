@@ -96,7 +96,7 @@
         };
         
         settingsView.navigationItem.title = @"Visible Playlists";
-        settingsView.subtitle = @"Selected playlists are visible to other users nearby. These playlists must be public in your Spotify profile.";
+        settingsView.subtitle = @"Selected playlists are visible to nearby users. Only playlists publicy visible in your spotify profile can be made available.";
     }
     else if ([segue.identifier isEqualToString:@"showUserTimeout"]) {
         SMSettingSelectionViewController* settingsView = (SMSettingSelectionViewController*)segue.destinationViewController;
