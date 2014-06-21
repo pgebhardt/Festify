@@ -106,4 +106,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // save current application state
         NSUserDefaults.standardUserDefaults().synchronize()
     }
+    
+    func applicationWillEnterForeground(application: UIApplication!) {
+        // try to enable playback for trackplayer, if authenticated session is available
+        if !self.trackPlayer.playing && self.trackPlayer.session != nil && self.reachability.isReachable() {
+            self.progressHUD?.hide(true)
+            self.progressHUD = nil
+            
+            self.trackPlayer.enablePlaybackWithSession(self.trackPlayer.session, callback: nil)
+        }
+        
+        Appirater.appEnteredForeground(true)
+    }
 }
