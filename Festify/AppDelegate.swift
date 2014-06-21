@@ -42,10 +42,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func reachabilityCanged(notification: AnyObject?) {
+    func reachabilityChanged(notification: AnyObject?) {
         // block UI with progress HUD and inform user about missing internet connection,
         // also stop playback, to prevent any glitches with the Spotify service.
-        if self.reachability.isReachable() {
+        if !self.reachability.isReachable() {
             if !self.progressHUD {
                 self.progressHUD = MBProgressHUD.showHUDAddedTo(self.window, animated: true)
                 self.progressHUD!.labelText = "Lost Connection ..."
@@ -105,17 +105,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(application: UIApplication!) {
         // save current application state
         NSUserDefaults.standardUserDefaults().synchronize()
-    }
-    
-    func applicationWillEnterForeground(application: UIApplication!) {
-        // try to enable playback for trackplayer, if authenticated session is available
-        if !self.trackPlayer.playing && self.trackPlayer.session != nil && reachability.isReachable() {
-            self.progressHUD?.hide(true)
-            self.progressHUD = nil
-            
-            trackPlayer.enablePlaybackWithSession(trackPlayer.session, callback: nil)
-        }
-        
-        Appirater.appEnteredForeground(true)
     }
 }

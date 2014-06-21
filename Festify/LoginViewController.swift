@@ -10,7 +10,9 @@ import UIKit
 
 @objc
 protocol LoginViewDelegate: NSObjectProtocol {
-    @optional func loginView(loginView: LoginViewController, didCompleteLoginWithSession session:SPTSession?)
+    func loginViewDidReturnFromExternalSignUp(loginView: LoginViewController)
+    func loginView(loginView: LoginViewController, didCompleteLoginWithSession session: SPTSession)
+    func loginView(loginView: LoginViewController, didCompleteLoginWithError error: NSError)
 }
 
 class LoginViewController: UIViewController {
@@ -30,11 +32,17 @@ class LoginViewController: UIViewController {
             // this is the return point for the spotify authentication,
             // so completion happens here
             if SPTAuth.defaultInstance().canHandleURL(url, withDeclaredRedirectURL: NSURL(string: LoginViewController.callbackURL)) {
+                self.delegate?.loginViewDidReturnFromExternalSignUp(self)
+                
+                // complete login process and inform delegate about success
                 SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url,
                     tokenSwapServiceEndpointAtURL: NSURL(string: LoginViewController.tokenSwapServiceURL)) {
-                    (error: NSError?, session: SPTSession?) in
-                    if !error {
-                        self.delegate?.loginView?(self, didCompleteLoginWithSession: session)
+                    (error: NSError?, session: SPTSession?) -> () in
+                    if let session = session {
+                        self.delegate?.loginView(self, didCompleteLoginWithSession: session)
+                    }
+                    else {
+                        self.delegate?.loginView(self, didCompleteLoginWithError: error!)
                     }
                 }
                 

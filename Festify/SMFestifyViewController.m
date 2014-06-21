@@ -195,26 +195,41 @@
 
 #pragma mark - PGLoginViewDelegate
 
+-(void)loginViewDidReturnFromExternalSignUp:(LoginViewController *)loginView {
+    // hide login view and block UI with progress HUD
+    [loginView dismissViewControllerAnimated:NO completion:nil];
+    self.progressHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    self.progressHUD.labelText = @"Logging in ...";
+}
+
 -(void)loginView:(LoginViewController *)loginView didCompleteLoginWithSession:(SPTSession *)session {
-    [loginView dismissViewControllerAnimated:NO completion:^{
-        self.progressHUD = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
-        self.progressHUD.labelText = @"Logging in ...";
-        
-        // store new session to users defaults, initialize user defaults and try to enable playback
-        self.session = session;
-        [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session] forKey:SMUserDefaultsSpotifySessionKey];
-        [self getUsernameWithSession:self.session completion:^(NSString *username) {
-            self.username = username;
-            [self initStandardUserDefaults:^{
-                [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
-                    if (error) {
-                        [[[UIAlertView alloc] initWithTitle:@"Music playback requires a Spotify Premium account!"
-                                                    message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-                    }
-                }];
+    // store new session to users defaults, initialize user defaults and try to enable playback
+    self.session = session;
+    [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session] forKey:SMUserDefaultsSpotifySessionKey];
+    [self getUsernameWithSession:self.session completion:^(NSString *username) {
+        self.username = username;
+        [self initStandardUserDefaults:^{
+            [self.trackPlayer enablePlaybackWithSession:session callback:^(NSError *error) {
+                if (error) {
+                    [[[UIAlertView alloc] initWithTitle:@"Music playback requires a Spotify Premium account!"
+                                                message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                }
             }];
         }];
     }];
+}
+
+-(void)loginView:(LoginViewController *)loginView didCompleteLoginWithError:(NSError *)error {
+    // show error to user, if login failed and return user to login screen
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Login Failed" message:error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        // hide progress HUD and show login view
+        [self.progressHUD hide:YES];
+        self.progressHUD = nil;
+        [self performSegueWithIdentifier:@"showLogin" sender:self];
+    }]];
+     
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - PGSettingsViewDelegate
