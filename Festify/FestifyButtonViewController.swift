@@ -9,7 +9,7 @@
 import UIKit
 
 class FestifyButtonViewController: UIViewController {
-    @IBOutlet var buttonOverlay: UIImageView?
+    @IBOutlet var buttonOverlay: UIImageView!
     
     @IBAction func buttonPressed(sender: AnyObject?) {
         // toggle discovering state
@@ -55,25 +55,21 @@ class FestifyButtonViewController: UIViewController {
     
     func startAnimation() {
         // reset all current animations and start button animation from beginning
-        if let buttonOverlay = self.buttonOverlay {
-            buttonOverlay.layer.removeAllAnimations()
-            buttonOverlay.transform = CGAffineTransformIdentity;
+        self.buttonOverlay.layer.removeAllAnimations()
+        self.buttonOverlay.transform = CGAffineTransformIdentity;
             
-            UIView.animateWithDuration(0.6, delay: 0.0, options: .Repeat | .CurveEaseInOut | .Autoreverse | .AllowUserInteraction, animations: {
-                    buttonOverlay.transform = CGAffineTransformMakeRotation(CGFloat(-60.0 * Double(M_PI) / 180.0))
-                }, completion: nil)
-        }
+        UIView.animateWithDuration(0.6, delay: 0.0, options: .Repeat | .CurveEaseInOut | .Autoreverse | .AllowUserInteraction, animations: {
+                self.buttonOverlay.transform = CGAffineTransformMakeRotation(CGFloat(-60.0 * Double(M_PI) / 180.0))
+            }, completion: nil)
     }
     
     func stopAnimation() {
         // remove all animations and do a last cicle of animations
-        if let buttonOverlay = self.buttonOverlay {
-            buttonOverlay.transform = buttonOverlay.layer.presentationLayer().affineTransform()
-            buttonOverlay.layer.removeAllAnimations()
-            
-            UIView.animateWithDuration(0.6, delay: 0.0, options: .CurveEaseOut | .BeginFromCurrentState, animations: {
-                    buttonOverlay.transform = CGAffineTransformIdentity
-                }, completion: nil)
-        }
+        self.buttonOverlay.transform = buttonOverlay.layer.presentationLayer().affineTransform()
+        self.buttonOverlay.layer.removeAllAnimations()
+        
+        UIView.animateWithDuration(0.6, delay: 0.0, options: .CurveEaseOut | .BeginFromCurrentState, animations: {
+                self.buttonOverlay.transform = CGAffineTransformIdentity
+            }, completion: nil)
     }
 }
