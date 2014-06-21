@@ -4,6 +4,7 @@
 
 #import <Spotify/Spotify.h>
 #import "SMTrackPlayer.h"
+#import "SMDiscoveryManager.h"
 #import "Appirater.h"
 #import "BlurryModalSegue.h"
 #import "Reachability.h"
