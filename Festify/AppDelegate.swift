@@ -16,31 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     var progressHUD: MBProgressHUD?
-    var loginCallback: ((SPTSession?, NSError?) ->())?
-    
-    // spotify authentication constants
-    class var clientId: String { return "742dc3048abc43a6b5f2297fe07e6ae4" }
-    class var callbackURL: String { return "festify://callback" }
-    class var tokenSwapServiceURL: String { return "http://festify.schnuffm.fomalhaut.uberspace.de/swap" }
-    class var tokenRefreshServiceURL: String { return "http://festify.schnuffm.fomalhaut.uberspace.de/refresh" }
-    
-    func requestSpotifySession(completionHandler: ((SPTSession?, NSError?) ->())?) {
-        // save login callback for use, when login completes
-        self.loginCallback = completionHandler
-        
-        // open login url in safari to ask user to login
-        let loginURL = SPTAuth.defaultInstance().loginURLForClientId(AppDelegate.clientId,
-            declaredRedirectURL: NSURL(string: AppDelegate.callbackURL),
-            scopes: [SPTAuthStreamingScope, SPTAuthPlaylistReadScope])
-        UIApplication.sharedApplication().openURL(loginURL)
-    }
-    
-    func renewSpotifySession(session: SPTSession?, withCompletionHandler completion:((SPTSession?, NSError?) ->())) {
-        SPTAuth.defaultInstance().renewSession(session, withServiceEndpointAtURL: NSURL(string: AppDelegate.tokenRefreshServiceURL)) {
-            (error: NSError?, session: SPTSession?) in
-            completion(session, error)
-        }
-    }
+    var urlHandler: ((NSURL) -> (Bool))?
 
     override func remoteControlReceivedWithEvent(event: UIEvent!) {
         // control track player by remote events
@@ -113,21 +89,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
-        // this is the return point for the spotify authentication,
-        // so completion happens here
-        if SPTAuth.defaultInstance().canHandleURL(url, withDeclaredRedirectURL: NSURL(string: AppDelegate.callbackURL)) {
-            SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url,
-                tokenSwapServiceEndpointAtURL: NSURL(string: AppDelegate.tokenSwapServiceURL)) {
-                (error: NSError?, session: SPTSession?) in
-                if let loginCallback = self.loginCallback {
-                    loginCallback(session, error)
-                }
-            }
-            
-            return true
+        if let urlHandler = self.urlHandler {
+            return urlHandler(url)
         }
-        
-        return false
+        else {
+            return false
+        }
     }
 
     func applicationWillTerminate(application: UIApplication!) {
@@ -142,7 +109,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillEnterForeground(application: UIApplication!) {
         // try to enable playback for trackplayer, if authenticated session is available
-        if trackPlayer.playing && reachability.isReachable() {
+        if !self.trackPlayer.playing && self.trackPlayer.session != nil && reachability.isReachable() {
             self.progressHUD?.hide(true)
             self.progressHUD = nil
             

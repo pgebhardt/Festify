@@ -73,7 +73,7 @@
             initSession();
         }
         else {
-            [((AppDelegate*)[UIApplication sharedApplication].delegate) renewSpotifySession:self.session withCompletionHandler:^(SPTSession *session, NSError *error) {
+            [LoginViewController renewSpotifySession:self.session withCompletionHandler:^(SPTSession* session, NSError* error) {
                 // store new session to users defaults, initialize user defaults and try to enable playback
                 self.session = session;
                 [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session] forKey:SMUserDefaultsSpotifySessionKey];
