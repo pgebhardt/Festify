@@ -114,6 +114,7 @@
         UINavigationController* navController = (UINavigationController*)segue.destinationViewController;
         SMUsersViewController* viewController = (SMUsersViewController*)navController.viewControllers[0];
         
+        // navController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         viewController.trackProvider = self.trackProvider;
         self.usersBarButtonItem.badgeValue = @"";
         self.updateUsersBadgeValue = NO;

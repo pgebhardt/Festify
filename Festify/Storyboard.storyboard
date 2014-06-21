@@ -137,7 +137,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="Zmt-zk-YEv">
                         <nil key="title"/>
-                        <barButtonItem key="leftBarButtonItem" image="Previous" id="Vo5-x8-Lva">
+                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="Vo5-x8-Lva">
                             <connections>
                                 <action selector="done:" destination="EVF-cW-P26" id="JQr-Ca-koy"/>
                             </connections>
@@ -266,7 +266,7 @@
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" ambiguous="YES" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="ZIf-wR-0zc">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.10196078431372549" green="0.10196078431372549" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
                         <sections>
                             <tableViewSection headerTitle="General" id="8qo-Db-wgQ">
                                 <cells>
@@ -477,7 +477,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Settings" id="VLm-IJ-cGK">
-                        <barButtonItem key="leftBarButtonItem" image="Previous" id="Zas-sK-O9k">
+                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="Zas-sK-O9k">
                             <connections>
                                 <action selector="done:" destination="xvL-cP-knz" id="r5Z-B3-BPV"/>
                             </connections>
@@ -607,7 +607,7 @@
                     <navigationItem key="navigationItem" title="Festify" id="zxc-1E-uy0">
                         <barButtonItem key="leftBarButtonItem" image="Cog" id="RFC-j9-VGV">
                             <connections>
-                                <segue destination="Nyb-38-KAh" kind="custom" identifier="showSettings" customClass="BlurryModalSegue" id="VxZ-dY-Hvs"/>
+                                <segue destination="Nyb-38-KAh" kind="modal" identifier="showSettings" modalTransitionStyle="crossDissolve" id="VxZ-dY-Hvs"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" id="qDO-lM-VAv" customClass="BBBadgeBarButtonItem">
@@ -616,7 +616,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="Group"/>
                                 <connections>
-                                    <segue destination="fq2-e2-DGI" kind="custom" identifier="showUsers" customClass="BlurryModalSegue" id="zNY-pn-QT5"/>
+                                    <segue destination="fq2-e2-DGI" kind="modal" identifier="showUsers" modalTransitionStyle="crossDissolve" id="zNY-pn-QT5"/>
                                 </connections>
                             </button>
                         </barButtonItem>
@@ -639,7 +639,7 @@
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" ambiguous="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="1" id="1I0-Cs-2k5">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.1019607843" green="0.1019607843" blue="0.1019607843" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" ambiguous="YES" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="usernameCell" textLabel="77t-Y1-3Kl" detailTextLabel="yKI-Wf-Awv" style="IBUITableViewCellStyleValue1" id="Q93-qF-5Yv">
                                 <rect key="frame" x="0.0" y="119" width="320" height="44"/>
@@ -692,7 +692,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Discovered Users" id="wJp-Ox-y6D">
-                        <barButtonItem key="leftBarButtonItem" image="Previous" id="PS5-Qs-ofp">
+                        <barButtonItem key="rightBarButtonItem" systemItem="stop" id="PS5-Qs-ofp">
                             <connections>
                                 <action selector="done:" destination="GbN-8d-cNT" id="Yu5-Wv-dVR"/>
                             </connections>
@@ -701,7 +701,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cGi-6k-mU6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2456" y="1032"/>
+            <point key="canvasLocation" x="2456" y="1052"/>
         </scene>
         <!--Login View Controller - Login-->
         <scene sceneID="91b-vx-QUC">
@@ -842,7 +842,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sDs-Ee-teu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1930" y="1032"/>
+            <point key="canvasLocation" x="1940" y="1052"/>
         </scene>
         <!--Track Player Bar View Controller-->
         <scene sceneID="SkJ-W3-eMC">
@@ -929,7 +929,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3gh-DG-aaT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1930" y="872"/>
+            <point key="canvasLocation" x="1940" y="602"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Y9Y-7N-shd">
@@ -1117,7 +1117,6 @@
         <image name="List" width="27" height="23"/>
         <image name="Pause" width="16" height="22"/>
         <image name="Play" width="17" height="22"/>
-        <image name="Previous" width="20" height="12"/>
         <image name="Rewind" width="30" height="22"/>
         <image name="SpotifyLogo" width="119" height="36"/>
         <image name="SpotifyLogoWhite" width="120" height="36"/>
