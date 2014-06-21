@@ -10,11 +10,11 @@ import UIKit
 
 class PlaylistViewController: UITableViewController {
     var trackPlayer: SMTrackPlayer!
-    
+
     @IBAction func done(sender: AnyObject?) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
- 
+
     // Table view data source
     override func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
         return 1

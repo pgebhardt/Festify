@@ -14,8 +14,18 @@ class TrackPlayerBarViewController: UIViewController {
     @IBOutlet var artistLabel: UILabel!
     @IBOutlet var playButton: UIButton!
     
+    deinit {
+        // cleanup all observations
+        if let trackPlayer = self.trackPlayer {
+            trackPlayer.removeObserver(self, forKeyPath: "playing")
+            trackPlayer.removeObserver(self, forKeyPath: "currentTrack")
+            trackPlayer.removeObserver(self, forKeyPath: "coverArtOfCurrentTrack")
+        }
+    }
+
     var trackPlayer: SMTrackPlayer! {
     willSet {
+        // cleanup all observations
         if let trackPlayer = self.trackPlayer {
             trackPlayer.removeObserver(self, forKeyPath: "playing")
             trackPlayer.removeObserver(self, forKeyPath: "currentTrack")
