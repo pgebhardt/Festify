@@ -11,7 +11,6 @@
 		5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* SMSettingsViewController.m */; };
 		5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMTrackProvider.m */; };
 		5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */; };
-		5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
 		5F14581119127DAE00F5A80C /* MWLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F14581019127DAE00F5A80C /* MWLogging.m */; };
 		5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */; };
@@ -40,6 +39,7 @@
 		5F6F14691922750500F5EAC6 /* SMFestifyButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F6F14681922750500F5EAC6 /* SMFestifyButtonViewController.m */; };
 		5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BD190C55790077F648 /* QuartzCore.framework */; };
 		5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */; };
+		5F7F9EA81955A82F0027AF5D /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */; };
 		5FAD80621921487D0086DABD /* SMTrackPlayerBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FAD80611921487D0086DABD /* SMTrackPlayerBarViewController.m */; };
 		5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2079A1190C1DB700AAE15A /* MessageUI.framework */; };
 		A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CEA90CA33A460DB3A7DAF3 /* libPods.a */; };
@@ -66,8 +66,6 @@
 		5F089B6618FD56A3002476CB /* SMTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackProvider.m; sourceTree = "<group>"; };
 		5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackPlayer.h; sourceTree = "<group>"; };
 		5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackPlayer.m; sourceTree = "<group>"; };
-		5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMPlaylistViewController.h; sourceTree = "<group>"; };
-		5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMPlaylistViewController.m; sourceTree = "<group>"; };
 		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		5F14580F19127DAE00F5A80C /* MWLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWLogging.h; sourceTree = "<group>"; };
 		5F14581019127DAE00F5A80C /* MWLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWLogging.m; sourceTree = "<group>"; };
@@ -116,6 +114,7 @@
 		5F7DB9BD190C55790077F648 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		5F89FD5B1906339A00752072 /* SMUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUserDefaults.h; sourceTree = "<group>"; };
 		5FAD80601921487D0086DABD /* SMTrackPlayerBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackPlayerBarViewController.h; sourceTree = "<group>"; };
 		5FAD80611921487D0086DABD /* SMTrackPlayerBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackPlayerBarViewController.m; sourceTree = "<group>"; };
@@ -176,8 +175,6 @@
 				5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */,
 				5F1CF46118FD9782009E4791 /* SMPlayerViewController.h */,
 				5F1CF46218FD9782009E4791 /* SMPlayerViewController.m */,
-				5F123CA2190025FF00E46166 /* SMPlaylistViewController.h */,
-				5F123CA3190025FF00E46166 /* SMPlaylistViewController.m */,
 				5F15E0B719124BC8006CDDBF /* SMSettingSelectionViewController.h */,
 				5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */,
 				5F089B5D18FD169B002476CB /* SMSettingsViewController.h */,
@@ -187,6 +184,7 @@
 				5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */,
 				5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */,
 				5F6543A61954E686000DAB15 /* LoginViewController.swift */,
+				5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */,
 			);
 			name = "View Controller";
 			sourceTree = "<group>";
@@ -454,6 +452,7 @@
 				5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */,
 				5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */,
 				5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */,
+				5F7F9EA81955A82F0027AF5D /* PlaylistViewController.swift in Sources */,
 				5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */,
 				5F6F14691922750500F5EAC6 /* SMFestifyButtonViewController.m in Sources */,
 				5F33D7301954C2D600FE67F0 /* AppDelegate.swift in Sources */,
@@ -461,7 +460,6 @@
 				5F6543A71954E686000DAB15 /* LoginViewController.swift in Sources */,
 				5F1CF46318FD9782009E4791 /* SMPlayerViewController.m in Sources */,
 				5F036AB21926C16900B4F3B9 /* SPTRequest+MultipleItems.m in Sources */,
-				5F123CA4190025FF00E46166 /* SMPlaylistViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

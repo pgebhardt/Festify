@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SMPlaylistViewController.h"
 #import "SMTrackPlayer.h"
 
 @interface SMPlayerViewController : UIViewController

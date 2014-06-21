@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Patrik Gebhardt. All rights reserved.
 //
 
+#import "Festify-Bridging-Header.h"
+#import "Festify-Swift.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "SMPlayerViewController.h"
 
@@ -60,7 +62,7 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"showPlaylist"]) {
         UINavigationController* navigationController = (UINavigationController*)segue.destinationViewController;
-        SMPlaylistViewController* viewController = (SMPlaylistViewController*)navigationController.viewControllers[0];
+        PlaylistViewController* viewController = (PlaylistViewController*)navigationController.viewControllers[0];
         
         navigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         viewController.trackPlayer = self.trackPlayer;

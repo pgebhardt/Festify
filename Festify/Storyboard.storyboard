@@ -175,7 +175,7 @@
         <!--Playlist View Controller - Up Next-->
         <scene sceneID="FIV-go-zyM">
             <objects>
-                <tableViewController id="Mf0-Gs-FPK" customClass="SMPlaylistViewController" sceneMemberID="viewController">
+                <tableViewController id="Mf0-Gs-FPK" customClass="PlaylistViewController" customModule="Festify" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" ambiguous="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="cIJ-63-gqv">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
