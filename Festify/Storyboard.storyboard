@@ -847,7 +847,7 @@
         <!--Track Player Bar View Controller-->
         <scene sceneID="SkJ-W3-eMC">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Kgo-eC-hwK" customClass="SMTrackPlayerBarViewController" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Kgo-eC-hwK" customClass="TrackPlayerBarViewController" customModule="Festify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="X4e-y8-qrb"/>
                         <viewControllerLayoutGuide type="bottom" id="xWM-9X-UOJ"/>

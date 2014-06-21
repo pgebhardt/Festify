@@ -9,7 +9,6 @@
 #import "Festify-Bridging-Header.h"
 #import "Festify-Swift.h"
 #import "SMFestifyViewController.h"
-#import "SMTrackPlayerBarViewController.h"
 #import "SMUsersViewController.h"
 #import "SMUserDefaults.h"
 #import "MBProgressHUD.h"
@@ -20,7 +19,7 @@
 @property (nonatomic, strong) SPTSession* session;
 @property (nonatomic, strong) SMTrackPlayer* trackPlayer;
 @property (nonatomic, strong) SMTrackProvider* trackProvider;
-@property (nonatomic, strong) SMTrackPlayerBarViewController* trackPlayerBar;
+@property (nonatomic, strong) TrackPlayerBarViewController* trackPlayerBar;
 @property (nonatomic, strong) NSArray* advertisedPlaylists;
 @property (nonatomic, assign) BOOL updateUsersBadgeValue;
 @property (nonatomic, assign) NSInteger usersTimeout;
@@ -120,7 +119,7 @@
         self.updateUsersBadgeValue = NO;
     }
     else if ([segue.identifier isEqualToString:@"loadPlayerBar"]) {
-        self.trackPlayerBar = (SMTrackPlayerBarViewController*)segue.destinationViewController;
+        self.trackPlayerBar = (TrackPlayerBarViewController*)segue.destinationViewController;
     }
 }
 
