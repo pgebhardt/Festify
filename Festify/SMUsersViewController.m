@@ -135,21 +135,7 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == [self numberOfSectionsInTableView:tableView] - 1) {
-        return 44.0;
-    }
     return CGFLOAT_MIN;
-}
-
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return nil;
-}
-
--(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (section == [self numberOfSectionsInTableView:tableView] - 1) {
-        return @"Tap username to see the user's visible playlists.";
-    }
-    return nil;
 }
 
 #pragma mark - Helper
