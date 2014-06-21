@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TrackPlayerBarViewController: UIViewController {
+class PlayerBarViewController: UIViewController {
     @IBOutlet var trackLabel: UILabel!
     @IBOutlet var coverArtImageView: UIImageView!
     @IBOutlet var artistLabel: UILabel!
