@@ -30,7 +30,6 @@
 		5F423A8418FC115200C3ED75 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8218FC115200C3ED75 /* InfoPlist.strings */; };
 		5F423A8618FC115200C3ED75 /* FestifyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A8518FC115200C3ED75 /* FestifyTests.m */; };
 		5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */; };
-		5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */; };
 		5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */; };
 		5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* SMDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
@@ -96,8 +95,6 @@
 		5F423A8318FC115200C3ED75 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5F423A8518FC115200C3ED75 /* FestifyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FestifyTests.m; sourceTree = "<group>"; };
 		5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
-		5F521D2C18FF013800B915B7 /* SMFestifyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMFestifyViewController.h; sourceTree = "<group>"; };
-		5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMFestifyViewController.m; sourceTree = "<group>"; };
 		5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUsersViewController.h; sourceTree = "<group>"; };
 		5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMUsersViewController.m; sourceTree = "<group>"; };
 		5F5A162118FC535100E408DC /* SMDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMDiscoveryManager.h; sourceTree = "<group>"; };
@@ -174,8 +171,6 @@
 				5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */,
 				5FBAF2A21956397C00C63031 /* PlayerViewController.swift */,
 				5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */,
-				5F521D2C18FF013800B915B7 /* SMFestifyViewController.h */,
-				5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */,
 				5F15E0B719124BC8006CDDBF /* SMSettingSelectionViewController.h */,
 				5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */,
 				5F089B5D18FD169B002476CB /* SMSettingsViewController.h */,
@@ -454,7 +449,6 @@
 				5F7F9EA81955A82F0027AF5D /* PlaylistViewController.swift in Sources */,
 				5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */,
 				5F33D7301954C2D600FE67F0 /* AppDelegate.swift in Sources */,
-				5F521D2E18FF013800B915B7 /* SMFestifyViewController.m in Sources */,
 				5F6543A71954E686000DAB15 /* LoginViewController.swift in Sources */,
 				5F036AB21926C16900B4F3B9 /* SPTRequest+MultipleItems.m in Sources */,
 				5FBAF2A31956397C00C63031 /* PlayerViewController.swift in Sources */,
