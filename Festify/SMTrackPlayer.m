@@ -198,21 +198,18 @@
     self.trackInfo[MPMediaItemPropertyPlaybackDuration] = [NSNumber numberWithDouble:self.currentTrack.duration];
     [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
     
-    // request complete album of track
-    [SPTRequest requestItemFromPartialObject:self.currentTrack.album withSession:self.session callback:^(NSError *error, id object) {
-        // download image
-        [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[object largestCover].imageURL]
-                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            self.coverArtOfCurrentTrack = [UIImage imageWithData:data];
-            if (!error) {
-                self.trackInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:self.coverArtOfCurrentTrack];
-                [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
-            }
-            else {
-                MWLogWarning(@"%@", error);
-            }
-        }] resume];
-    }];
+    // download image album cover for current track
+    [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:self.currentTrack.album.largestCover.imageURL]
+                                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        self.coverArtOfCurrentTrack = [UIImage imageWithData:data];
+        if (!error) {
+            self.trackInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:self.coverArtOfCurrentTrack];
+            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:self.trackInfo];
+        }
+        else {
+            MWLogWarning(@"%@", error);
+        }
+    }] resume];
 }
 
 -(void)trackPlayer:(SPTTrackPlayer *)player didEndPlaybackOfProvider:(id<SPTTrackProvider>)provider withError:(NSError *)error {
