@@ -56,30 +56,15 @@
     id sessionData = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsSpotifySessionKey];
     self.session = sessionData ? [NSKeyedUnarchiver unarchiveObjectWithData:sessionData] : nil;
     if (self.session) {
-        void (^initSession)() = ^{
-            // try to enable playback
-            [self.trackPlayer enablePlaybackWithSession:self.session callback:nil];
-            [self getUsernameWithSession:self.session completion:^(NSString *username) {
-                self.username = username;
-                
-                self.advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
-                [self setAdvertisementState:[[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisementStateKey] boolValue]];
-                self.usersTimeout = [[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsUserTimeoutKey] integerValue];
-            }];
-        };
-        
-        if (self.session.isValid) {
-            initSession();
-        }
-        else {
-            [LoginViewController renewSpotifySession:self.session withCompletionHandler:^(SPTSession* session, NSError* error) {
-                // store new session to users defaults, initialize user defaults and try to enable playback
-                self.session = session;
-                [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session] forKey:SMUserDefaultsSpotifySessionKey];
-
-                initSession();
-            }];
-        }
+        // try to enable playback
+        [self.trackPlayer enablePlaybackWithSession:self.session callback:nil];
+        [self getUsernameWithSession:self.session completion:^(NSString *username) {
+            self.username = username;
+            
+            self.advertisedPlaylists = [[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisedPlaylistsKey];
+            [self setAdvertisementState:[[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsAdvertisementStateKey] boolValue]];
+            self.usersTimeout = [[[NSUserDefaults standardUserDefaults] valueForKey:SMUserDefaultsUserTimeoutKey] integerValue];
+        }];
     }
     else {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -263,13 +248,26 @@
 #pragma mark - SMTrackPlayerDelegate
 
 -(void)trackPlayer:(SMTrackPlayer *)trackPlayer couldNotEnablePlaybackWithSession:(SPTSession *)session error:(NSError *)error {
-    // hide progress hud
-    [self.progressHUD hide:YES];
-    self.progressHUD = nil;
-    
-    // logout, when error is not related to a missing premium subscription
-    if (error.code != 9) {
-        [self logoutOfSpotify];
+    if (error.code == 9) {
+        // ignore error if it is related to a missing premium subscription
+        [self.progressHUD hide:YES];
+        self.progressHUD = nil;
+    }
+    else if (session != nil) {
+        // try to renew session and logout on error
+        [LoginViewController renewSpotifySession:session withCompletionHandler:^(SPTSession* session, NSError* error) {
+            [self.progressHUD hide:YES];
+            self.progressHUD = nil;
+        
+            // store new session to users defaults
+            self.session = session;
+            [[NSUserDefaults standardUserDefaults] setValue:[NSKeyedArchiver archivedDataWithRootObject:self.session]
+                                                     forKey:SMUserDefaultsSpotifySessionKey];
+
+            if (error != nil) {
+                [self logoutOfSpotify];
+            }
+        }];
     }
 }
 
