@@ -38,6 +38,7 @@
 		5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BD190C55790077F648 /* QuartzCore.framework */; };
 		5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */; };
 		5F7F9EA81955A82F0027AF5D /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */; };
+		5FA9D1521958797100ED5D1A /* FestifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9D1511958797100ED5D1A /* FestifyViewController.swift */; };
 		5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2079A1190C1DB700AAE15A /* MessageUI.framework */; };
 		5FBAF29F1956253D00C63031 /* FestifyButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBAF29E1956253D00C63031 /* FestifyButtonViewController.swift */; };
 		5FBAF2A119562E6100C63031 /* PlayerBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */; };
@@ -112,6 +113,7 @@
 		5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
 		5F89FD5B1906339A00752072 /* SMUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUserDefaults.h; sourceTree = "<group>"; };
+		5FA9D1511958797100ED5D1A /* FestifyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FestifyViewController.swift; sourceTree = "<group>"; };
 		5FBAF29E1956253D00C63031 /* FestifyButtonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FestifyButtonViewController.swift; sourceTree = "<group>"; };
 		5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerBarViewController.swift; sourceTree = "<group>"; };
 		5FBAF2A21956397C00C63031 /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
@@ -167,7 +169,10 @@
 			isa = PBXGroup;
 			children = (
 				5FBAF29E1956253D00C63031 /* FestifyButtonViewController.swift */,
+				5FA9D1511958797100ED5D1A /* FestifyViewController.swift */,
 				5F6543A61954E686000DAB15 /* LoginViewController.swift */,
+				5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */,
+				5FBAF2A21956397C00C63031 /* PlayerViewController.swift */,
 				5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */,
 				5F521D2C18FF013800B915B7 /* SMFestifyViewController.h */,
 				5F521D2D18FF013800B915B7 /* SMFestifyViewController.m */,
@@ -177,8 +182,6 @@
 				5F089B5E18FD169B002476CB /* SMSettingsViewController.m */,
 				5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */,
 				5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */,
-				5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */,
-				5FBAF2A21956397C00C63031 /* PlayerViewController.swift */,
 			);
 			name = "View Controller";
 			sourceTree = "<group>";
@@ -441,6 +444,7 @@
 				5F32975C1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m in Sources */,
 				5F14581119127DAE00F5A80C /* MWLogging.m in Sources */,
 				5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */,
+				5FA9D1521958797100ED5D1A /* FestifyViewController.swift in Sources */,
 				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
 				5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */,
 				5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */,

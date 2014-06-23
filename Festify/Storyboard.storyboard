@@ -525,7 +525,7 @@
         <!--Festify View Controller - Festify-->
         <scene sceneID="TAw-hs-D2g">
             <objects>
-                <viewController id="fyQ-f5-bAt" customClass="SMFestifyViewController" sceneMemberID="viewController">
+                <viewController id="fyQ-f5-bAt" customClass="FestifyViewController" customModule="Festify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Phf-Bt-TKc"/>
                         <viewControllerLayoutGuide type="bottom" id="VUn-oR-idf"/>
@@ -589,7 +589,7 @@
                                     <constraint firstAttribute="width" constant="300" id="q5q-IU-uOT"/>
                                 </constraints>
                                 <connections>
-                                    <segue destination="m9Z-we-wkn" kind="embed" id="y3G-pq-ZgF"/>
+                                    <segue destination="m9Z-we-wkn" kind="embed" identifier="loadFestifyButton" id="y3G-pq-ZgF"/>
                                 </connections>
                             </containerView>
                         </subviews>
@@ -610,21 +610,15 @@
                                 <segue destination="Nyb-38-KAh" kind="modal" identifier="showSettings" modalTransitionStyle="crossDissolve" id="VxZ-dY-Hvs"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" id="qDO-lM-VAv" customClass="BBBadgeBarButtonItem">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="mB6-3T-Lw3">
-                                <rect key="frame" x="273" y="7" width="31" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="Group"/>
-                                <connections>
-                                    <segue destination="fq2-e2-DGI" kind="modal" identifier="showUsers" modalTransitionStyle="crossDissolve" id="zNY-pn-QT5"/>
-                                </connections>
-                            </button>
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" image="Group" id="q1W-1e-oON">
+                            <connections>
+                                <segue destination="fq2-e2-DGI" kind="modal" identifier="showUsers" modalTransitionStyle="crossDissolve" id="5I5-OS-NUq"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="trackPlayerBarPosition" destination="vgJ-GE-SOH" id="RQk-B4-6W3"/>
-                        <outlet property="usersBarButtonItem" destination="qDO-lM-VAv" id="7Ue-cu-xKX"/>
-                        <outlet property="usersButton" destination="mB6-3T-Lw3" id="r6z-Nq-uQD"/>
+                        <outlet property="usersButton" destination="q1W-1e-oON" id="t0O-ZW-yBu"/>
                         <segue destination="8Rl-HL-ow2" kind="custom" identifier="showLogin" customClass="BlurryModalSegue" id="sN6-9t-lxE"/>
                     </connections>
                 </viewController>
