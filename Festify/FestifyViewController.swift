@@ -48,7 +48,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
             SMDiscoveryManager.sharedInstance().stopAdvertising()
         }
         
-        NSUserDefaults.standardUserDefaults().setValue(NSNumber(bool: newValue), forKey: "SMUserDefaultsAdvertisementStateKey")
+        NSUserDefaults.standardUserDefaults().setValue(newValue, forKey: "SMUserDefaultsAdvertisementStateKey")
     }
     }
     
@@ -88,13 +88,14 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         
         // if session is available, try to enable playback, or show login screen
         if let session = self.session {
-            // load users defaults
-            self.advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisedPlaylistsKey") as String[]
-            self.usersTimeout = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsUserTimeoutKey") as Int
-            self.advertisementState = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisementStateKey") as Bool
-            
             // try to enable playback of track player with new session
-            self.trackPlayer.enablePlaybackWithSession(session, callback: nil)
+            self.trackPlayer.enablePlaybackWithSession(session) {
+                (error: NSError?) in
+                // load users defaults
+                self.advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisedPlaylistsKey") as String[]
+                self.usersTimeout = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsUserTimeoutKey") as Int
+                self.advertisementState = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisementStateKey") as Bool
+            }
         }
         else {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.3 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
