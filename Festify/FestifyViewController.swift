@@ -134,26 +134,49 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         }
     }
     
-    func discoveryManagerDidUpdateState(notification: AnyObject?) {
-        // add all currently advertised songs, if festify and advertisement modes are active
-        if SMDiscoveryManager.sharedInstance().discovering &&
-            SMDiscoveryManager.sharedInstance().advertising {
-            SPTRequest.requestItemsAtURIs(self.advertisedPlaylists.map({ NSURL(string: $0) }), withSession: self.session!) {
+    func discoveryManager(discoveryManager: SMDiscoveryManager!, didDiscoverDevice devicename: String!, withProperty property: NSData!) {
+        // extract spotify username and indicesOfSelectedPlaylists from device property
+        if let advertisedData = NSJSONSerialization.JSONObjectWithData(property, options: nil, error: nil) as? NSDictionary {
+            let playlists = advertisedData["playlists"] as? String[]
+            let username = advertisedData["username"] as? String
+            
+            // request all playlists and add them to the track provider
+            SPTRequest.requestItemsAtURIs(playlists?.map({ NSURL(string: $0) }), withSession: self.session!) {
                 (error: NSError?, object: AnyObject?) in
-                self.trackProvider.setPlaylists(object as? AnyObject[], forUser: self.session?.canonicalUsername, withTimeoutInterval: 0, session: self.session)
+                self.trackProvider.setPlaylists(object as? AnyObject[], forUser: username, withTimeoutInterval: self.usersTimeout, session: self.session)
             }
         }
     }
     
+    func discoveryManagerDidUpdateState(notification: AnyObject?) {
+        // add all currently advertised songs, if festify and advertisement modes are active
+        if SMDiscoveryManager.sharedInstance().discovering &&
+            SMDiscoveryManager.sharedInstance().advertising {
+                SPTRequest.requestItemsAtURIs(self.advertisedPlaylists.map({ NSURL(string: $0) }), withSession: self.session!) {
+                    (error: NSError?, object: AnyObject?) in
+                    self.trackProvider.setPlaylists(object as? AnyObject[], forUser: self.session?.canonicalUsername, withTimeoutInterval: 0, session: self.session)
+                }
+        }
+    }
+    
+    func trackProvider(trackProvider: SMTrackProvider!, willDeleteUser username: String!) {
+        // restart discovery manager to rescan for all available devices to possibly prevent
+        // track provider from deleting the user
+        if SMDiscoveryManager.sharedInstance().discovering {
+            SMDiscoveryManager.sharedInstance().startDiscovering()
+        }
+    }
+    
     func trackProviderDidUpdateTracks(notification: AnyObject?) {
-        // init track player, if neccessary, and inform user,
-        // when playback cannot be enabled due to its account status,
-        // and update UI accordingly
+        // initialize track player to play tracks from track provider
         if self.trackProvider.tracksForPlayback().count != 0 {
             if !self.trackPlayer.currentProvider {
                 self.trackPlayer.playTrackProvider(self.trackProvider)
             }
         }
+        // clean up track player, if no tracks are available anymore
+        // and return to main screen, to avoid viewing an unusuable
+        // player screen, or similar
         else {
             self.trackPlayer.clear()
             self.dismissViewControllerAnimated(true, completion: nil)
@@ -169,28 +192,6 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
             UIView.animateWithDuration(0.4) {
                 self.view.layoutIfNeeded()
             }
-        }
-    }
-    
-    func discoveryManager(discoveryManager: SMDiscoveryManager!, didDiscoverDevice devicename: String!, withProperty property: NSData!) {
-        // extract spotify username and indicesOfSelectedPlaylists from device property
-        if let advertisedData = NSJSONSerialization.JSONObjectWithData(property, options: nil, error: nil) as? NSDictionary {
-            let playlists = advertisedData["playlists"] as? String[]
-            let username = advertisedData["username"] as? String
-            
-            // request all playlists and add them to the track provider
-            SPTRequest.requestItemsAtURIs(playlists?.map({ NSURL(string: $0) }), withSession: self.session!) {
-                (error: NSError?, object: AnyObject?) in
-                self.trackProvider.setPlaylists(object as? AnyObject[], forUser: username, withTimeoutInterval: self.usersTimeout, session: self.session)
-            }
-        }
-    }
-    
-    func trackProvider(trackProvider: SMTrackProvider!, willDeleteUser username: String!) {
-        // restart discovery manager to rescan for all available devices to possibly prevent
-        // track provider from deleting the user
-        if SMDiscoveryManager.sharedInstance().discovering {
-            SMDiscoveryManager.sharedInstance().startDiscovering()
         }
     }
     
