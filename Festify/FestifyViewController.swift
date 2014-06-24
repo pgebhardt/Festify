@@ -12,11 +12,13 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
     @IBOutlet var trackPlayerBarPosition: NSLayoutConstraint!
     @IBOutlet var usersButton: UIBarButtonItem!
     
-    var trackPlayer: SMTrackPlayer!
+    let trackPlayer = (UIApplication.sharedApplication().delegate as AppDelegate).trackPlayer
     let trackProvider = SMTrackProvider()
     var trackPlayerBar: PlayerBarViewController!
     var progressHUD: MBProgressHUD?
     
+    // make sure all user relevant stored properties are stored correctly
+    // in NSUserDefaults database
     var session: SPTSession? {
     didSet {
         NSUserDefaults.standardUserDefaults().setValue(
@@ -74,10 +76,8 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "trackProviderDidUpdateTracks:",
             name: "SMTrackProviderDidUpdateTracksArray", object: nil)
 
-        // get shared track player object from app delegate and initialize
-        // provider and delegations
+        // init delegations and track player bar
         SMDiscoveryManager.sharedInstance().delegate = self
-        self.trackPlayer = (UIApplication.sharedApplication().delegate as AppDelegate).trackPlayer
         self.trackPlayerBar.trackPlayer = self.trackPlayer
         self.trackPlayer.delegate = self
         self.trackProvider.delegate = self
@@ -214,6 +214,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
                 }
                 else {
                     self.session = session
+                    self.trackPlayer.enablePlaybackWithSession(self.session, callback: nil)
                 }
             }
         }
