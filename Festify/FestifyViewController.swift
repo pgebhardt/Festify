@@ -206,10 +206,10 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
             // try to renew session, and logout if it fails
             LoginViewController.renewSpotifySession(session) {
                 (session: SPTSession?, error: NSError?) in
-                self.progressHUD?.hide(true)
-                self.progressHUD = nil
-
                 if error {
+                    self.progressHUD?.hide(true)
+                    self.progressHUD = nil
+                    
                     self.logoutOfSpotify()
                 }
                 else {
@@ -261,7 +261,9 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         // when user does not have a premium subscribtion
         self.trackPlayer.enablePlaybackWithSession(self.session) {
             (error: NSError?) in
-            let alert = UIAlertController(title: "Music playback requires a Spotify Premium account!", message: nil, preferredStyle: .Alert)
+            let alert = UIAlertController(title: "No Spotify Premuim subscription detected!",
+                message: "You will be able to use all features of Festify, except playing music.", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }
     }
@@ -273,6 +275,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
             // hide progress HUD and show login view
             self.progressHUD?.hide(true)
             self.progressHUD = nil
+            
             self.performSegueWithIdentifier("showLogin", sender: self)
         })
         self.presentViewController(alert, animated: true, completion: nil)
