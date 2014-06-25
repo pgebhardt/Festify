@@ -261,10 +261,12 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         // when user does not have a premium subscribtion
         self.trackPlayer.enablePlaybackWithSession(self.session) {
             (error: NSError?) in
-            let alert = UIAlertController(title: "No Spotify Premuim subscription detected!",
-                message: "You will be able to use all features of Festify, except playing music.", preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            if error {
+                let alert = UIAlertController(title: "No Spotify Premuim subscription detected!",
+                    message: "You will be able to use all features of Festify, except playing music.", preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
         }
     }
 
