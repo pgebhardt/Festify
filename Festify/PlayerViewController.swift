@@ -44,7 +44,7 @@ class PlayerViewController: UIViewController {
         self.trackPlayer.removeObserver(self, forKeyPath: "coverArtOfCurrentTrack")
     }
     
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: NSDictionary!, context: CMutableVoidPointer) {
+    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<()>) {
         if keyPath == "playing" {
             self.updatePlayButton(self.trackPlayer.playing)
         }

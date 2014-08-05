@@ -27,7 +27,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
     }
     }
     
-    var advertisedPlaylists: String[] = String[]() {
+    var advertisedPlaylists: [String] = [String]() {
     didSet {
         NSUserDefaults.standardUserDefaults().setValue(self.advertisedPlaylists,
             forKey: "SMUserDefaultsAdvertisedPlaylistsKey")
@@ -59,7 +59,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         NSUserDefaults.standardUserDefaults().setValue(self.usersTimeout, forKey: "SMUserDefaultsUserTimeoutKey")
         
         // update timeout value for all users in track provider
-        for username in self.trackProvider.users.allKeys as String[] {
+        for username in self.trackProvider.users.allKeys as [String] {
             self.trackProvider.updateTimeoutInterval(usersTimeout, forUser: username)
         }
     }
@@ -92,7 +92,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
             self.trackPlayer.enablePlaybackWithSession(session) {
                 (error: NSError?) in
                 // load users defaults
-                self.advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisedPlaylistsKey") as String[]
+                self.advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisedPlaylistsKey") as [String]
                 self.usersTimeout = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsUserTimeoutKey") as Int
                 self.advertisementState = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisementStateKey") as Bool
             }
@@ -137,13 +137,13 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
     func discoveryManager(discoveryManager: SMDiscoveryManager!, didDiscoverDevice devicename: String!, withProperty property: NSData!) {
         // extract spotify username and indicesOfSelectedPlaylists from device property
         if let advertisedData = NSJSONSerialization.JSONObjectWithData(property, options: nil, error: nil) as? NSDictionary {
-            let playlists = advertisedData["playlists"] as? String[]
+            let playlists = advertisedData["playlists"] as? [String]
             let username = advertisedData["username"] as? String
             
             // request all playlists and add them to the track provider
             SPTRequest.requestItemsAtURIs(playlists?.map({ NSURL(string: $0) }), withSession: self.session!) {
                 (error: NSError?, object: AnyObject?) in
-                self.trackProvider.setPlaylists(object as? AnyObject[], forUser: username, withTimeoutInterval: self.usersTimeout, session: self.session)
+                self.trackProvider.setPlaylists(object as? [AnyObject], forUser: username, withTimeoutInterval: self.usersTimeout, session: self.session)
             }
         }
     }
@@ -154,7 +154,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
             SMDiscoveryManager.sharedInstance().advertising {
                 SPTRequest.requestItemsAtURIs(self.advertisedPlaylists.map({ NSURL(string: $0) }), withSession: self.session!) {
                     (error: NSError?, object: AnyObject?) in
-                    self.trackProvider.setPlaylists(object as? AnyObject[], forUser: self.session?.canonicalUsername, withTimeoutInterval: 0, session: self.session)
+                    self.trackProvider.setPlaylists(object as? [AnyObject], forUser: self.session?.canonicalUsername, withTimeoutInterval: 0, session: self.session)
                 }
         }
     }
@@ -206,7 +206,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
             // try to renew session, and logout if it fails
             LoginViewController.renewSpotifySession(session) {
                 (session: SPTSession?, error: NSError?) in
-                if error {
+                if error != nil {
                     self.progressHUD?.hide(true)
                     self.progressHUD = nil
                     
@@ -230,7 +230,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
     func trackPlayer(trackPlayer: SMTrackPlayer!, willEnablePlaybackWithSession session: SPTSession!) {
         // show progress hud on top of the window to indicatie the process and
         // block all UI interactions
-        if !self.progressHUD {
+        if self.progressHUD == nil {
             let window = (UIApplication.sharedApplication().delegate as AppDelegate).window
             self.progressHUD = MBProgressHUD.showHUDAddedTo(window!.subviews[0] as UIView, animated: true)
             self.progressHUD!.labelText = "Connecting ..."
@@ -252,7 +252,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         SPTRequest.playlistsForUserInSession(self.session) {
             (error: NSError?, object: AnyObject?) in
             // request all playlists for the user and advertise them
-            self.advertisedPlaylists = ((object as SPTPlaylistList).items as SPTPartialPlaylist[]).map({ $0.uri.absoluteString })
+            self.advertisedPlaylists = ((object as SPTPlaylistList).items as [SPTPartialPlaylist]).map({ $0.uri.absoluteString })
             self.usersTimeout = 120
             self.advertisementState = true
         }
@@ -261,7 +261,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         // when user does not have a premium subscribtion
         self.trackPlayer.enablePlaybackWithSession(self.session) {
             (error: NSError?) in
-            if error {
+            if error != nil {
                 let alert = UIAlertController(title: "No Spotify Premuim subscription detected!",
                     message: "You will be able to use all features of Festify, except playing music.", preferredStyle: .Alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
@@ -283,8 +283,8 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    func settingsView(settingsView: SMSettingsViewController!, didChangeAdvertisedPlaylistSelection selectedPlaylists: AnyObject[]!) {
-        self.advertisedPlaylists = selectedPlaylists as String[]
+    func settingsView(settingsView: SMSettingsViewController!, didChangeAdvertisedPlaylistSelection selectedPlaylists: [AnyObject]!) {
+        self.advertisedPlaylists = selectedPlaylists as [String]
     
         // reset advertisement state to update advertised playlist selection
         self.advertisementState = SMDiscoveryManager.sharedInstance().advertising

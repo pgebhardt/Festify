@@ -11,7 +11,7 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     let trackPlayer = SMTrackPlayer(companyName: NSBundle.mainBundle().bundleIdentifier,
-        appName: NSBundle.mainBundle().infoDictionary[kCFBundleNameKey] as String)
+        appName: "Festify")
     let reachability = Reachability.reachabilityForInternetConnection()
     
     var window: UIWindow?
@@ -46,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // block UI with progress HUD and inform user about missing internet connection,
         // also stop playback, to prevent any glitches with the Spotify service.
         if !self.reachability.isReachable() {
-            if !self.progressHUD {
+            if self.progressHUD == nil {
                 self.progressHUD = MBProgressHUD.showHUDAddedTo(self.window, animated: true)
                 self.progressHUD!.labelText = "Lost Connection ..."
             }

@@ -48,7 +48,7 @@ class PlayerBarViewController: UIViewController {
     }
     }
     
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: NSDictionary!, context: CMutableVoidPointer) {
+    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<()>) {
         if keyPath == "coverArtOfCurrentTrack" {
             self.updateCoverArt(self.trackPlayer.coverArtOfCurrentTrack)
         }
