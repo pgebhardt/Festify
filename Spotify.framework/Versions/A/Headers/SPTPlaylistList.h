@@ -38,10 +38,11 @@ typedef void (^SPTPlaylistCreationCallback)(NSError *error, SPTPlaylistSnapshot 
  Create a new playlist and add it to the this playlist list.
  
  @param name The name of the newly-created playlist. 
+ @param isPublic Whether the newly-created playlist is public.
  @param session An authenticated session. Must be valid and authenticated with the
- `SPTAuthPlaylistModifyScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
+ `SPTAuthPlaylistModifyPublicScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
  @param block The callback block to be fired when playlist creation is completed (or fails).
  */
--(void)createPlaylistWithName:(NSString *)name session:(SPTSession *)session callback:(SPTPlaylistCreationCallback)block;
+-(void)createPlaylistWithName:(NSString *)name public:(BOOL)isPublic session:(SPTSession *)session callback:(SPTPlaylistCreationCallback)block;
 
 @end

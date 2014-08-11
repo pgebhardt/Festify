@@ -45,6 +45,8 @@
 #import "SPTPlaylistList.h"
 #import "SPTPlaylistSnapshot.h"
 #import "SPTTrack.h"
+#import "SPTPlaylistTrack.h"
+#import "SPTSavedTrack.h"
 #import "SPTImage.h"
 #import "SPTUser.h"
 #import "SPTListPage.h"
@@ -54,6 +56,7 @@
 #import "SPTCircularBuffer.h"
 #import "SPTCoreAudioController.h"
 #import "SPTAudioStreamingController.h"
+#import "SPTAudioStreamingController_ErrorCodes.h"
 #import "SPTTrackPlayer.h"
 
 #if !TARGET_OS_IPHONE

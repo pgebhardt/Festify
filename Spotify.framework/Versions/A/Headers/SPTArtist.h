@@ -43,6 +43,14 @@
  */
 +(void)artistWithURI:(NSURL *)uri session:(SPTSession *)session callback:(SPTRequestCallback)block;
 
+/** Checks if the Spotify URI is a valid Spotify Artist URI.
+ 
+ @note This method takes Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
+ 
+ @param uri The Spotify URI to check.
+ */
++(BOOL)isArtistURI:(NSURL*)uri;
+
 ///----------------------------
 /// @name Properties
 ///----------------------------
@@ -105,5 +113,14 @@
 -(void)requestTopTracksForTerritory:(NSString *)territory
 						withSession:(SPTSession *)session
 						   callback:(SPTRequestCallback)block;
+
+/** Request the artist's related artists.
+
+ @param session A valid `SPTSession`.
+ @param block The block to be called when the operation is complete. The block will pass an
+ `NSArray` object containing `SPTArtist`s on success, otherwise an error.
+ */
+-(void)requestRelatedArtists:(SPTSession *)session
+					callback:(SPTRequestCallback)block;
 
 @end

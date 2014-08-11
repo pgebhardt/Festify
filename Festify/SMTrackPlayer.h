@@ -19,8 +19,8 @@
 
 @interface SMTrackPlayer : NSObject<SPTTrackPlayerDelegate>
 
-+(instancetype)trackPlayerWithCompanyName:(NSString*)companyName appName:(NSString*)appName;
--(id)initWithCompanyName:(NSString*)companyName appName:(NSString*)appName;
++(instancetype)trackPlayer;
+-(id)init;
 
 -(void)enablePlaybackWithSession:(SPTSession*)session callback:(SPTErrorableOperationCallback)block;
 -(void)playTrackProvider:(id<SPTTrackProvider>)provider;

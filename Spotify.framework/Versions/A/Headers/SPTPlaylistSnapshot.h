@@ -29,6 +29,12 @@
 @class SPTUser;
 @class SPTListPage;
 
+/** The field indicating whether the playlist is public. */
+FOUNDATION_EXPORT NSString * const SPTPlaylistSnapshotPublicKey;
+
+/** The field indicating the name of the playlist. */
+FOUNDATION_EXPORT NSString * const SPTPlaylistSnapshotNameKey;
+
 typedef void (^SPTPlaylistMutationCallback)(NSError *error, SPTPlaylistSnapshot *playlist);
 
 /** Represents a user's playlist on the Spotify service. */
@@ -75,48 +81,34 @@ typedef void (^SPTPlaylistMutationCallback)(NSError *error, SPTPlaylistSnapshot 
 /// @name Playlist Manipulation
 ///----------------------------
 
-/** Set the playlist's name. 
- 
- @param name The new name.
- @param session An authenticated session. Must be valid and authenticated with the
- `SPTAuthPlaylistModifyScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
- @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
- */
--(void)setPlaylistName:(NSString *)name withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
-
-/** Set the playlist's description.
-
- @param desc The new description.
- @param session An authenticated session. Must be valid and authenticated with the
- `SPTAuthPlaylistModifyScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
- @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
- */
--(void)setPlaylistDescription:(NSString *)desc withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
-
-/** Set the playlist's collaborative status.
-
- @param collaborative The new value.
- @param session An authenticated session. Must be valid and authenticated with the
- `SPTAuthPlaylistModifyScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
- @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
- */
--(void)setPlaylistIsCollaborative:(BOOL)collaborative withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
-
-/** Delete the playlist.
-
- @param session An authenticated session. Must be valid and authenticated with the
- `SPTAuthPlaylistModifyScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
- @param block The block to be called when the operation is complete. This block will pass an error if the operation failed.
- */
--(void)deletePlaylistWithSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
-
 /** Append tracks to the playlist.
 
  @param tracks The tracks to add, as `SPTTrack` or `SPTPartialTrack` objects.
  @param session An authenticated session. Must be valid and authenticated with the
- `SPTAuthPlaylistModifyScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
+ `SPTAuthPlaylistModifyPublicScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
  @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
  */
 -(void)addTracksToPlaylist:(NSArray *)tracks withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
+
+/** Set the tracks in a playlist, overwriting any tracks already in it
+
+ @param tracks The tracks to set, as `SPTTrack` or `SPTPartialTrack` objects.
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthPlaylistModifyPublicScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
+ @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
+ */
+-(void)setTracksInPlaylist:(NSArray *)tracks withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
+
+/** Change playlist details
+
+ @param data The data to be changed. Use the key constants to refer to the field to change
+ (e.g. `SPTPlaylistSnapshotNameKey`, `SPTPlaylistSnapshotPublicKey`). When passing boolean values, use @YES or @NO.
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthPlaylistModifyScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
+ @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
+ */
+-(void)changePlaylistDetails:(NSDictionary *)data
+				 withSession:(SPTSession *)session
+					callback:(SPTPlaylistMutationCallback)block;
 
 @end

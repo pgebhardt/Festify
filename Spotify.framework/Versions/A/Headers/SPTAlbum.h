@@ -57,6 +57,14 @@ typedef NS_ENUM(NSUInteger, SPTAlbumType) {
  */
 +(void)albumWithURI:(NSURL *)uri session:(SPTSession *)session callback:(SPTRequestCallback)block;
 
+/** Checks if the Spotify URI is a valid Spotify Album URI.
+ 
+ @note This method takes Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
+ 
+ @param uri The Spotify URI to check.
+ */
++(BOOL)isAlbumURI:(NSURL*)uri;
+
 ///----------------------------
 /// @name Properties
 ///----------------------------

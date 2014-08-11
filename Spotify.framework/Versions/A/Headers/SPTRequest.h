@@ -117,4 +117,42 @@ typedef NS_ENUM(NSUInteger, SPTSearchQueryType) {
  */
 +(void)performSearchWithQuery:(NSString *)searchQuery queryType:(SPTSearchQueryType)searchQueryType session:(SPTSession *)session callback:(SPTRequestCallback)block;
 
+///----------------------------
+/// @name Your Music Library
+///----------------------------
+
+/** Gets the authenticated user's Your Music Library tracks
+
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthUserLibraryRead` scope.
+ @param block The block will pass an `SPTListPage` containing results on success, otherwise an error.
+ */
++(void)savedTracksForUserInSession:(SPTSession *)session callback:(SPTRequestCallback)block;
+
+/** Adds a set of tracks to the authenticated user's Your Music Library.
+
+ @param tracks An array of `SPTTrack` or `SPTPartialTrack` objects.
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthUserLibraryModify` scope.
+ @param block The block to be called when the operation is complete.
+ */
++(void)saveTracks:(NSArray *)tracks forUserInSession:(SPTSession *)session callback:(SPTRequestCallback)block;
+
+/** Checks whether the authenticated user's Your Music Library contains a set of tracks.
+
+ @param tracks An array of `SPTTrack` or `SPTPartialTrack` objects.
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthUserLibraryRead` scope.
+ @param block The block to be called when the operation is complete. The block will pass an NSArray of Bool values on success, otherwise an error.
+ */
++(void)savedTracksContains:(NSArray *)tracks forUserInSession:(SPTSession *)session callback:(SPTRequestCallback)block;
+
+/** Removes a set of tracks from the authenticated user's Your Music Library.
+
+ @param tracks An array of `SPTTrack` or `SPTPartialTrack` objects.
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthUserLibraryModify` scope.
+ @param block The block to be called when the operation is complete.
+*/
++(void)removeTracksFromSaved:(NSArray *)tracks forUserInSession:(SPTSession *)session callback:(SPTRequestCallback)block;
 @end

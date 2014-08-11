@@ -40,9 +40,20 @@
  */
 +(void)trackWithURI:(NSURL *)uri session:(SPTSession *)session callback:(SPTRequestCallback)block;
 
+/** Checks if the Spotify URI is a valid Spotify Track URI.
+ 
+ @note This method takes Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
+ 
+ @param uri The Spotify URI to check.
+ */
++(BOOL)isTrackURI:(NSURL*)uri;
+
 ///----------------------------
 /// @name Properties
 ///----------------------------
+
+/** The id of the track. */
+@property (nonatomic, readonly, copy) NSString *identifier;
 
 /** The name of the track. */
 @property (nonatomic, readonly, copy) NSString *name;

@@ -35,8 +35,7 @@ class LoginViewController: UIViewController {
                 self.delegate?.loginViewDidReturnFromExternalSignUp(self)
                 
                 // complete login process and inform delegate about success
-                SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url,
-                    tokenSwapServiceEndpointAtURL: NSURL(string: LoginViewController.tokenSwapServiceURL)) {
+                SPTAuth.defaultInstance().handleAuthCallbackWithTriggeredAuthURL(url) {
                     (error: NSError?, session: SPTSession?) -> () in
                     if let session = session {
                         self.delegate?.loginView(self, didCompleteLoginWithSession: session)
@@ -55,7 +54,8 @@ class LoginViewController: UIViewController {
         // get correct login url and open safari to promt user for credentials
         let loginURL = SPTAuth.defaultInstance().loginURLForClientId(LoginViewController.clientId,
             declaredRedirectURL: NSURL(string: LoginViewController.callbackURL),
-            scopes: [SPTAuthStreamingScope, SPTAuthPlaylistReadScope])
+            scopes: [SPTAuthStreamingScope, SPTAuthPlaylistModifyPublicScope],
+            withResponseType: "token")
         UIApplication.sharedApplication().openURL(loginURL)
     }
     

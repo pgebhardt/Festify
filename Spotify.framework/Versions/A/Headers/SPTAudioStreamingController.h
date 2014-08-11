@@ -23,15 +23,16 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import "SPTTypes.h"
 
+/** A volume value, in the range 0.0..1.0. */
 typedef double SPTVolume;
 
 /** The playback bitrates availabe. */
 typedef NS_ENUM(NSUInteger, SPTBitrate) {
-	/** The lowest bitrate. */
+	/** The lowest bitrate, roughly equivalent to ~96kbit/sec. */
 	SPTBitrateLow = 0,
-	/** The normal bitrate. */
+	/** The normal bitrate, roughly equivalent to ~160kbit/sec.  */
 	SPTBitrateNormal = 1,
-	/** The highest bitrate. */
+	/** The highest bitrate, roughly equivalent to ~320kbit/sec. */
 	SPTBitrateHigh = 2,
 };
 
@@ -54,6 +55,12 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
 ///----------------------------
 /// @name Initialisation and Setup
 ///----------------------------
+
+/** Initialise a new `SPAudioStreamingController`.
+
+  @return Returns an initialised `SPAudioStreamingController` instance.
+*/
+-(id)init;
 
 /** Initialise a new `SPAudioStreamingController`.
  
@@ -98,6 +105,9 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
 /** The receiver's playback delegate, which deals with audio playback events. */
 @property (nonatomic, weak) id <SPTAudioStreamingPlaybackDelegate> playbackDelegate;
 
+/** The maximum number of bytes to store in the disk cache, this cache could be cleared at any time by the operating system */
+@property (nonatomic, readwrite) NSUInteger diskCacheSizeLimit;
+
 ///----------------------------
 /// @name Controlling Playback
 ///----------------------------
@@ -141,14 +151,50 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
  */
 -(void)setIsPlaying:(BOOL)playing callback:(SPTErrorableOperationCallback)block;
 
-/** Play a track with the given Spotify URI.
+/** Play a Spotify URI.
+ 
+ Supported URI types: Tracks, Albums and Playlists
 
- @param uri The URI of the track to play.
+ @param uri The URI to play.
  @param block The callback block to be executed when the playback command has been
  received, which will pass back an `NSError` object if an error ocurred.
- @see -currentTrackMetadata
  */
 -(void)playURI:(NSURL *)uri callback:(SPTErrorableOperationCallback)block;
+
+/** Queue a Spotify URI.
+ 
+ Supported URI types: Tracks
+
+ @param uri The URI to queue.
+ @param block The callback block to be executed when the playback command has been
+ received, which will pass back an `NSError` object if an error ocurred.
+ */
+-(void)queueURI:(NSURL *)uri callback:(SPTErrorableOperationCallback)block;
+
+/** Queue a Spotify URI.
+ 
+ Supported URI types: Tracks
+
+ @param uri The URI to queue.
+ @param clear Clear the queue before adding URI
+ @param block The callback block to be executed when the playback command has been
+ received, which will pass back an `NSError` object if an error ocurred.
+ */
+-(void)queueURI:(NSURL *)uri clearQueue:(BOOL)clear callback:(SPTErrorableOperationCallback)block;
+
+/** Go to the next track in the queue.
+ 
+ @param block The callback block to be executed when the command has been
+ received, which will pass back an `NSError` object if an error ocurred.
+ */
+-(void)skipNext:(SPTErrorableOperationCallback)block;
+
+/** Go to the previous track in the queue
+ 
+ @param block The callback block to be executed when the command has been
+ received, which will pass back an `NSError` object if an error ocurred.
+ */
+-(void)skipPrevious:(SPTErrorableOperationCallback)block;
 
 ///----------------------------
 /// @name Playback State
@@ -183,6 +229,9 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
 
 /** Returns the current approximate playback position of the current track. */
 @property (nonatomic, readonly) NSTimeInterval currentPlaybackPosition;
+
+/** Returns the current streaming bitrate the receiver is using. */
+@property (nonatomic, readonly) SPTBitrate targetBitrate;
 
 @end
 

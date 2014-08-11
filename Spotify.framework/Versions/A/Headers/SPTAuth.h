@@ -9,29 +9,29 @@
 /** Scope that lets you stream music. */
 FOUNDATION_EXPORT NSString * const SPTAuthStreamingScope;
 
-/** Scope that lets you read public playlists. */
-FOUNDATION_EXPORT NSString * const SPTAuthPlaylistReadScope;
-
 /** Scope that lets you read private playlists of the authenticated user. */
 FOUNDATION_EXPORT NSString * const SPTAuthPlaylistReadPrivateScope;
 
 /** Scope that lets you modify public playlists of the authenticated user. */
-FOUNDATION_EXPORT NSString * const SPTAuthPlaylistModifyScope;
+FOUNDATION_EXPORT NSString * const SPTAuthPlaylistModifyPublicScope;
 
 /** Scope that lets you modify private playlists of the authenticated user. */
 FOUNDATION_EXPORT NSString * const SPTAuthPlaylistModifyPrivateScope;
 
-/** Scope that lets you read private information about the authenticated user. */
-FOUNDATION_EXPORT NSString * const SPTAuthUserReadPrivateScope;
-
-/** Scope that lets you modify user information for the authenticated user. */
-FOUNDATION_EXPORT NSString * const SPTAuthUserModifyScope;
+/** Scope that lets you read the email address of the authenticated user. */
+FOUNDATION_EXPORT NSString * const SPTAuthUserReadEmailScope;
 
 /** Scope that lets you modify private user information for the authenticated user. */
 FOUNDATION_EXPORT NSString * const SPTAuthUserModifyPrivateScope;
 
 /** Scope that lets you read the email address of the authenticated user. */
 FOUNDATION_EXPORT NSString * const SPTAuthUserReadEmailScope;
+
+/** Scope that lets you read user's Your Music library. */
+FOUNDATION_EXPORT NSString * const SPTAuthUserLibraryRead;
+
+/** Scope that lets you modify user's Your Music library. */
+FOUNDATION_EXPORT NSString * const SPTAuthUserLibraryModify;
 
 @class SPTSession;
 
@@ -60,10 +60,10 @@ typedef void (^SPTAuthCallback)(NSError *error, SPTSession *session);
 
 /**
  Returns a URL that, when opened, will begin the Spotify authentication process.
- 
+
  @warning You must open this URL with the system handler to have the auth process
  happen in Safari. Displaying this inside your application is against the Spotify ToS.
- 
+
  @param clientId Your client ID as declared in the Spotify Developer Centre.
  @param declaredURL Your callback URL as declared in the Spotify Developer Centre.
  @return The URL to pass to `UIApplication`'s `-openURL:` method.
@@ -83,16 +83,30 @@ typedef void (^SPTAuthCallback)(NSError *error, SPTSession *session);
  */
 -(NSURL *)loginURLForClientId:(NSString *)clientId declaredRedirectURL:(NSURL *)declaredURL scopes:(NSArray *)scopes;
 
+/**
+ Returns a URL that, when opened, will begin the Spotify authentication process.
+
+ @warning You must open this URL with the system handler to have the auth process
+ happen in Safari. Displaying this inside your application is against the Spotify ToS.
+
+ @param clientId Your client ID as declared in the Spotify Developer Centre.
+ @param declaredURL Your callback URL as declared in the Spotify Developer Centre.
+ @param scopes The custom scopes to request from the auth API.
+ @param responseType Authentication response code type, defaults to "code", use "token" if you want to bounce directly to the app without refresh tokens.
+ @return The URL to pass to `UIApplication`'s `-openURL:` method.
+ */
+-(NSURL *)loginURLForClientId:(NSString *)clientId declaredRedirectURL:(NSURL *)declaredURL scopes:(NSArray *)scopes withResponseType:(NSString *)responseType;
+
 ///----------------------------
 /// @name Handling Authentication Callback URLs
 ///----------------------------
 
 /**
  Find out if the given URL appears to be a Spotify authentication URL.
- 
+
  This method is useful if your application handles multiple URL types. You can pass every URL
  you receive through here to filter them.
- 
+
  @param callbackURL The complete callback URL as triggered in your application.
  @param declaredURL Your pre-defined callback URL as declared in the Spotify Developer Centre.
  @return Returns `YES` if the callback URL appears to be a Spotify auth callback, otherwise `NO`.
@@ -113,11 +127,23 @@ typedef void (^SPTAuthCallback)(NSError *error, SPTSession *session);
 
 /**
  Handle a Spotify authentication callback URL, returning a Spotify username and OAuth credential.
- 
+
  This URL is obtained when your application delegate's `application:openURL:sourceApplication:annotation:`
  method is triggered. Use `-[SPTAuth canHandleURL:withDeclaredRedirectURL:]` to easily filter out other URLs that may be
  triggered.
- 
+
+ @param url The complete callback URL as triggered in your application.
+ @param block The callback block to be triggered when authentication succeeds or fails.
+ */
+-(void)handleAuthCallbackWithTriggeredAuthURL:(NSURL *)url callback:(SPTAuthCallback)block;
+
+/**
+ Handle a Spotify authentication callback URL, returning a Spotify username and OAuth credential.
+
+ This URL is obtained when your application delegate's `application:openURL:sourceApplication:annotation:`
+ method is triggered. Use `-[SPTAuth canHandleURL:withDeclaredRedirectURL:]` to easily filter out other URLs that may be
+ triggered.
+
  @note This method requires that you have a Spotify token swap service running and available.
 
  @param url The complete callback URL as triggered in your application.

@@ -10,8 +10,7 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    let trackPlayer = SMTrackPlayer(companyName: NSBundle.mainBundle().bundleIdentifier,
-        appName: "Festify")
+    let trackPlayer = SMTrackPlayer()
     let reachability = Reachability.reachabilityForInternetConnection()
     
     var window: UIWindow?

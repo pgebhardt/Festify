@@ -53,16 +53,15 @@ typedef NS_ENUM(NSUInteger, SPTPlaybackEndReason) {
 /// @name Initialisation and Setup
 ///----------------------------
 
-/** Initialises a new track player.
- 
- @warning Audio playback will not be available until `-[SPTTrackPlayer enablePlaybackWithSession:callback:]` is called.
+/** Initialises a new track player with a standard `SPTAudioStreamingController`
 
- @param companyName Your company's name.
- @param appName Your application's name.
- @return Returns an intialised track player.
- @see -[SPTTrackPlayer enablePlaybackWithSession:callback:]
- */
--(id)initWithCompanyName:(NSString *)companyName appName:(NSString *)appName;
+@warning Audio playback will not be available until `-[SPTTrackPlayer enablePlaybackWithSession:callback:]` is called.
+
+@return Returns an intialised track player.
+@see -[SPTTrackPlayer enablePlaybackWithSession:callback:]
+
+*/
+-(id)init;
 
 /** Initialises a new track player with the given `SPTAudioStreamingController`.
  

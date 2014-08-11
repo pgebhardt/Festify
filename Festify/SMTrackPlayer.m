@@ -35,14 +35,14 @@
 
 @implementation SMTrackPlayer
 
-+(instancetype)trackPlayerWithCompanyName:(NSString *)companyName appName:(NSString *)appName {
-    return [[SMTrackPlayer alloc] initWithCompanyName:companyName appName:appName];
++(instancetype)trackPlayer {
+    return [[SMTrackPlayer alloc] init];
 }
 
--(id)initWithCompanyName:(NSString *)companyName appName:(NSString *)appName {
+-(id)init {
     if (self = [super init]) {
         // init properties
-        self.trackPlayer = [[SPTTrackPlayer alloc] initWithCompanyName:companyName appName:appName];
+        self.trackPlayer = [SPTTrackPlayer new];
         self.trackPlayer.repeatEnabled = YES;
         self.trackPlayer.delegate = self;
         self.trackInfo = [NSMutableDictionary dictionary];
