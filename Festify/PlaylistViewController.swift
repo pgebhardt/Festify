@@ -16,28 +16,28 @@ class PlaylistViewController: UITableViewController {
     }
 
     // Table view data source
-    override func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.trackPlayer.currentProvider.tracksForPlayback().count
     }
     
     // Table view delegate
-    override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell: UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         
         let trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback().count
         let track: SPTPartialTrack = self.trackPlayer.currentProvider.tracksForPlayback()[trackIndex] as SPTPartialTrack
         
-        cell.textLabel.text = track.name
-        cell.detailTextLabel.text = (track.artists[0] as SPTPartialArtist).name
+        cell.textLabel!.text = track.name
+        cell.detailTextLabel!.text = (track.artists[0] as SPTPartialArtist).name
         
         return cell
     }
     
-    override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!)  {
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)  {
         let trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback().count
         
         self.trackPlayer.skipToTrack(trackIndex)

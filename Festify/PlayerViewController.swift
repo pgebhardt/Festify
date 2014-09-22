@@ -62,7 +62,7 @@ class PlayerViewController: UIViewController {
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if segue.identifier == "showPlaylist" {
             let navigationController = segue.destinationViewController as UINavigationController
             let viewController = navigationController.viewControllers[0] as PlaylistViewController
@@ -92,7 +92,7 @@ class PlayerViewController: UIViewController {
     @IBAction func openInSpotify(sender: AnyObject?) {
         // open currently played track in spotify app, if available
         if SPTAuth.defaultInstance().spotifyApplicationIsInstalled() {
-            let url = NSURL(string: "spotify://" + self.trackPlayer.currentTrack.uri.absoluteString)
+            let url = NSURL(string: "spotify://" + self.trackPlayer.currentTrack.uri.absoluteString!)
             
             self.trackPlayer.pause()
             UIApplication.sharedApplication().openURL(url)

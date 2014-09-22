@@ -22,7 +22,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
     var session: SPTSession? {
     didSet {
         NSUserDefaults.standardUserDefaults().setValue(
-            NSKeyedArchiver.archivedDataWithRootObject(self.session),
+            NSKeyedArchiver.archivedDataWithRootObject(self.session!),
             forKey: "SMUserDefaultsSpotifySessionKey")
     }
     }
@@ -84,7 +84,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
 
         // load spotify session from user defaults
         let sessionData = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsSpotifySessionKey") as? NSData
-        self.session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionData) as? SPTSession
+        self.session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionData!) as? SPTSession
         
         // if session is available, try to enable playback, or show login screen
         if let session = self.session {
@@ -104,7 +104,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if segue.identifier == "showLogin" {
             let loginView = segue.destinationViewController as LoginViewController
             loginView.delegate = self
@@ -170,7 +170,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
     func trackProviderDidUpdateTracks(notification: AnyObject?) {
         // initialize track player to play tracks from track provider
         if self.trackProvider.tracksForPlayback().count != 0 {
-            if !self.trackPlayer.currentProvider {
+            if self.trackPlayer.currentProvider == nil {
                 self.trackPlayer.playTrackProvider(self.trackProvider)
             }
         }
@@ -180,7 +180,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         else {
             self.trackPlayer.clear()
             self.dismissViewControllerAnimated(true, completion: nil)
-            self.navigationController.popToRootViewControllerAnimated(true)
+            self.navigationController?.popToRootViewControllerAnimated(true)
         }
         
         // update UI
@@ -188,7 +188,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
             self.usersButton.enabled = self.trackProvider.users.count != 0
             
             // show or hide track player bar
-            self.trackPlayerBarPosition.constant = self.trackPlayer.currentProvider ? 0.0 : -44.0
+            self.trackPlayerBarPosition.constant = (self.trackPlayer.currentProvider != nil) ? 0.0 : -44.0
             UIView.animateWithDuration(0.4) {
                 self.view.layoutIfNeeded()
             }
@@ -240,7 +240,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
     func loginViewDidReturnFromExternalSignUp(loginView: LoginViewController) {
         // hide login view and block UI with progress hud
         loginView.dismissViewControllerAnimated(false, completion: nil)
-        self.progressHUD = MBProgressHUD.showHUDAddedTo(self.navigationController.view, animated: true)
+        self.progressHUD = MBProgressHUD.showHUDAddedTo(self.navigationController!.view, animated: true)
         self.progressHUD!.labelText = "Logging in ..."
     }
     
@@ -252,7 +252,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         SPTRequest.playlistsForUserInSession(self.session) {
             (error: NSError?, object: AnyObject?) in
             // request all playlists for the user and advertise them
-            self.advertisedPlaylists = ((object as SPTPlaylistList).items as [SPTPartialPlaylist]).map({ $0.uri.absoluteString })
+            self.advertisedPlaylists = ((object as SPTPlaylistList).items as [SPTPartialPlaylist]).map({ $0.uri.absoluteString! })
             self.usersTimeout = 120
             self.advertisementState = true
         }
@@ -306,7 +306,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         // stop advertisiement and discovery and clear all settings
         SMDiscoveryManager.sharedInstance().stopDiscovering()
         SMDiscoveryManager.sharedInstance().stopAdvertising()
-        NSUserDefaults.standardUserDefaults().removePersistentDomainForName(NSBundle.mainBundle().bundleIdentifier)
+        NSUserDefaults.standardUserDefaults().removePersistentDomainForName(NSBundle.mainBundle().bundleIdentifier!)
         
         // cleanup spotify objects
         self.session = nil

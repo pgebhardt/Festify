@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var progressHUD: MBProgressHUD?
     var urlHandler: ((NSURL) -> (Bool))?
 
-    override func remoteControlReceivedWithEvent(event: UIEvent!) {
+    override func remoteControlReceivedWithEvent(event: UIEvent) {
         // control track player by remote events
         if event.type == .RemoteControl {
             switch event.subtype {
