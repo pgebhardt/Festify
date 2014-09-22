@@ -83,8 +83,9 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         self.trackProvider.delegate = self
 
         // load spotify session from user defaults
-        let sessionData = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsSpotifySessionKey") as? NSData
-        self.session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionData!) as? SPTSession
+        if let sessionData = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsSpotifySessionKey") as? NSData {
+            self.session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionData) as? SPTSession
+        }
         
         // if session is available, try to enable playback, or show login screen
         if let session = self.session {
