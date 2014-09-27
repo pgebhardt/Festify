@@ -21,6 +21,7 @@
 
 #import <Foundation/Foundation.h>
 #import "SPTRequest.h"
+#import "SPTTypes.h"
 
 /** This class represents a page within a paginated list.
  
@@ -29,7 +30,7 @@
  from the Spotify backend - instead, such lists are paginated. This class allows you
  to work with those pages.
  */
-@interface SPTListPage : NSObject
+@interface SPTListPage : NSObject<SPTTrackProvider>
 
 ///----------------------------
 /// @name Properties

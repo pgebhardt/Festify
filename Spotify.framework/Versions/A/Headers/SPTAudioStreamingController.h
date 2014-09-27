@@ -49,7 +49,10 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
 @protocol SPTAudioStreamingDelegate;
 @protocol SPTAudioStreamingPlaybackDelegate;
 
-/// This class manages audio streaming from Spotify.
+/** This class manages audio streaming from Spotify.
+
+ \note There must be only one concurrent instance of this class in your app.
+ */
 @interface SPTAudioStreamingController : NSObject
 
 ///----------------------------
@@ -64,8 +67,8 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
 
 /** Initialise a new `SPAudioStreamingController`.
  
- @param companyName Your company name.
- @param appName Your application's name.
+ @param companyName Your company name. or `nil` to use your bundle identifier
+ @param appName Your application's name. or `nil` to use your app name
  @return Returns an initialised `SPAudioStreamingController` instance.
  */
 -(id)initWithCompanyName:(NSString *)companyName appName:(NSString *)appName;
@@ -74,8 +77,8 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
 
  This is the designated initialiser of this class.
 
- @param companyName Your company name.
- @param appName Your application's name.
+ @param companyName Your company name. or `nil` to use your bundle identifier
+ @param appName Your application's name. or `nil` to use your app name
  @param audioController An instance of SPTCoreAudioController to output audio to, or `nil` to use the default.
  @return Returns an initialised `SPAudioStreamingController` instance.
  */
@@ -91,6 +94,13 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
  failure, an `NSError` object will be passed.
  */
 -(void)loginWithSession:(SPTSession *)session callback:(SPTErrorableOperationCallback)block;
+
+/** Log out of the Spotify service
+
+ @param block The callback block to be executed when logout succeeds or fails. In the cause of
+ failure, an `NSError` object will be passed.
+ */
+-(void)logout:(SPTErrorableOperationCallback)block;
 
 ///----------------------------
 /// @name Properties
@@ -161,6 +171,27 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
  */
 -(void)playURI:(NSURL *)uri callback:(SPTErrorableOperationCallback)block;
 
+/** Play a track provider.
+ 
+ Supported types: SPTTrack, SPTAlbum and SPTPlaylist
+ 
+ @param provider A track provider.
+ @param block The callback block to be executed when the playback command has been
+ received, which will pass back an `NSError` object if an error ocurred.
+ */
+-(void)playTrackProvider:(id<SPTTrackProvider>)provider callback:(SPTErrorableOperationCallback)block;
+
+/** Play a track provider.
+ 
+ Supported types: SPTTrack, SPTAlbum and SPTPlaylist
+ 
+ @param provider A track provider.
+ @param index How many tracks to skip.
+ @param block The callback block to be executed when the playback command has been
+ received, which will pass back an `NSError` object if an error ocurred.
+ */
+-(void)playTrackProvider:(id<SPTTrackProvider>)provider fromIndex:(int)index callback:(SPTErrorableOperationCallback)block;
+
 /** Queue a Spotify URI.
  
  Supported URI types: Tracks
@@ -182,6 +213,17 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
  */
 -(void)queueURI:(NSURL *)uri clearQueue:(BOOL)clear callback:(SPTErrorableOperationCallback)block;
 
+/** Queue a track provider.
+ 
+ Supported types: SPTTrack
+ 
+ @param provider A track provider.
+ @param clear Clear the queue before adding
+ @param block The callback block to be executed when the playback command has been
+ received, which will pass back an `NSError` object if an error ocurred.
+ */
+-(void)queueTrackProvider:(id<SPTTrackProvider>)uri clearQueue:(BOOL)clear callback:(SPTErrorableOperationCallback)block;
+
 /** Go to the next track in the queue.
  
  @param block The callback block to be executed when the command has been
@@ -195,6 +237,36 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
  received, which will pass back an `NSError` object if an error ocurred.
  */
 -(void)skipPrevious:(SPTErrorableOperationCallback)block;
+
+/** Returns basic metadata about a track relative to the currently playing song, or `nil` if it doesn't exist or is unknown.
+ 
+ Passing an index of zero would mean the currently playing song, passing -1 is the previous one, passing 1 is the next one.
+ 
+ Metadata is under the following keys:
+ 
+ - `SPTAudioStreamingMetadataTrackName`: The track's name.
+ - `SPTAudioStreamingMetadataTrackURI`: The track's Spotify URI.
+ - `SPTAudioStreamingMetadataArtistName`: The track's artist's name.
+ - `SPTAudioStreamingMetadataArtistURI`: The track's artist's Spotify URI.
+ - `SPTAudioStreamingMetadataAlbumName`: The track's album's name.
+ - `SPTAudioStreamingMetadataAlbumURI`: The track's album's URI.
+ - `SPTAudioStreamingMetadataTrackDuration`: The track's duration as an `NSTimeInterval` boxed in an `NSNumber`.
+ */
+-(void)getRelativeTrackMetadata:(int)index callback:(void (^)(NSDictionary *))block;
+
+/** Returns basic metadata about a specific track in the current track list, or `nil` if it doesn't exist or is unknown.
+ 
+ Metadata is under the following keys:
+ 
+ - `SPTAudioStreamingMetadataTrackName`: The track's name.
+ - `SPTAudioStreamingMetadataTrackURI`: The track's Spotify URI.
+ - `SPTAudioStreamingMetadataArtistName`: The track's artist's name.
+ - `SPTAudioStreamingMetadataArtistURI`: The track's artist's Spotify URI.
+ - `SPTAudioStreamingMetadataAlbumName`: The track's album's name.
+ - `SPTAudioStreamingMetadataAlbumURI`: The track's album's URI.
+ - `SPTAudioStreamingMetadataTrackDuration`: The track's duration as an `NSTimeInterval` boxed in an `NSNumber`.
+ */
+-(void)getAbsoluteTrackMetadata:(int)index callback:(void (^)(NSDictionary *))block;
 
 ///----------------------------
 /// @name Playback State
@@ -211,7 +283,6 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
  - `SPTAudioStreamingMetadataAlbumName`: The track's album's name.
  - `SPTAudioStreamingMetadataAlbumURI`: The track's album's URI.
  - `SPTAudioStreamingMetadataTrackDuration`: The track's duration as an `NSTimeInterval` boxed in an `NSNumber`.
-
  */
 @property (nonatomic, readonly, copy) NSDictionary *currentTrackMetadata;
 
@@ -222,16 +293,20 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
 @property (nonatomic, readonly) SPTVolume volume;
 
 /** Returns `YES` if the receiver expects shuffled playback, otherwise `NO`. */
-@property (nonatomic, readonly) BOOL shuffle;
+@property (nonatomic, readwrite) BOOL shuffle;
 
 /** Returns `YES` if the receiver expects repeated playback, otherwise `NO`. */
-@property (nonatomic, readonly) BOOL repeat;
+@property (nonatomic, readwrite) BOOL repeat;
 
 /** Returns the current approximate playback position of the current track. */
 @property (nonatomic, readonly) NSTimeInterval currentPlaybackPosition;
 
 /** Returns the current streaming bitrate the receiver is using. */
 @property (nonatomic, readonly) SPTBitrate targetBitrate;
+
+@property (nonatomic, readwrite) int trackListPosition;
+
+@property (nonatomic, readonly) int trackListSize;
 
 @end
 
@@ -320,6 +395,15 @@ FOUNDATION_EXPORT NSString * const SPTAudioStreamingMetadataTrackDuration;
  @param trackMetadata Metadata for the new track. See -currentTrackMetadata for keys.
  */
 -(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didChangeToTrack:(NSDictionary *)trackMetadata;
+
+/** Called when the streaming controller fails to play a track.
+ 
+ This typically happens when the track is not available in the current users' region, if you're playing
+ multiple tracks the playback will start playing the next track automatically
+ 
+ @param audioStreaming The object that sent the message.
+ */
+-(void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didFailToPlayTrack:(NSURL *)trackUri;
 
 /** Called when the audio streaming object requests playback skips to the next track.
  @param audioStreaming The object that sent the message.

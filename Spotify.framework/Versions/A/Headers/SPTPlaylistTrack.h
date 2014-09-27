@@ -18,12 +18,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-#import "SPTPartialTrack.h"
+#import "SPTTrack.h"
 
 @class SPTUser;
 
 /** Represents a track in a playlist on the Spotify service. */
-@interface SPTPlaylistTrack : SPTPartialTrack <SPTJSONObject>
+@interface SPTPlaylistTrack : SPTTrack <SPTJSONObject>
 
 /** The date when the track was added. */
 @property (nonatomic, readonly, copy) NSDate *addedAt;

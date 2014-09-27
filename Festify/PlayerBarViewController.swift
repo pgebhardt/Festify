@@ -18,17 +18,17 @@ class PlayerBarViewController: UIViewController {
         // cleanup all observations
         if let trackPlayer = self.trackPlayer {
             trackPlayer.removeObserver(self, forKeyPath: "playing")
-            trackPlayer.removeObserver(self, forKeyPath: "currentTrack")
+            trackPlayer.removeObserver(self, forKeyPath: "trackMetadata")
             trackPlayer.removeObserver(self, forKeyPath: "coverArtOfCurrentTrack")
         }
     }
 
-    var trackPlayer: SMTrackPlayer! {
+    var trackPlayer: TrackPlayer! {
     willSet {
         // cleanup all observations
         if let trackPlayer = self.trackPlayer {
             trackPlayer.removeObserver(self, forKeyPath: "playing")
-            trackPlayer.removeObserver(self, forKeyPath: "currentTrack")
+            trackPlayer.removeObserver(self, forKeyPath: "trackMetadata")
             trackPlayer.removeObserver(self, forKeyPath: "coverArtOfCurrentTrack")
         }
     }
@@ -37,11 +37,11 @@ class PlayerBarViewController: UIViewController {
         if let trackPlayer = self.trackPlayer {
             // observe playback state change and track change to update UI accordingly
             trackPlayer.addObserver(self, forKeyPath: "playing", options: nil, context: nil)
-            trackPlayer.addObserver(self, forKeyPath: "currentTrack", options: nil, context: nil)
+            trackPlayer.addObserver(self, forKeyPath: "trackMetadata", options: nil, context: nil)
             trackPlayer.addObserver(self, forKeyPath: "coverArtOfCurrentTrack", options: nil, context: nil)
             
             // initialy setup UI correctly
-            self.updateTrackInfo(trackPlayer.currentTrack)
+            self.updateTrackInfo(trackPlayer.trackMetadata)
             self.updateCoverArt(trackPlayer.coverArtOfCurrentTrack)
             self.updatePlayButton(trackPlayer.playing)
         }
@@ -52,8 +52,8 @@ class PlayerBarViewController: UIViewController {
         if keyPath == "coverArtOfCurrentTrack" {
             self.updateCoverArt(self.trackPlayer.coverArtOfCurrentTrack)
         }
-        else if keyPath == "currentTrack" {
-            self.updateTrackInfo(self.trackPlayer.currentTrack)
+        else if keyPath == "trackMetadata" {
+            self.updateTrackInfo(self.trackPlayer.trackMetadata)
         }
         else if keyPath == "playing" {
             self.updatePlayButton(self.trackPlayer.playing)
@@ -89,11 +89,11 @@ class PlayerBarViewController: UIViewController {
         }
     }
     
-    func updateTrackInfo(track: SPTTrack?) {
-        if let track = track {
+    func updateTrackInfo(trackMetadata: [NSObject: AnyObject]?) {
+        if let trackMetadata = trackMetadata {
             dispatch_async(dispatch_get_main_queue()) {
-                self.trackLabel.text = track.name
-                self.artistLabel.text = (track.artists[0] as SPTPartialArtist).name
+                self.trackLabel.text = trackMetadata[SPTAudioStreamingMetadataTrackName]! as? String
+                self.artistLabel.text = trackMetadata[SPTAudioStreamingMetadataArtistName]! as? String
             }
         }
     }

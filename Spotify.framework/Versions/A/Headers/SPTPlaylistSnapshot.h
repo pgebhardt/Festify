@@ -23,6 +23,8 @@
 #import "SPTJSONDecoding.h"
 #import "SPTRequest.h"
 #import "SPTTypes.h"
+#import "SPTPartialPlaylist.h"
+#import "SPTImage.h"
 
 @class SPTPlaylistSnapshot;
 @class SPTSession;
@@ -38,7 +40,7 @@ FOUNDATION_EXPORT NSString * const SPTPlaylistSnapshotNameKey;
 typedef void (^SPTPlaylistMutationCallback)(NSError *error, SPTPlaylistSnapshot *playlist);
 
 /** Represents a user's playlist on the Spotify service. */
-@interface SPTPlaylistSnapshot : NSObject <SPTJSONObject, SPTTrackProvider>
+@interface SPTPlaylistSnapshot : SPTPartialPlaylist <SPTJSONObject>
 
 ///----------------------------
 /// @name Requesting Playlists
@@ -55,27 +57,54 @@ typedef void (^SPTPlaylistMutationCallback)(NSError *error, SPTPlaylistSnapshot 
  */
 +(void)playlistWithURI:(NSURL *)uri session:(SPTSession *)session callback:(SPTRequestCallback)block;
 
+/** Request multiple playlists given an array of Spotify URIs.
+ 
+ @note This method takes an array of Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
+ 
+ @param uris An array of Spotify URIs.
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthPlaylistReadScope` or `SPTAuthPlaylistReadPrivateScope` scope as necessary.
+ @param block The block to be called when the operation is complete. The block will pass an array of Spotify SDK metadata objects on success, otherwise an error.
+ */
++(void)playlistsWithURIs:(NSArray *)uris session:(SPTSession *)session callback:(SPTRequestCallback)block;
+
++(BOOL)isPlaylistURI:(NSURL*)uri;
+
++(BOOL)isStarredURI:(NSURL*)uri;
+
 ///----------------------------
 /// @name Properties
 ///----------------------------
 
-/** The name of the playlist. */
-@property (nonatomic, readonly, copy) NSString *name;
-
-/** The Spotify URI of the playlist. */
-@property (nonatomic, readonly, copy) NSURL *uri;
-
-/** `YES` if the playlist is collaborative (i.e., can be modified by anyone), otherwise `NO`. */
-@property (nonatomic, readonly) BOOL isCollaborative;
-
-/** `YES` if the playlist is public (i.e., can be seen by anyone), otherwise `NO`. */
-@property (nonatomic, readonly) BOOL isPublic;
-
-/** The playlist's owner. */
-@property (nonatomic, readonly) SPTUser *owner;
-
 /** The tracks of the playlist, as a page of `SPTPartialTrack` objects. */
 @property (nonatomic, readonly) SPTListPage *firstTrackPage;
+
+/** The version identifier for the playlist. */
+@property (nonatomic, readonly, copy) NSString *snapshotId;
+
+/** The number of followers of this playlist */
+@property (nonatomic, readonly) long followerCount;
+
+/** The description of the playlist */
+@property (nonatomic, readonly, copy) NSString *description;
+
+/** Returns a list of playlist image in various sizes, as `SPTImage` objects.
+ 
+ Will be `nil` if the playlist doesn't have a custom image.
+ */
+@property (nonatomic, readonly, copy) NSArray *images;
+
+/** Convenience method that returns the smallest available playlist image.
+ 
+ Will be `nil` if the playlist doesn't have a custom image.
+ */
+@property (nonatomic, readonly) SPTImage *smallestImage;
+
+/** Convenience method that returns the largest available playlist image.
+ 
+ Will be `nil` if the playlist doesn't have a custom image.
+ */
+@property (nonatomic, readonly) SPTImage *largestImage;
 
 ///----------------------------
 /// @name Playlist Manipulation
@@ -90,14 +119,24 @@ typedef void (^SPTPlaylistMutationCallback)(NSError *error, SPTPlaylistSnapshot 
  */
 -(void)addTracksToPlaylist:(NSArray *)tracks withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
 
-/** Set the tracks in a playlist, overwriting any tracks already in it
+/** Add tracks to the playlist at a certain position.
+
+ @param tracks The tracks to add, as `SPTTrack` or `SPTPartialTrack` objects.
+ @param position The position in which the tracks will be added, being 0 the top position.
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthPlaylistModifyPublicScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
+ @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
+ */
+-(void)addTracksWithPositionToPlaylist:(NSArray *)tracks withPosition:(int)position withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
+
+/** Replace the tracks in a playlist, overwriting any tracks already in it
 
  @param tracks The tracks to set, as `SPTTrack` or `SPTPartialTrack` objects.
  @param session An authenticated session. Must be valid and authenticated with the
  `SPTAuthPlaylistModifyPublicScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
  @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
  */
--(void)setTracksInPlaylist:(NSArray *)tracks withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
+-(void)replaceTracksInPlaylist:(NSArray *)tracks withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
 
 /** Change playlist details
 
@@ -110,5 +149,23 @@ typedef void (^SPTPlaylistMutationCallback)(NSError *error, SPTPlaylistSnapshot 
 -(void)changePlaylistDetails:(NSDictionary *)data
 				 withSession:(SPTSession *)session
 					callback:(SPTPlaylistMutationCallback)block;
+
+/** Remove tracks from playlist. It removes all occurrences of the tracks in the playlist.
+
+ @param tracks The tracks to remove, as `SPTTrack` or `SPTPartialTrack` objects.
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthPlaylistModifyPublicScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
+ @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
+ */
+-(void)removeTracksFromPlaylist:(NSArray *)tracks withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
+
+/** Remove tracks that are in specific positions from playlist.
+
+ @param tracks An array of dictionaries with 2 keys: `track` with the track to remove, as `SPTTrack` or `SPTPartialTrack` objects, and `positions` that is an array of integers with the positions the track will be removed from.
+ @param session An authenticated session. Must be valid and authenticated with the
+ `SPTAuthPlaylistModifyPublicScope` or `SPTAuthPlaylistModifyPrivateScope` scope as necessary.
+ @param block The block to be called when the operation is complete. This block will pass an error if the operation failed, otherwise a new playlist snapshot reflecting the change.
+ */
+-(void)removeTracksWithPositionsFromPlaylist:(NSArray *)tracks withSession:(SPTSession *)session callback:(SPTPlaylistMutationCallback)block;
 
 @end

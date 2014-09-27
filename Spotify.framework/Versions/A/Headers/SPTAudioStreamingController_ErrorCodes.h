@@ -72,5 +72,5 @@ FOUNDATION_EXPORT NSInteger const SPTErrorCodeGeneralPlaybackError;
 /** The application is rate-limited if it requests the playback of too many tracks within a given amount of time. */
 FOUNDATION_EXPORT NSInteger const SPTErrorCodePlaybackRateLimited;
 
-/** The Spotify user has reached a capping limit that is in effect in this country and/or for this track. */
-FOUNDATION_EXPORT NSInteger const SPTErrorCodePlaybackCappingLimitReached;
+/** The track you're trying to play is unavailable for the current user, or was unable to start. */
+FOUNDATION_EXPORT NSInteger const SPTErrorCodeTrackUnavailable;

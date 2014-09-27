@@ -28,13 +28,13 @@
 typedef void (^SPTErrorableOperationCallback)(NSError *error);
 
 
-/** This protocol defines an object that can be played by `SPTTrackPlayer`. */
+/** This protocol defines an object that can be played by `SPTAudioStreamingController`. */
 @protocol SPTTrackProvider <NSObject>
 
-/** Returns the tracks for playback. */
+/** Returns the tracks for playback if no player-supported URI. */
 -(NSArray *)tracksForPlayback;
 
-/** Returns the URI of the object. */
--(NSURL *)uri;
+/** Returns the URI to this set of tracks, nil if not supported by player. */
+-(NSURL *)playableUri;
 
 @end

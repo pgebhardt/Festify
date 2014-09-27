@@ -3,7 +3,6 @@
 //
 
 #import <Spotify/Spotify.h>
-#import "SMTrackPlayer.h"
 #import "SMTrackProvider.h"
 #import "SMDiscoveryManager.h"
 #import "SMUserDefaults.h"
@@ -14,4 +13,3 @@
 #import "Reachability.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
-#import "SPTRequest+MultipleItems.h"

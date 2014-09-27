@@ -23,25 +23,14 @@
 #import "SPTJSONDecoding.h"
 #import "SPTRequest.h"
 #import "SPTTypes.h"
+#import "SPTPartialAlbum.h"
 
 @class SPTImage;
 @class SPTPartialArtist;
 @class SPTListPage;
 
-/// Defines the various types albums can be in relation to a given artist.
-typedef NS_ENUM(NSUInteger, SPTAlbumType) {
-	/// Specifies that the given album is a "standard" album.
-	SPTAlbumTypeAlbum,
-	/// Specifies that the given album is a single.
-	SPTAlbumTypeSingle,
-	/// Specifies that the given album is a compilation album.
-	SPTAlbumTypeCompilation,
-	/// Specifies that the given album is an "appears on" album that the artist appears on, but didn't author.
-	SPTAlbumTypeAppearsOn
-};
-
 /** This class represents an album on the Spotify service. */
-@interface SPTAlbum : NSObject <SPTJSONObject, SPTTrackProvider>
+@interface SPTAlbum : SPTPartialAlbum <SPTJSONObject, SPTTrackProvider>
 
 ///----------------------------
 /// @name Requesting Albums
@@ -57,6 +46,16 @@ typedef NS_ENUM(NSUInteger, SPTAlbumType) {
  */
 +(void)albumWithURI:(NSURL *)uri session:(SPTSession *)session callback:(SPTRequestCallback)block;
 
+/** Request multiple albums given an array of Spotify URIs.
+ 
+ @note This method takes Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
+ 
+ @param uris An array of Spotify URIs.
+ @param session An authenticated session. Can be `nil`.
+ @param block The block to be called when the operation is complete. The block will pass an array of Spotify SDK metadata object on success, otherwise an error.
+ */
++(void)albumsWithURIs:(NSArray *)uris session:(SPTSession *)session callback:(SPTRequestCallback)block;
+
 /** Checks if the Spotify URI is a valid Spotify Album URI.
  
  @note This method takes Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
@@ -69,20 +68,8 @@ typedef NS_ENUM(NSUInteger, SPTAlbumType) {
 /// @name Properties
 ///----------------------------
 
-/** The name of the album. */
-@property (nonatomic, readonly, copy) NSString *name;
-
-/** The Spotify URI of the album. */
-@property (nonatomic, readonly, copy) NSURL *uri;
-
-/** The HTTP open.spotify.com URL of the album. */
-@property (nonatomic, readonly, copy) NSURL *sharingURL;
-
 /** Any external IDs of the album, such as the UPC code. */
 @property (nonatomic, readonly, copy) NSDictionary *externalIds;
-
-/** An array of ISO 3166 country codes in which the album is available. */
-@property (nonatomic, readonly, copy) NSArray *availableTerritories;
 
 /** An array of artists for this album, as `SPTPartialArtist` objects. */
 @property (nonatomic, readonly) NSArray *artists;
@@ -96,20 +83,8 @@ typedef NS_ENUM(NSUInteger, SPTAlbumType) {
 /** Day-accurate release date of the track if known, otherwise `nil`. */
 @property (nonatomic, readonly) NSDate *releaseDate;
 
-/** Returns the album type of this album. */
-@property (nonatomic, readonly) SPTAlbumType type;
-
 /** Returns a list of genre strings for the album. */
 @property (nonatomic, readonly, copy) NSArray *genres;
-
-/** Returns a list of album covers in various sizes, as `SPTImage` objects. */
-@property (nonatomic, readonly, copy) NSArray *covers;
-
-/** Convenience method that returns the smallest available cover image. */
-@property (nonatomic, readonly) SPTImage *smallestCover;
-
-/** Convenience method that returns the largest available cover image. */
-@property (nonatomic, readonly) SPTImage *largestCover;
 
 /** The popularity of the album as a value between 0.0 (least popular) to 100.0 (most popular). */
 @property (nonatomic, readonly) double popularity;

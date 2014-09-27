@@ -22,12 +22,13 @@
 #import <Foundation/Foundation.h>
 #import "SPTJSONDecoding.h"
 #import "SPTRequest.h"
+#import "SPTPartialArtist.h"
 #import "SPTAlbum.h"
 
 @class SPTImage;
 
 /** This class represents an artist on the Spotify service. */
-@interface SPTArtist : NSObject <SPTJSONObject>
+@interface SPTArtist : SPTPartialArtist<SPTJSONObject>
 
 ///----------------------------
 /// @name Requesting Artists
@@ -43,6 +44,16 @@
  */
 +(void)artistWithURI:(NSURL *)uri session:(SPTSession *)session callback:(SPTRequestCallback)block;
 
+/** Request multiple artists given an array of Spotify URIs.
+ 
+ @note This method takes an array Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
+ 
+ @param uris An array of Spotify URIs.
+ @param session An authenticated session. Can be `nil`.
+ @param block The block to be called when the operation is complete. The block will pass an array of `SPTArtist` objects on success, otherwise an error.
+ */
++(void)artistsWithURIs:(NSArray *)uris session:(SPTSession *)session callback:(SPTRequestCallback)block;
+
 /** Checks if the Spotify URI is a valid Spotify Artist URI.
  
  @note This method takes Spotify URIs in the form `spotify:*`, NOT HTTP URLs.
@@ -55,14 +66,8 @@
 /// @name Properties
 ///----------------------------
 
-/** The name of the artist. */
-@property (nonatomic, readonly, copy) NSString *name;
-
-/** The Spotify URI of the artist. */
-@property (nonatomic, readonly, copy) NSURL *uri;
-
-/** The HTTP open.spotify.com URL of the artist. */
-@property (nonatomic, readonly, copy) NSURL *sharingURL;
+/** Any external IDs of the track, such as the ISRC code. */
+@property (nonatomic, readonly, copy) NSDictionary *externalIds;
 
 /** Returns a list of genre strings for the artist. */
 @property (nonatomic, readonly, copy) NSArray *genres;

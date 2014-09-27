@@ -27,4 +27,13 @@
  to a full artist object using `SPTRequest`. */
 @interface SPTPartialArtist : NSObject <SPTPartialObject, SPTJSONObject>
 
+/** The id of the artist. */
+@property (nonatomic, readonly, copy) NSString *identifier;
+
+/** A playable Spotify URI for this artist. */
+@property (nonatomic, readonly, copy) NSURL *playableUri;
+
+/** The HTTP open.spotify.com URL of the artist. */
+@property (nonatomic, readonly, copy) NSURL *sharingURL;
+
 @end

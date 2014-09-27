@@ -26,6 +26,10 @@
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIApplication.h>
+#endif
+
 @class SPTCoreAudioController;
 @class SPTCoreAudioDevice;
 
@@ -141,4 +145,11 @@
 
 #endif
 
+#if TARGET_OS_IPHONE
+
+/** Current background playback task reference. */
+@property (readwrite, nonatomic) UIBackgroundTaskIdentifier backgroundPlaybackTask;
+
+#endif
+ 
 @end

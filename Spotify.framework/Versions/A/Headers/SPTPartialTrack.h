@@ -22,15 +22,27 @@
 #import <Foundation/Foundation.h>
 #import "SPTJSONDecoding.h"
 #import "SPTPartialObject.h"
-#import "SPTPartialAlbum.h"
+#import "SPTTypes.h"
 
 /** Represents a "partial" track on the Spotify service. You can promote this
  to a full track object using `SPTRequest`. */
-@interface SPTPartialTrack : NSObject <SPTJSONObject, SPTPartialObject>
+@interface SPTPartialTrack : NSObject <SPTJSONObject, SPTPartialObject, SPTTrackProvider>
 
 ///----------------------------
 /// @name Properties
 ///----------------------------
+
+/** The id of the track. */
+@property (nonatomic, readonly, copy) NSString *identifier;
+
+/** The name of the track. */
+@property (nonatomic, readonly, copy) NSString *name;
+
+/** A playable Spotify URI for this track. */
+@property (nonatomic, readonly, copy) NSURL *playableUri;
+
+/** The HTTP open.spotify.com URL of the track. */
+@property (nonatomic, readonly, copy) NSURL *sharingURL;
 
 /** The duration of the track. */
 @property (nonatomic, readonly) NSTimeInterval duration;
@@ -38,7 +50,22 @@
 /** The artists of the track, as `SPTPartialArtist` objects. */
 @property (nonatomic, readonly, copy) NSArray *artists;
 
-/** The album of the track. */
-@property (nonatomic, readonly, strong) SPTPartialAlbum *album;
+/** The disc number of the track. I.e., if it's the first disc on the album this will be `1`. */
+@property (nonatomic, readonly) NSInteger discNumber;
+
+/** Returns `YES` if the track is flagged as explicit, otherwise `NO`. */
+@property (nonatomic, readonly) BOOL flaggedExplicit;
+
+/** An array of ISO 3166 country codes in which the album is available. */
+@property (nonatomic, readonly, copy) NSArray *availableTerritories;
+
+/** Any external IDs of the track, such as the ISRC code. */
+@property (nonatomic, readonly, copy) NSDictionary *externalIds;
+
+/** The HTTP URL of a 30-second preview MP3 of the track. */
+@property (nonatomic, readonly, copy) NSURL *previewURL;
+
+/** The track number of the track. I.e., if it's the first track on the album this will be `1`. */
+@property (nonatomic, readonly) NSInteger trackNumber;
 
 @end

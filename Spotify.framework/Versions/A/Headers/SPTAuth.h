@@ -21,11 +21,8 @@ FOUNDATION_EXPORT NSString * const SPTAuthPlaylistModifyPrivateScope;
 /** Scope that lets you read the email address of the authenticated user. */
 FOUNDATION_EXPORT NSString * const SPTAuthUserReadEmailScope;
 
-/** Scope that lets you modify private user information for the authenticated user. */
-FOUNDATION_EXPORT NSString * const SPTAuthUserModifyPrivateScope;
-
-/** Scope that lets you read the email address of the authenticated user. */
-FOUNDATION_EXPORT NSString * const SPTAuthUserReadEmailScope;
+/** Scope that lets you read private information about the authenticated user. */
+FOUNDATION_EXPORT NSString * const SPTAuthUserReadPrivateScope;
 
 /** Scope that lets you read user's Your Music library. */
 FOUNDATION_EXPORT NSString * const SPTAuthUserLibraryRead;

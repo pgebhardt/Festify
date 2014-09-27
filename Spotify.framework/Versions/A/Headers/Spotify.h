@@ -57,7 +57,6 @@
 #import "SPTCoreAudioController.h"
 #import "SPTAudioStreamingController.h"
 #import "SPTAudioStreamingController_ErrorCodes.h"
-#import "SPTTrackPlayer.h"
 
 #if !TARGET_OS_IPHONE
 #import "SPTCoreAudioDevice.h"

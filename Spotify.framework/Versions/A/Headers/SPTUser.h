@@ -79,14 +79,14 @@ typedef NS_ENUM(NSUInteger, SPTProduct) {
  */
 @property (nonatomic, readonly, copy) NSArray *images;
 
-/** Convenience method that returns the smallest available artist image.
+/** Convenience method that returns the smallest available user image.
  
  Will be `nil` unless your session has been granted the
  `SPTAuthUserReadPrivateScope` scope.
  */
 @property (nonatomic, readonly) SPTImage *smallestImage;
 
-/** Convenience method that returns the largest available artist image.
+/** Convenience method that returns the largest available user image.
  
  Will be `nil` unless your session has been granted the
  `SPTAuthUserReadPrivateScope` scope.

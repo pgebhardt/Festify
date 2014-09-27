@@ -10,7 +10,7 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    let trackPlayer = SMTrackPlayer()
+    let trackPlayer = TrackPlayer()
     let reachability = Reachability.reachabilityForInternetConnection()
     
     var window: UIWindow?
@@ -58,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             // try to enable playback for trackplayer, if application is active
             if UIApplication.sharedApplication().applicationState == .Active {
-                self.trackPlayer.enablePlaybackWithSession(self.trackPlayer.session, callback: nil)
+                self.trackPlayer.enablePlaybackWithSession(self.trackPlayer.session!, callback: nil)
             }
         }
     }
@@ -112,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.progressHUD?.hide(true)
             self.progressHUD = nil
             
-            self.trackPlayer.enablePlaybackWithSession(self.trackPlayer.session, callback: nil)
+            self.trackPlayer.enablePlaybackWithSession(self.trackPlayer.session!, callback: nil)
         }
         
         Appirater.appEnteredForeground(true)

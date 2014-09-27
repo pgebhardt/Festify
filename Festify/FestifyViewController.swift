@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTrackPlayerDelegate, SMTrackProviderDelegate, LoginViewDelegate, SMSettingsViewDelegate {
+class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, TrackPlayerDelegate, SMTrackProviderDelegate, LoginViewDelegate, SMSettingsViewDelegate {
     @IBOutlet var trackPlayerBarPosition: NSLayoutConstraint!
     @IBOutlet var usersButton: UIBarButtonItem!
     
@@ -21,9 +21,15 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
     // in NSUserDefaults database
     var session: SPTSession? {
     didSet {
-        NSUserDefaults.standardUserDefaults().setValue(
-            NSKeyedArchiver.archivedDataWithRootObject(self.session!),
-            forKey: "SMUserDefaultsSpotifySessionKey")
+        if let session = self.session {
+            NSUserDefaults.standardUserDefaults().setValue(
+                NSKeyedArchiver.archivedDataWithRootObject(session),
+                forKey: "SMUserDefaultsSpotifySessionKey")
+        }
+        else {
+            NSUserDefaults.standardUserDefaults().setValue(nil,
+                forKey: "SMUserDefaultsSpotifySessionKey")
+        }
     }
     }
     
@@ -142,7 +148,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
             let username = advertisedData["username"] as? String
             
             // request all playlists and add them to the track provider
-            SPTRequest.requestItemsAtURIs(playlists?.map({ NSURL(string: $0) }), withSession: self.session!) {
+            SPTPlaylistSnapshot.playlistsWithURIs(playlists?.map({ NSURL(string:  $0)}), session: self.session!) {
                 (error: NSError?, object: AnyObject?) in
                 self.trackProvider.setPlaylists(object as? [AnyObject], forUser: username, withTimeoutInterval: self.usersTimeout, session: self.session)
             }
@@ -153,7 +159,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         // add all currently advertised songs, if festify and advertisement modes are active
         if SMDiscoveryManager.sharedInstance().discovering &&
             SMDiscoveryManager.sharedInstance().advertising {
-                SPTRequest.requestItemsAtURIs(self.advertisedPlaylists.map({ NSURL(string: $0) }), withSession: self.session!) {
+                SPTPlaylistSnapshot.playlistsWithURIs(self.advertisedPlaylists.map({ NSURL(string:  $0)}), session: self.session!) {
                     (error: NSError?, object: AnyObject?) in
                     self.trackProvider.setPlaylists(object as? [AnyObject], forUser: self.session?.canonicalUsername, withTimeoutInterval: 0, session: self.session)
                 }
@@ -196,7 +202,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         }
     }
     
-    func trackPlayer(trackPlayer: SMTrackPlayer!, couldNotEnablePlaybackWithSession session: SPTSession!, error: NSError!) {
+    func trackPlayer(trackPlayer: TrackPlayer, couldNotEnablePlaybackWithSession session: SPTSession?, error: NSError) {
         if error.code == 9 {
             // if playback could not be enabled due to a missing spotify premium
             // subscribtion, ignore error and hide progress HUD
@@ -215,20 +221,20 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
                 }
                 else {
                     self.session = session
-                    self.trackPlayer.enablePlaybackWithSession(self.session, callback: nil)
+                    self.trackPlayer.enablePlaybackWithSession(self.session!, callback: nil)
                 }
             }
         }
     }
     
-    func trackPlayer(trackPlayer: SMTrackPlayer!, didEnablePlaybackWithSession session: SPTSession!) {
+    func trackPlayer(trackPlayer: TrackPlayer, didEnablePlaybackWithSession session: SPTSession?) {
         // when playback is successfully enabled unlock the UI by hiding the
         // progress hud
         self.progressHUD?.hide(true)
         self.progressHUD = nil
     }
     
-    func trackPlayer(trackPlayer: SMTrackPlayer!, willEnablePlaybackWithSession session: SPTSession!) {
+    func trackPlayer(trackPlayer: TrackPlayer, willEnablePlaybackWithSession session: SPTSession?) {
         // show progress hud on top of the window to indicatie the process and
         // block all UI interactions
         if self.progressHUD == nil {
@@ -260,7 +266,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SMTra
         
         // try to enable playback, an error should only occure,
         // when user does not have a premium subscribtion
-        self.trackPlayer.enablePlaybackWithSession(self.session) {
+        self.trackPlayer.enablePlaybackWithSession(self.session!) {
             (error: NSError?) in
             if error != nil {
                 let alert = UIAlertController(title: "No Spotify Premuim subscription detected!",

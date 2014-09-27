@@ -7,17 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F036AB21926C16900B4F3B9 /* SPTRequest+MultipleItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F036AB11926C16900B4F3B9 /* SPTRequest+MultipleItems.m */; };
 		5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* SMSettingsViewController.m */; };
 		5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMTrackProvider.m */; };
-		5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
 		5F14581119127DAE00F5A80C /* MWLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F14581019127DAE00F5A80C /* MWLogging.m */; };
 		5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
 		5F2123B6191E815D00849778 /* Pods-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F2123B5191E815D00849778 /* Pods-acknowledgements.plist */; };
 		5F28F7631901288D00A0468A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7621901288D00A0468A /* libz.dylib */; };
-		5F3297591952CAAB007D8999 /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F3297581952CAAB007D8999 /* Spotify.framework */; };
 		5F32975C1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F32975B1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m */; };
 		5F33D7301954C2D600FE67F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F33D72F1954C2D600FE67F0 /* AppDelegate.swift */; };
 		5F423A6318FC115200C3ED75 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F423A6218FC115200C3ED75 /* CoreGraphics.framework */; };
@@ -33,6 +30,7 @@
 		5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */; };
 		5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* SMDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
+		5F5D6B1D19D5FE7A00928C8B /* TrackPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D6B1C19D5FE7A00928C8B /* TrackPlayer.swift */; };
 		5F6543A71954E686000DAB15 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6543A61954E686000DAB15 /* LoginViewController.swift */; };
 		5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BD190C55790077F648 /* QuartzCore.framework */; };
 		5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */; };
@@ -42,6 +40,7 @@
 		5FBAF29F1956253D00C63031 /* FestifyButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBAF29E1956253D00C63031 /* FestifyButtonViewController.swift */; };
 		5FBAF2A119562E6100C63031 /* PlayerBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */; };
 		5FBAF2A31956397C00C63031 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBAF2A21956397C00C63031 /* PlayerViewController.swift */; };
+		5FF1F01A19D04A83006AFDDB /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FF1F01919D04A83006AFDDB /* Spotify.framework */; };
 		A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CEA90CA33A460DB3A7DAF3 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -57,15 +56,11 @@
 
 /* Begin PBXFileReference section */
 		15CEA90CA33A460DB3A7DAF3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		5F036AB01926C16900B4F3B9 /* SPTRequest+MultipleItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPTRequest+MultipleItems.h"; sourceTree = "<group>"; };
-		5F036AB11926C16900B4F3B9 /* SPTRequest+MultipleItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SPTRequest+MultipleItems.m"; sourceTree = "<group>"; };
 		5F089B5D18FD169B002476CB /* SMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMSettingsViewController.h; sourceTree = "<group>"; };
 		5F089B5E18FD169B002476CB /* SMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSettingsViewController.m; sourceTree = "<group>"; };
 		5F089B6018FD2B5F002476CB /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		5F089B6518FD56A3002476CB /* SMTrackProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackProvider.h; sourceTree = "<group>"; };
 		5F089B6618FD56A3002476CB /* SMTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackProvider.m; sourceTree = "<group>"; };
-		5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackPlayer.h; sourceTree = "<group>"; };
-		5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackPlayer.m; sourceTree = "<group>"; };
 		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		5F14580F19127DAE00F5A80C /* MWLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWLogging.h; sourceTree = "<group>"; };
 		5F14581019127DAE00F5A80C /* MWLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWLogging.m; sourceTree = "<group>"; };
@@ -76,7 +71,6 @@
 		5F2079A1190C1DB700AAE15A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		5F2123B5191E815D00849778 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-acknowledgements.plist"; path = "../Pods/Pods-acknowledgements.plist"; sourceTree = "<group>"; };
 		5F28F7621901288D00A0468A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		5F3297581952CAAB007D8999 /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		5F32975A1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPTPlaylistSnapshot+AllTracks.h"; sourceTree = "<group>"; };
 		5F32975B1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SPTPlaylistSnapshot+AllTracks.m"; sourceTree = "<group>"; };
 		5F33D72E1954C2D600FE67F0 /* Festify-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Festify-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -100,6 +94,7 @@
 		5F5A162118FC535100E408DC /* SMDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMDiscoveryManager.h; sourceTree = "<group>"; };
 		5F5A162218FC535100E408DC /* SMDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		5F5D6B1C19D5FE7A00928C8B /* TrackPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackPlayer.swift; sourceTree = "<group>"; };
 		5F6543A61954E686000DAB15 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		5F7DB9B5190C55530077F648 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		5F7DB9B7190C555B0077F648 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -114,6 +109,7 @@
 		5FBAF29E1956253D00C63031 /* FestifyButtonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FestifyButtonViewController.swift; sourceTree = "<group>"; };
 		5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerBarViewController.swift; sourceTree = "<group>"; };
 		5FBAF2A21956397C00C63031 /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		5FF1F01919D04A83006AFDDB /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		A413B68A804A40FDB5EB7BFA /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,7 +120,7 @@
 			files = (
 				5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */,
 				5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */,
-				5F3297591952CAAB007D8999 /* Spotify.framework in Frameworks */,
+				5FF1F01A19D04A83006AFDDB /* Spotify.framework in Frameworks */,
 				5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */,
 				5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */,
 				5F28F7631901288D00A0468A /* libz.dylib in Frameworks */,
@@ -152,8 +148,6 @@
 		5F1E97B21902E5880009B675 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				5F036AB01926C16900B4F3B9 /* SPTRequest+MultipleItems.h */,
-				5F036AB11926C16900B4F3B9 /* SPTRequest+MultipleItems.m */,
 				5F14580F19127DAE00F5A80C /* MWLogging.h */,
 				5F14581019127DAE00F5A80C /* MWLogging.m */,
 				5F32975A1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.h */,
@@ -204,7 +198,7 @@
 		5F423A5F18FC115200C3ED75 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5F3297581952CAAB007D8999 /* Spotify.framework */,
+				5FF1F01919D04A83006AFDDB /* Spotify.framework */,
 				5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */,
 				5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */,
 				5F7DB9BD190C55790077F648 /* QuartzCore.framework */,
@@ -237,13 +231,12 @@
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
 				5F5A162118FC535100E408DC /* SMDiscoveryManager.h */,
 				5F5A162218FC535100E408DC /* SMDiscoveryManager.m */,
-				5F0BB147190F0554000E96F3 /* SMTrackPlayer.h */,
-				5F0BB148190F0554000E96F3 /* SMTrackPlayer.m */,
 				5F089B6518FD56A3002476CB /* SMTrackProvider.h */,
 				5F089B6618FD56A3002476CB /* SMTrackProvider.m */,
 				5F89FD5B1906339A00752072 /* SMUserDefaults.h */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
+				5F5D6B1C19D5FE7A00928C8B /* TrackPlayer.swift */,
 				5F1E97B31902E5A20009B675 /* View Controller */,
 			);
 			path = Festify;
@@ -441,7 +434,6 @@
 				5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */,
 				5FA9D1521958797100ED5D1A /* FestifyViewController.swift in Sources */,
 				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
-				5F0BB149190F0554000E96F3 /* SMTrackPlayer.m in Sources */,
 				5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */,
 				5FBAF29F1956253D00C63031 /* FestifyButtonViewController.swift in Sources */,
 				5FBAF2A119562E6100C63031 /* PlayerBarViewController.swift in Sources */,
@@ -450,7 +442,7 @@
 				5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */,
 				5F33D7301954C2D600FE67F0 /* AppDelegate.swift in Sources */,
 				5F6543A71954E686000DAB15 /* LoginViewController.swift in Sources */,
-				5F036AB21926C16900B4F3B9 /* SPTRequest+MultipleItems.m in Sources */,
+				5F5D6B1D19D5FE7A00928C8B /* TrackPlayer.swift in Sources */,
 				5FBAF2A31956397C00C63031 /* PlayerViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -578,7 +570,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
@@ -605,7 +597,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Festify/Festify-Prefix.pch";
 				INFOPLIST_FILE = "Festify/Festify-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";

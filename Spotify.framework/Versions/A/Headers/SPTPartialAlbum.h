@@ -23,6 +23,18 @@
 #import "SPTPartialObject.h"
 #import "SPTJSONDecoding.h"
 
+/// Defines the various types albums can be in relation to a given artist.
+typedef NS_ENUM(NSUInteger, SPTAlbumType) {
+	/// Specifies that the given album is a "standard" album.
+	SPTAlbumTypeAlbum,
+	/// Specifies that the given album is a single.
+	SPTAlbumTypeSingle,
+	/// Specifies that the given album is a compilation album.
+	SPTAlbumTypeCompilation,
+	/// Specifies that the given album is an "appears on" album that the artist appears on, but didn't author.
+	SPTAlbumTypeAppearsOn
+};
+
 @class SPTImage;
 
 /** Represents a "partial" album on the Spotify service. You can promote this
@@ -33,6 +45,21 @@
 /// @name Properties
 ///----------------------------
 
+/** The id of the track. */
+@property (nonatomic, readonly, copy) NSString *identifier;
+
+/** The name of the album. */
+@property (nonatomic, readonly, copy) NSString *name;
+
+/** The Spotify URI of the album. */
+@property (nonatomic, readonly, copy) NSURL *uri;
+
+/** A playable Spotify URI for this album. */
+@property (nonatomic, readonly, copy) NSURL *playableUri;
+
+/** The HTTP open.spotify.com URL of the album. */
+@property (nonatomic, readonly, copy) NSURL *sharingURL;
+
 /** Returns a list of album covers in various sizes, as `SPTImage` objects. */
 @property (nonatomic, readonly, copy) NSArray *covers;
 
@@ -41,5 +68,11 @@
 
 /** Convenience method that returns the largest available cover image. */
 @property (nonatomic, readonly) SPTImage *largestCover;
+
+/** Returns the album type of this album. */
+@property (nonatomic, readonly) SPTAlbumType type;
+
+/** An array of ISO 3166 country codes in which the album is available. */
+@property (nonatomic, readonly, copy) NSArray *availableTerritories;
 
 @end

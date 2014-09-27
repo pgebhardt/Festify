@@ -22,24 +22,34 @@
 #import <Foundation/Foundation.h>
 #import "SPTPartialObject.h"
 #import "SPTJSONDecoding.h"
+#import "SPTTypes.h"
 
 @class SPTUser;
 
 /** Represents a "partial" playlist on the Spotify service. You can promote this
  to a full playlist object using `SPTRequest`. */
-@interface SPTPartialPlaylist : NSObject <SPTPartialObject, SPTJSONObject>
+@interface SPTPartialPlaylist : NSObject <SPTPartialObject, SPTJSONObject, SPTTrackProvider>
 
 ///----------------------------
 /// @name Properties
 ///----------------------------
 
+/** The name of the playlist. */
+@property (nonatomic, readonly, copy) NSString *name;
+
+/** The Spotify URI of the playlist. */
+@property (nonatomic, readonly, copy) NSURL *uri;
+
+/** The playable Spotify URI for the playlist. */
+@property (nonatomic, readonly, copy) NSURL *playableUri;
+
 /** The owner of the playlist. */
 @property (nonatomic, readonly) SPTUser *owner;
 
-/** Returns `YES` if the playlist is collaborative, otherwise `NO`. */
+/** `YES` if the playlist is collaborative (i.e., can be modified by anyone), otherwise `NO`. */
 @property (nonatomic, readonly) BOOL isCollaborative;
 
-/** Returns `YES` if the playlist is public, otherwise `NO`. */
+/** `YES` if the playlist is public (i.e., can be seen by anyone), otherwise `NO`. */
 @property (nonatomic, readonly) BOOL isPublic;
 
 /** The number of tracks in the playlist. */

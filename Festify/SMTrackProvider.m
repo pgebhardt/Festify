@@ -137,8 +137,8 @@
     return _tracksForPlayback;
 }
 
--(NSURL *)uri {
-    return [NSURL URLWithString:@""];
+-(NSURL *)playableUri {
+    return nil;
 }
 
 #pragma mark - Helper

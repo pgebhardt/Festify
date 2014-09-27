@@ -9,7 +9,7 @@
 import UIKit
 
 class PlaylistViewController: UITableViewController {
-    var trackPlayer: SMTrackPlayer!
+    var trackPlayer: TrackPlayer! = nil
 
     @IBAction func done(sender: AnyObject?) {
         self.dismissViewControllerAnimated(true, completion: nil)
@@ -21,15 +21,17 @@ class PlaylistViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.trackPlayer.currentProvider.tracksForPlayback().count
+        return self.trackPlayer.currentProvider!.tracksForPlayback().count
     }
     
     // Table view delegate
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell: UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         
-        let trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback().count
-        let track: SPTPartialTrack = self.trackPlayer.currentProvider.tracksForPlayback()[trackIndex] as SPTPartialTrack
+        // TODO
+        // let trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback().count
+        let trackIndex = indexPath.row
+        let track: SPTPartialTrack = self.trackPlayer.currentProvider?.tracksForPlayback()[trackIndex] as SPTPartialTrack
         
         cell.textLabel!.text = track.name
         cell.detailTextLabel!.text = (track.artists[0] as SPTPartialArtist).name
@@ -38,7 +40,9 @@ class PlaylistViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)  {
-        let trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback().count
+        // TODO
+        // let trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback().count
+        let trackIndex = indexPath.row
         
         self.trackPlayer.skipToTrack(trackIndex)
         self.dismissViewControllerAnimated(true, completion: nil)
