@@ -9,7 +9,7 @@
 import UIKit
 
 class PlaylistViewController: UITableViewController {
-    var trackPlayer: TrackPlayer! = nil
+    var streamingController: SPTAudioStreamingController! = nil
 
     @IBAction func done(sender: AnyObject?) {
         self.dismissViewControllerAnimated(true, completion: nil)
@@ -21,7 +21,7 @@ class PlaylistViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.trackPlayer.currentProvider!.tracksForPlayback().count
+        return 10
     }
     
     // Table view delegate
@@ -29,22 +29,21 @@ class PlaylistViewController: UITableViewController {
         var cell: UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         
         // TODO
-        // let trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback().count
-        let trackIndex = indexPath.row
-        let track: SPTPartialTrack = self.trackPlayer.currentProvider?.tracksForPlayback()[trackIndex] as SPTPartialTrack
-        
-        cell.textLabel!.text = track.name
-        cell.detailTextLabel!.text = (track.artists[0] as SPTPartialArtist).name
+        self.streamingController.getRelativeTrackMetadata(indexPath.row + 1) {
+            (trackMetadata: [NSObject: AnyObject]!) in
+            cell.textLabel!.text = trackMetadata[SPTAudioStreamingMetadataTrackName]! as? String
+            cell.detailTextLabel!.text = trackMetadata[SPTAudioStreamingMetadataArtistName]! as? String
+        }
         
         return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)  {
-        // TODO
-        // let trackIndex = (indexPath.row + self.trackPlayer.indexOfCurrentTrack + 1) % self.trackPlayer.currentProvider.tracksForPlayback().count
-        let trackIndex = indexPath.row
+        // TODO:
+        /*for _ in 1...indexPath.row {
+            self.streamingController.skipNext(nil)
+        }*/
         
-        self.trackPlayer.skipToTrack(trackIndex)
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

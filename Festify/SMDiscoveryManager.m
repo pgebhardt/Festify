@@ -62,7 +62,7 @@
     
     // check the bluetooth state
     if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn) {
-        return NO;
+        //return NO;
     }
     
     // stop advertisement, if already running to clear all services
@@ -108,7 +108,7 @@
 -(BOOL)startDiscovering {
     // check the bluetooth state
     if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn) {
-        return NO;
+        //return NO;
     }
     
     // scan for festify services

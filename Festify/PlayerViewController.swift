@@ -16,23 +16,23 @@ class PlayerViewController: UIViewController {
     @IBOutlet var trackPosition: UIProgressView!
     @IBOutlet var currentTimeLabel: UILabel!
     @IBOutlet var remainingTimeLabel: UILabel!
-    var trackPlayer: TrackPlayer! = nil
+    var streamingController: SPTAudioStreamingController! = nil
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         // observe playback state change and track change to update UI accordingly
-        self.trackPlayer.addObserver(self, forKeyPath: "playing", options: nil, context: nil)
-        self.trackPlayer.addObserver(self, forKeyPath: "currentPlaybackPosition", options: nil, context: nil)
-        self.trackPlayer.addObserver(self, forKeyPath: "trackMetadata", options: nil, context: nil)
-        self.trackPlayer.addObserver(self, forKeyPath: "coverArtOfCurrentTrack", options: nil, context: nil)
+        self.streamingController.addObserver(self, forKeyPath: "isPlaying", options: nil, context: nil)
+        self.streamingController.addObserver(self, forKeyPath: "currentPlaybackPosition", options: nil, context: nil)
+        self.streamingController.addObserver(self, forKeyPath: "currentTrackMetadata", options: nil, context: nil)
         
         // initialy setup UI correctly
-        if let trackMetadata = self.trackPlayer.trackMetadata {
-            self.updateTrackInfo(trackMetadata)
-            self.updateCoverArt(self.trackPlayer.coverArtOfCurrentTrack)
-            self.updatePlayButton(self.trackPlayer.playing)
-            self.updatePlaybackPosition(self.trackPlayer.currentPlaybackPosition, andDuration: trackMetadata[SPTAudioStreamingMetadataTrackDuration]! as Double)
+        if let currentTrackMetadata = self.streamingController.currentTrackMetadata {
+            self.updateTrackInfo(currentTrackMetadata)
+            // self.updateCoverArt(currentTrackMetadata)
+            self.updatePlayButton(self.streamingController.isPlaying)
+            self.updatePlaybackPosition(self.streamingController.currentPlaybackPosition,
+                andDuration: currentTrackMetadata[SPTAudioStreamingMetadataTrackDuration]! as Double)
         }
     }
     
@@ -40,24 +40,21 @@ class PlayerViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         // remove observers
-        self.trackPlayer.removeObserver(self, forKeyPath: "playing")
-        self.trackPlayer.removeObserver(self, forKeyPath: "currentPlaybackPosition")
-        self.trackPlayer.removeObserver(self, forKeyPath: "trackMetadata")
-        self.trackPlayer.removeObserver(self, forKeyPath: "coverArtOfCurrentTrack")
+        self.streamingController.removeObserver(self, forKeyPath: "isPlaying")
+        self.streamingController.removeObserver(self, forKeyPath: "currentPlaybackPosition")
+        self.streamingController.removeObserver(self, forKeyPath: "currentTrackMetadata")
     }
     
     override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<()>) {
-        if keyPath == "playing" {
-            self.updatePlayButton(self.trackPlayer.playing)
+        if keyPath == "isPlaying" {
+            self.updatePlayButton(self.streamingController.isPlaying)
         }
         else if keyPath == "currentPlaybackPosition" {
-            self.updatePlaybackPosition(self.trackPlayer.currentPlaybackPosition, andDuration: self.trackPlayer.trackMetadata![SPTAudioStreamingMetadataTrackDuration]! as Double)
+            self.updatePlaybackPosition(self.streamingController.currentPlaybackPosition,
+                andDuration: self.streamingController.currentTrackMetadata![SPTAudioStreamingMetadataTrackDuration]! as Double)
         }
-        else if keyPath == "trackMetadata" {
-            self.updateTrackInfo(self.trackPlayer.trackMetadata)
-        }
-        else if keyPath == "coverArtOfCurrentTrack" {
-            self.updateCoverArt(self.trackPlayer.coverArtOfCurrentTrack)
+        else if keyPath == "currentTrackMetadata" {
+            self.updateTrackInfo(self.streamingController.currentTrackMetadata)
         }
         else {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
@@ -70,33 +67,28 @@ class PlayerViewController: UIViewController {
             let viewController = navigationController.viewControllers[0] as PlaylistViewController
             
             navigationController.modalTransitionStyle = .CrossDissolve
-            viewController.trackPlayer = self.trackPlayer
+            viewController.streamingController = self.streamingController
         }
     }
     
     @IBAction func rewind(sender: AnyObject?) {
-        self.trackPlayer.skipBackward()
+        self.streamingController.skipPrevious(nil)
     }
     
     @IBAction func playPause(sender: AnyObject?) {
-        if self.trackPlayer.playing {
-            self.trackPlayer.pause()
-        }
-        else {
-            self.trackPlayer.play()
-        }
+        self.streamingController.setIsPlaying(!self.streamingController.isPlaying, callback: nil)
     }
     
     @IBAction func fastForward(sender: AnyObject?) {
-        self.trackPlayer.skipForward()
+        self.streamingController.skipNext(nil)
     }
     
     @IBAction func openInSpotify(sender: AnyObject?) {
         // open currently played track in spotify app, if available
         if SPTAuth.defaultInstance().spotifyApplicationIsInstalled() {
-            let url = NSURL(string: "spotify://" + (self.trackPlayer.trackMetadata![SPTAudioStreamingMetadataTrackURI]! as String))
+            let url = NSURL(string: "spotify://" + (self.streamingController.currentTrackMetadata![SPTAudioStreamingMetadataTrackURI]! as String))
             
-            self.trackPlayer.pause()
+            self.streamingController.setIsPlaying(false, callback: nil)
             UIApplication.sharedApplication().openURL(url)
         }
     }
@@ -131,16 +123,23 @@ class PlayerViewController: UIViewController {
                 self.titleLabel.text = trackMetadata[SPTAudioStreamingMetadataTrackName]! as? String
                 self.artistLabel.text = trackMetadata[SPTAudioStreamingMetadataArtistName]! as? String
             }
-        }
-    }
-    
-    func updateCoverArt(coverArt: UIImage?) {
-        dispatch_async(dispatch_get_main_queue()) {
-            if let coverArt = coverArt {
-                self.coverImage.image = coverArt
-            }
-            else {
-                self.coverImage.image = UIImage(named:"DefaultCoverArt")
+            
+            // download image album cover for current track
+            SPTAlbum.albumWithURI(NSURL(string: (trackMetadata[SPTAudioStreamingMetadataAlbumURI]! as String)), session: nil) {
+                (error: NSError?, object: AnyObject?) in
+                if let album = object as? SPTAlbum {
+                    NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: album.largestCover.imageURL), completionHandler: {
+                        (data: NSData?, response: NSURLResponse!, errror: NSError?) in
+                        dispatch_async(dispatch_get_main_queue()) {
+                            if let data = data {
+                                self.coverImage.image = UIImage(data: data)
+                            }
+                            else {
+                                self.coverImage.image = UIImage(named: "DefaultCoverArt")
+                            }
+                        }
+                    }).resume()
+                }
             }
         }
     }

@@ -10,8 +10,7 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    let trackPlayer = TrackPlayer()
-    let reachability = Reachability.reachabilityForInternetConnection()
+    let streamingController = SPTAudioStreamingController()
     
     var window: UIWindow?
     var progressHUD: MBProgressHUD?
@@ -22,43 +21,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if event.type == .RemoteControl {
             switch event.subtype {
             case .RemoteControlPlay, .RemoteControlPause, .RemoteControlTogglePlayPause:
-                if self.trackPlayer.playing {
-                    self.trackPlayer.pause()
-                }
-                else {
-                    self.trackPlayer.play()
-                }
+                self.streamingController.setIsPlaying(!self.streamingController.isPlaying, callback: nil)
             
             case .RemoteControlNextTrack:
-                self.trackPlayer.skipForward()
+                self.streamingController.skipNext(nil)
                 
             case .RemoteControlPreviousTrack:
-                self.trackPlayer.skipBackward()
+                self.streamingController.skipPrevious(nil)
                 
             default:
                 break
-            }
-        }
-    }
-    
-    func reachabilityChanged(notification: AnyObject?) {
-        // block UI with progress HUD and inform user about missing internet connection,
-        // also stop playback, to prevent any glitches with the Spotify service.
-        if !self.reachability.isReachable() {
-            if self.progressHUD == nil {
-                self.progressHUD = MBProgressHUD.showHUDAddedTo(self.window, animated: true)
-                self.progressHUD!.labelText = "Lost Connection ..."
-            }
-            
-            self.trackPlayer.pause()
-        }
-        else {
-            self.progressHUD?.hide(true)
-            self.progressHUD = nil
-            
-            // try to enable playback for trackplayer, if application is active
-            if UIApplication.sharedApplication().applicationState == .Active {
-                self.trackPlayer.enablePlaybackWithSession(self.trackPlayer.session!, callback: nil)
             }
         }
     }
@@ -67,11 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
         // start receiving remote control events
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
-        
-        // check active network connection using reachability framework
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:",
-            name: kReachabilityChangedNotification, object: nil)
-        self.reachability.startNotifier()
         
         // adjust default colors to match spotify color schema
         UITableView.appearance().separatorColor = UIColor(red: 86.0/255.0, green: 86.0/255.0, blue: 86.0/255.0, alpha: 1.0)
@@ -107,14 +74,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillEnterForeground(application: UIApplication!) {
-        // try to enable playback for trackplayer, if authenticated session is available
-        if !self.trackPlayer.playing && self.trackPlayer.session != nil && self.reachability.isReachable() {
-            self.progressHUD?.hide(true)
-            self.progressHUD = nil
-            
-            self.trackPlayer.enablePlaybackWithSession(self.trackPlayer.session!, callback: nil)
-        }
-        
         Appirater.appEnteredForeground(true)
     }
 }

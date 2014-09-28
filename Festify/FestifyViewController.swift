@@ -7,15 +7,17 @@
 //
 
 import UIKit
+import MediaPlayer
 
-class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, TrackPlayerDelegate, SMTrackProviderDelegate, LoginViewDelegate, SMSettingsViewDelegate {
+class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAudioStreamingPlaybackDelegate, SMTrackProviderDelegate, LoginViewDelegate, SMSettingsViewDelegate {
     @IBOutlet var trackPlayerBarPosition: NSLayoutConstraint!
     @IBOutlet var usersButton: UIBarButtonItem!
     
-    let trackPlayer = (UIApplication.sharedApplication().delegate as AppDelegate).trackPlayer
+    let streamingController = (UIApplication.sharedApplication().delegate as AppDelegate).streamingController
     let trackProvider = SMTrackProvider()
     var trackPlayerBar: PlayerBarViewController!
     var progressHUD: MBProgressHUD?
+    var nowPlayingCenterTrackInfo = Dictionary<String, AnyObject>()
     
     // make sure all user relevant stored properties are stored correctly
     // in NSUserDefaults database
@@ -84,8 +86,8 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, Track
 
         // init delegations and track player bar
         SMDiscoveryManager.sharedInstance().delegate = self
-        self.trackPlayerBar.trackPlayer = self.trackPlayer
-        self.trackPlayer.delegate = self
+        self.streamingController.playbackDelegate = self
+        self.trackPlayerBar.streamingController = self.streamingController
         self.trackProvider.delegate = self
 
         // load spotify session from user defaults
@@ -95,13 +97,26 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, Track
         
         // if session is available, try to enable playback, or show login screen
         if let session = self.session {
+            self.progressHUD = MBProgressHUD.showHUDAddedTo(self.navigationController!.view, animated: true)
+            self.progressHUD!.labelText = "Connecting ..."
+
             // try to enable playback of track player with new session
-            self.trackPlayer.enablePlaybackWithSession(session) {
+            self.streamingController.loginWithSession(session) {
                 (error: NSError?) in
-                // load users defaults
-                self.advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisedPlaylistsKey") as [String]
-                self.usersTimeout = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsUserTimeoutKey") as Int
-                self.advertisementState = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisementStateKey") as Bool
+                // when playback is successfully enabled unlock the UI by hiding the
+                // progress hud
+                self.progressHUD?.hide(true)
+                self.progressHUD = nil
+                
+                if let error = error {
+                    self.logoutOfSpotify()
+                }
+                else {
+                    // load users defaults
+                    self.advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisedPlaylistsKey") as [String]
+                    self.usersTimeout = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsUserTimeoutKey") as Int
+                    self.advertisementState = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisementStateKey") as Bool
+                }
             }
         }
         else {
@@ -177,73 +192,78 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, Track
     func trackProviderDidUpdateTracks(notification: AnyObject?) {
         // initialize track player to play tracks from track provider
         if self.trackProvider.tracksForPlayback().count != 0 {
-            if self.trackPlayer.currentProvider == nil {
-                self.trackPlayer.playTrackProvider(self.trackProvider)
+            if self.trackPlayerBarPosition.constant < 0.0 {
+                self.streamingController.playTrackProvider(self.trackProvider, callback: nil)
             }
         }
         // clean up track player, if no tracks are available anymore
         // and return to main screen, to avoid viewing an unusuable
         // player screen, or similar
         else {
-            self.trackPlayer.clear()
+            self.streamingController.setIsPlaying(false, callback: nil)
             self.dismissViewControllerAnimated(true, completion: nil)
             self.navigationController?.popToRootViewControllerAnimated(true)
         }
-        
+
         // update UI
         dispatch_async(dispatch_get_main_queue()) {
             self.usersButton.enabled = self.trackProvider.users.count != 0
-            
-            // show or hide track player bar
-            self.trackPlayerBarPosition.constant = (self.trackPlayer.currentProvider != nil) ? 0.0 : -44.0
-            UIView.animateWithDuration(0.4) {
-                self.view.layoutIfNeeded()
-            }
         }
     }
     
-    func trackPlayer(trackPlayer: TrackPlayer, couldNotEnablePlaybackWithSession session: SPTSession?, error: NSError) {
-        if error.code == 9 {
-            // if playback could not be enabled due to a missing spotify premium
-            // subscribtion, ignore error and hide progress HUD
-            self.progressHUD?.hide(true)
-            self.progressHUD = nil
-        }
-        else {
-            // try to renew session, and logout if it fails
-            LoginViewController.renewSpotifySession(session) {
-                (session: SPTSession?, error: NSError?) in
-                if error != nil {
-                    self.progressHUD?.hide(true)
-                    self.progressHUD = nil
-                    
-                    self.logoutOfSpotify()
-                }
-                else {
-                    self.session = session
-                    self.trackPlayer.enablePlaybackWithSession(self.session!, callback: nil)
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
+        // update playback position and rate to avoid apple tv and lockscreen glitches
+        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyPlaybackRate] = isPlaying ? 1.0 : 0.0
+        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.streamingController.currentPlaybackPosition
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingCenterTrackInfo
+
+        // update track player bar accodingly
+        if isPlaying && self.trackPlayerBarPosition.constant != 0.0 {
+            // show track player bar
+            dispatch_async(dispatch_get_main_queue()) {
+                self.trackPlayerBarPosition.constant = 0.0
+                UIView.animateWithDuration(0.4) {
+                    self.view.layoutIfNeeded()
                 }
             }
         }
-    }
-    
-    func trackPlayer(trackPlayer: TrackPlayer, didEnablePlaybackWithSession session: SPTSession?) {
-        // when playback is successfully enabled unlock the UI by hiding the
-        // progress hud
-        self.progressHUD?.hide(true)
-        self.progressHUD = nil
-    }
-    
-    func trackPlayer(trackPlayer: TrackPlayer, willEnablePlaybackWithSession session: SPTSession?) {
-        // show progress hud on top of the window to indicatie the process and
-        // block all UI interactions
-        if self.progressHUD == nil {
-            let window = (UIApplication.sharedApplication().delegate as AppDelegate).window
-            self.progressHUD = MBProgressHUD.showHUDAddedTo(window!.subviews[0] as UIView, animated: true)
-            self.progressHUD!.labelText = "Connecting ..."
+        else if !isPlaying && self.trackProvider.tracksForPlayback().count == 0 {
+            // hide track player bar
+            dispatch_async(dispatch_get_main_queue()) {
+                self.trackPlayerBarPosition.constant = -44.0
+                UIView.animateWithDuration(0.4) {
+                    self.view.layoutIfNeeded()
+                }
+            }
         }
     }
 
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeToTrack trackMetadata: [NSObject : AnyObject]!) {
+        // update track info dictionary and NowPlayingCenter
+        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = 0.0
+        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
+        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyTitle] = trackMetadata[SPTAudioStreamingMetadataTrackName]
+        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyAlbumTitle] = trackMetadata[SPTAudioStreamingMetadataAlbumName]
+        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyArtist] = trackMetadata[SPTAudioStreamingMetadataArtistName]
+        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyPlaybackDuration] = trackMetadata[SPTAudioStreamingMetadataTrackDuration]
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingCenterTrackInfo
+        
+        // download image album cover for current track
+        SPTAlbum.albumWithURI(NSURL(string: (trackMetadata[SPTAudioStreamingMetadataAlbumURI]! as String)), session: self.session!) {
+            (error: NSError?, object: AnyObject?) in
+            if let album = object as? SPTAlbum {
+                NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: album.largestCover.imageURL), completionHandler: {
+                    (data: NSData?, response: NSURLResponse!, errror: NSError?) in
+                    if let data = data {
+                        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: UIImage(data: data))
+                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingCenterTrackInfo
+                    }
+                    
+                }).resume()
+            }
+        }
+    }
+    
     func loginViewDidReturnFromExternalSignUp(loginView: LoginViewController) {
         // hide login view and block UI with progress hud
         loginView.dismissViewControllerAnimated(false, completion: nil)
@@ -266,13 +286,19 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, Track
         
         // try to enable playback, an error should only occure,
         // when user does not have a premium subscribtion
-        self.trackPlayer.enablePlaybackWithSession(self.session!) {
+        self.streamingController.loginWithSession(self.session!) {
             (error: NSError?) in
             if error != nil {
                 let alert = UIAlertController(title: "No Spotify Premuim subscription detected!",
                     message: "You will be able to use all features of Festify, except playing music.", preferredStyle: .Alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
                 self.presentViewController(alert, animated: true, completion: nil)
+            }
+            else {
+                // when playback is successfully enabled unlock the UI by hiding the
+                // progress hud
+                self.progressHUD?.hide(true)
+                self.progressHUD = nil
             }
         }
     }
@@ -318,7 +344,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, Track
         // cleanup spotify objects
         self.session = nil
         self.trackProvider.clear()
-        self.trackPlayer.logout()
+        self.streamingController.logout(nil)
         
         self.performSegueWithIdentifier("showLogin", sender: self)
     }

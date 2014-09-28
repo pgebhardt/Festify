@@ -21,8 +21,6 @@ class LoginViewController: UIViewController {
     // spotify authentication constants
     class var clientId: String { return "742dc3048abc43a6b5f2297fe07e6ae4" }
     class var callbackURL: String { return "festify://callback" }
-    class var tokenSwapServiceURL: String { return "http://festify.schnuffm.fomalhaut.uberspace.de/swap" }
-    class var tokenRefreshServiceURL: String { return "http://festify.schnuffm.fomalhaut.uberspace.de/refresh" }
     
     @IBAction func login(sender: AnyObject?) {
         // register url handler to app delegate and request authenticated session from
@@ -57,12 +55,5 @@ class LoginViewController: UIViewController {
             scopes: [SPTAuthStreamingScope, SPTAuthPlaylistModifyPublicScope],
             withResponseType: "token")
         UIApplication.sharedApplication().openURL(loginURL)
-    }
-    
-    class func renewSpotifySession(session: SPTSession?, withCompletionHandler completion:((SPTSession?, NSError?) ->())) {
-        SPTAuth.defaultInstance().renewSession(session, withServiceEndpointAtURL: NSURL(string: LoginViewController.tokenRefreshServiceURL)) {
-            (error: NSError?, session: SPTSession?) in
-            completion(session, error)
-        }
     }
 }

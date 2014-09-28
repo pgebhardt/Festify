@@ -16,47 +16,41 @@ class PlayerBarViewController: UIViewController {
     
     deinit {
         // cleanup all observations
-        if let trackPlayer = self.trackPlayer {
-            trackPlayer.removeObserver(self, forKeyPath: "playing")
-            trackPlayer.removeObserver(self, forKeyPath: "trackMetadata")
-            trackPlayer.removeObserver(self, forKeyPath: "coverArtOfCurrentTrack")
+        if let streamingController = self.streamingController {
+            streamingController.removeObserver(self, forKeyPath: "isPlaying")
+            streamingController.removeObserver(self, forKeyPath: "currentTrackMetadata")
         }
     }
 
-    var trackPlayer: TrackPlayer! {
+    var streamingController: SPTAudioStreamingController! {
     willSet {
         // cleanup all observations
-        if let trackPlayer = self.trackPlayer {
-            trackPlayer.removeObserver(self, forKeyPath: "playing")
-            trackPlayer.removeObserver(self, forKeyPath: "trackMetadata")
-            trackPlayer.removeObserver(self, forKeyPath: "coverArtOfCurrentTrack")
+        if let streamingController = self.streamingController {
+            streamingController.removeObserver(self, forKeyPath: "isPlaying")
+            streamingController.removeObserver(self, forKeyPath: "currentTrackMetadata")
         }
     }
     
     didSet {
-        if let trackPlayer = self.trackPlayer {
+        if let streamingController = self.streamingController {
             // observe playback state change and track change to update UI accordingly
-            trackPlayer.addObserver(self, forKeyPath: "playing", options: nil, context: nil)
-            trackPlayer.addObserver(self, forKeyPath: "trackMetadata", options: nil, context: nil)
-            trackPlayer.addObserver(self, forKeyPath: "coverArtOfCurrentTrack", options: nil, context: nil)
+            streamingController.addObserver(self, forKeyPath: "isPlaying", options: nil, context: nil)
+            streamingController.addObserver(self, forKeyPath: "currentTrackMetadata", options: nil, context: nil)
             
             // initialy setup UI correctly
-            self.updateTrackInfo(trackPlayer.trackMetadata)
-            self.updateCoverArt(trackPlayer.coverArtOfCurrentTrack)
-            self.updatePlayButton(trackPlayer.playing)
+            self.updateTrackInfo(streamingController.currentTrackMetadata)
+            // TODO: self.updateCoverArt(trackPlayer.coverArtOfCurrentTrack)
+            self.updatePlayButton(streamingController.isPlaying)
         }
     }
     }
     
     override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<()>) {
-        if keyPath == "coverArtOfCurrentTrack" {
-            self.updateCoverArt(self.trackPlayer.coverArtOfCurrentTrack)
+        if keyPath == "currentTrackMetadata" {
+            self.updateTrackInfo(self.streamingController.currentTrackMetadata)
         }
-        else if keyPath == "trackMetadata" {
-            self.updateTrackInfo(self.trackPlayer.trackMetadata)
-        }
-        else if keyPath == "playing" {
-            self.updatePlayButton(self.trackPlayer.playing)
+        else if keyPath == "isPlaying" {
+            self.updatePlayButton(self.streamingController.isPlaying)
         }
         else {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
@@ -65,17 +59,12 @@ class PlayerBarViewController: UIViewController {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if segue.identifier == "showTrackPlayer" {
-            ((segue.destinationViewController as UINavigationController).viewControllers[0] as PlayerViewController).trackPlayer = self.trackPlayer
+            ((segue.destinationViewController as UINavigationController).viewControllers[0] as PlayerViewController).streamingController = self.streamingController
         }
     }
     
     @IBAction func playButtonPressed(sender: AnyObject?) {
-        if self.trackPlayer.playing {
-            self.trackPlayer.pause()
-        }
-        else {
-            self.trackPlayer.play()
-        }
+        self.streamingController.setIsPlaying(!self.streamingController.isPlaying, callback: nil)
     }
     
     func updatePlayButton(playing: Bool) {
@@ -95,16 +84,23 @@ class PlayerBarViewController: UIViewController {
                 self.trackLabel.text = trackMetadata[SPTAudioStreamingMetadataTrackName]! as? String
                 self.artistLabel.text = trackMetadata[SPTAudioStreamingMetadataArtistName]! as? String
             }
-        }
-    }
-    
-    func updateCoverArt(coverArt: UIImage?) {
-        dispatch_async(dispatch_get_main_queue()) {
-            if let coverArt = coverArt {
-                self.coverArtImageView.image = coverArt
-            }
-            else {
-                self.coverArtImageView.image = UIImage(named: "DefaultCoverArt")
+            
+            // download image album cover for current track
+            SPTAlbum.albumWithURI(NSURL(string: (trackMetadata[SPTAudioStreamingMetadataAlbumURI]! as String)), session: nil) {
+                (error: NSError?, object: AnyObject?) in
+                if let album = object as? SPTAlbum {
+                    NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: album.smallestCover.imageURL), completionHandler: {
+                        (data: NSData?, response: NSURLResponse!, errror: NSError?) in
+                        dispatch_async(dispatch_get_main_queue()) {
+                            if let data = data {
+                                self.coverArtImageView.image = UIImage(data: data)
+                            }
+                            else {
+                                self.coverArtImageView.image = UIImage(named: "DefaultCoverArt")
+                            }
+                        }
+                    }).resume()
+                }
             }
         }
     }

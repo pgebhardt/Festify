@@ -10,6 +10,5 @@
 #import "SMUsersViewController.h"
 #import "Appirater.h"
 #import "BlurryModalSegue.h"
-#import "Reachability.h"
 #import "MBProgressHUD.h"
 #import "MWLogging.h"
