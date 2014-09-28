@@ -7,7 +7,6 @@
 //
 
 #import "SMDiscoveryManager.h"
-#import "MWLogging.h"
 
 @interface SMDiscoveryManager ()
 
@@ -62,7 +61,7 @@
     
     // check the bluetooth state
     if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn) {
-        //return NO;
+        return NO;
     }
     
     // stop advertisement, if already running to clear all services
@@ -108,7 +107,7 @@
 -(BOOL)startDiscovering {
     // check the bluetooth state
     if (self.peripheralManager.state != CBPeripheralManagerStatePoweredOn) {
-        //return NO;
+        return NO;
     }
     
     // scan for festify services
@@ -195,7 +194,7 @@
 
 -(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     if (error) {
-        MWLogError(@"%@", error);
+        NSLog(@"%@", error);
     }
     
     // remove peripheral from list
@@ -205,7 +204,7 @@
 
 -(void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     if (error) {
-        MWLogError(@"%@", error);
+        NSLog(@"%@", error);
     }
     
     // remove peripheral from list
@@ -217,7 +216,7 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     if (error) {
-        MWLogError(@"%@", error);
+        NSLog(@"%@", error);
         
         [self.centralManager cancelPeripheralConnection:peripheral];
         return;
@@ -232,7 +231,7 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
     if (error) {
-        MWLogError(@"%@", error);
+        NSLog(@"%@", error);
         
         [self.centralManager cancelPeripheralConnection:peripheral];
         return;
@@ -251,7 +250,7 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     if (error) {
-        MWLogError(@"%@", error);
+        NSLog(@"%@", error);
 
         [self.centralManager cancelPeripheralConnection:peripheral];
         return;

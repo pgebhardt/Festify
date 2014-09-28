@@ -11,7 +11,6 @@
 #import "SMSettingsViewController.h"
 #import "SMDiscoveryManager.h"
 #import "SMUserDefaults.h"
-#import "MWLogging.h"
 
 @interface SMSettingsViewController ()
 @property (nonatomic, strong) NSArray* playlists;
@@ -49,7 +48,7 @@
             [self updateVisiblePlaylistsCell];
         }
         else {
-            MWLogWarning(@"%@", error);
+            NSLog(@"%@", error);
         }
     }];
     
@@ -118,16 +117,10 @@
         UITextView* textView = (UITextView*)viewController.view.subviews[0];
         
         // load acknowledgements from plist file
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"Pods-acknowledgements" ofType:@"plist"];
-        NSDictionary* acknowledgements = [NSDictionary dictionaryWithContentsOfFile:path][@"PreferenceSpecifiers"];
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"Pods-acknowledgements" ofType:@"markdown"];
+        NSString *acknowledgements = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
         
-        // read out all acknowledgements and add them to one continious string
-        NSMutableString* acknowledgementsText = [NSMutableString stringWithString:textView.text];
-        for (NSDictionary *acknowledgement in acknowledgements) {
-            [acknowledgementsText appendFormat:@"\n\n%@\n%@", acknowledgement[@"Title"], acknowledgement[@"FooterText"]];
-        }
-
-        textView.text = acknowledgementsText;
+        textView.text = [NSString stringWithFormat:@"%@\n\n%@", textView.text, acknowledgements];
         textView.textContainerInset = UIEdgeInsetsMake(12.0, 10.0, 12.0, 10.0);
     }
 }
