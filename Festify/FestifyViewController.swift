@@ -8,12 +8,12 @@
 
 import UIKit
 
-class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate, SMTrackProviderDelegate, LoginViewDelegate, SettingsViewDelegate {
+class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate, TrackProviderDelegate, LoginViewDelegate, SettingsViewDelegate {
     @IBOutlet var trackPlayerBarPosition: NSLayoutConstraint!
     @IBOutlet var usersButton: UIBarButtonItem!
     
     let streamingController = (UIApplication.sharedApplication().delegate as AppDelegate).streamingController
-    let trackProvider = SMTrackProvider()
+    let trackProvider = TrackProvider()
     var trackPlayerBar: PlayerBarViewController!
     var progressHUD: MBProgressHUD?
     
@@ -65,8 +65,8 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         NSUserDefaults.standardUserDefaults().setValue(self.usersTimeout, forKey: UserDefaultsKey.UserTimeout.toRaw())
         
         // update timeout value for all users in track provider
-        for username in self.trackProvider.users.allKeys as [String] {
-            self.trackProvider.updateTimeoutInterval(usersTimeout, forUser: username)
+        for user in self.trackProvider.users.values {
+            user.timeout = self.usersTimeout
         }
     }
     }
@@ -79,14 +79,11 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
             name: "SMDiscoveryManagerDidUpdateAdvertisementState", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "discoveryManagerDidUpdateState:",
             name: "SMDiscoveryManagerDidUpdateDiscoveryState", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "trackProviderDidUpdateTracks:",
-            name: "SMTrackProviderDidUpdateTracksArray", object: nil)
-
+        self.trackProvider.addObserver(self, forKeyPath: "tracks", options: nil, context: nil)
+        
         // init delegations and track player bar
         SMDiscoveryManager.sharedInstance().delegate = self
         
-        self.streamingController.repeat = true
-        self.streamingController.shuffle = true
         self.streamingController.playbackDelegate = self
         self.streamingController.delegate = self
         
@@ -139,10 +136,19 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         }
         else if segue.identifier == "showUsers" {
             let usersView = (segue.destinationViewController as UINavigationController).viewControllers[0] as SMUsersViewController
-            usersView.trackProvider = self.trackProvider
+            // usersView.trackProvider = self.trackProvider
         }
         else if segue.identifier == "loadPlayerBar" {
             self.trackPlayerBar = segue.destinationViewController as PlayerBarViewController
+        }
+    }
+    
+    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
+        if keyPath == "tracks" {
+            self.trackProviderDidUpdateTracks(nil)
+        }
+        else {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }
     }
     
@@ -164,8 +170,10 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
             
             // request all playlists and add them to the track provider
             SPTPlaylistSnapshot.playlistsWithURIs(playlists?.map({ NSURL(string:  $0)}), session: self.session!) {
-                (error: NSError?, object: AnyObject?) in
-                self.trackProvider.setPlaylists(object as? [AnyObject], forUser: username, withTimeoutInterval: self.usersTimeout, session: self.session)
+                (error: NSError?, object: AnyObject!) in
+                if error == nil {
+                    self.trackProvider.setPlaylists(object as [SPTPlaylistSnapshot], forUser: username!, withTimeout: self.usersTimeout)
+                }
             }
         }
     }
@@ -175,13 +183,15 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         if SMDiscoveryManager.sharedInstance().discovering &&
             SMDiscoveryManager.sharedInstance().advertising {
                 SPTPlaylistSnapshot.playlistsWithURIs(self.advertisedPlaylists.map({ NSURL(string:  $0)}), session: self.session!) {
-                    (error: NSError?, object: AnyObject?) in
-                    self.trackProvider.setPlaylists(object as? [AnyObject], forUser: self.session?.canonicalUsername, withTimeoutInterval: 0, session: self.session)
+                    (error: NSError?, object: AnyObject!) in
+                    if error == nil {
+                        self.trackProvider.setPlaylists(object as [SPTPlaylistSnapshot], forUser: self.session!.canonicalUsername, withTimeout: self.usersTimeout)
+                    }
                 }
         }
     }
     
-    func trackProvider(trackProvider: SMTrackProvider!, willDeleteUser username: String!) {
+    func trackProvider(trackProvider: TrackProvider, willDeleteUser username: String) {
         // restart discovery manager to rescan for all available devices to possibly prevent
         // track provider from deleting the user
         if SMDiscoveryManager.sharedInstance().discovering {
@@ -193,7 +203,11 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         // initialize track player to play tracks from track provider
         if self.trackProvider.tracksForPlayback().count != 0 {
             if self.trackPlayerBarPosition.constant < 0.0 {
-                self.streamingController.playTrackProvider(self.trackProvider, callback: nil)
+                self.streamingController.playTrackProvider(self.trackProvider) {
+                    (error: NSError?) in
+                    self.streamingController.repeat = true
+                    self.streamingController.shuffle = true
+                }
             }
         }
         // clean up track player, if no tracks are available anymore
@@ -215,7 +229,8 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
 
         // update UI
         dispatch_async(dispatch_get_main_queue()) {
-            self.usersButton.enabled = self.trackProvider.users.count != 0
+            // TODO: disabled during rewriting of TrackProver class
+            // self.usersButton.enabled = self.trackProvider.users.count != 0
         }
     }
     

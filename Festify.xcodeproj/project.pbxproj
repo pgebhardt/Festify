@@ -28,6 +28,7 @@
 		5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */; };
 		5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* SMDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
+		5F5D07A319DAFC0300AE450F /* TrackProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D07A219DAFC0300AE450F /* TrackProvider.swift */; };
 		5F60F57C19D9AD9800DCD0BC /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F60F57B19D9AD9800DCD0BC /* UserDefaults.swift */; };
 		5F6543A71954E686000DAB15 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6543A61954E686000DAB15 /* LoginViewController.swift */; };
 		5F762F4019D86E9000CD55F7 /* Pods-acknowledgements.markdown in Sources */ = {isa = PBXBuildFile; fileRef = 5F762F3F19D86E9000CD55F7 /* Pods-acknowledgements.markdown */; };
@@ -89,6 +90,7 @@
 		5F5A162118FC535100E408DC /* SMDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMDiscoveryManager.h; sourceTree = "<group>"; };
 		5F5A162218FC535100E408DC /* SMDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		5F5D07A219DAFC0300AE450F /* TrackProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackProvider.swift; sourceTree = "<group>"; };
 		5F60F57B19D9AD9800DCD0BC /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		5F6543A61954E686000DAB15 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		5F762F3F19D86E9000CD55F7 /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = "Pods-acknowledgements.markdown"; path = "../Pods/Target Support Files/Pods/Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 				5F089B6618FD56A3002476CB /* SMTrackProvider.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
+				5F5D07A219DAFC0300AE450F /* TrackProvider.swift */,
 				5F60F57B19D9AD9800DCD0BC /* UserDefaults.swift */,
 				5F1E97B31902E5A20009B675 /* View Controller */,
 			);
@@ -439,6 +442,7 @@
 				5F27259519D88EC5006721D6 /* SettingsViewController.swift in Sources */,
 				5F762F4019D86E9000CD55F7 /* Pods-acknowledgements.markdown in Sources */,
 				5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */,
+				5F5D07A319DAFC0300AE450F /* TrackProvider.swift in Sources */,
 				5F33D7301954C2D600FE67F0 /* AppDelegate.swift in Sources */,
 				5F6543A71954E686000DAB15 /* LoginViewController.swift in Sources */,
 				5FBAF2A31956397C00C63031 /* PlayerViewController.swift in Sources */,

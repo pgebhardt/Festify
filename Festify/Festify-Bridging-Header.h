@@ -3,7 +3,7 @@
 //
 
 #import <Spotify/Spotify.h>
-#import "SMTrackProvider.h"
+#import "SPTPlaylistSnapshot+AllTracks.h"
 #import "SMDiscoveryManager.h"
 #import "SMUsersViewController.h"
 #import "Appirater.h"
