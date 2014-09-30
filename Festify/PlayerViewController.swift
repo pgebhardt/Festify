@@ -17,6 +17,7 @@ class PlayerViewController: UIViewController {
     @IBOutlet var currentTimeLabel: UILabel!
     @IBOutlet var remainingTimeLabel: UILabel!
     var streamingController: SPTAudioStreamingController! = nil
+    var coverArt: UIImage?
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -29,10 +30,14 @@ class PlayerViewController: UIViewController {
         // initialy setup UI correctly
         if let currentTrackMetadata = self.streamingController.currentTrackMetadata {
             self.updateTrackInfo(currentTrackMetadata)
-            // self.updateCoverArt(currentTrackMetadata)
             self.updatePlayButton(self.streamingController.isPlaying)
             self.updatePlaybackPosition(self.streamingController.currentPlaybackPosition,
                 andDuration: currentTrackMetadata[SPTAudioStreamingMetadataTrackDuration]! as Double)
+            
+            // initialize cover art, if parent view controller provided one
+            if let coverArt = self.coverArt {
+                self.coverImage.image = coverArt
+            }
         }
     }
     
@@ -58,16 +63,6 @@ class PlayerViewController: UIViewController {
         }
         else {
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
-        if segue.identifier == "showPlaylist" {
-            let navigationController = segue.destinationViewController as UINavigationController
-            let viewController = navigationController.viewControllers[0] as PlaylistViewController
-            
-            navigationController.modalTransitionStyle = .CrossDissolve
-            viewController.streamingController = self.streamingController
         }
     }
     

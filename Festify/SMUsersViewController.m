@@ -20,7 +20,7 @@
     [super viewDidLoad];
     
     // show edit button
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     // array describing, wether a user is expanded or not
     self.userIsExpanded = [NSMutableArray array];

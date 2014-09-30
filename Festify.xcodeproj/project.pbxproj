@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B5E18FD169B002476CB /* SMSettingsViewController.m */; };
 		5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMTrackProvider.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
 		5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
+		5F27259519D88EC5006721D6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F27259419D88EC5006721D6 /* SettingsViewController.swift */; };
 		5F28F7631901288D00A0468A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F28F7621901288D00A0468A /* libz.dylib */; };
 		5F32975C1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F32975B1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m */; };
 		5F33D7301954C2D600FE67F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F33D72F1954C2D600FE67F0 /* AppDelegate.swift */; };
@@ -28,12 +28,12 @@
 		5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */; };
 		5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* SMDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
+		5F60F57C19D9AD9800DCD0BC /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F60F57B19D9AD9800DCD0BC /* UserDefaults.swift */; };
 		5F6543A71954E686000DAB15 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6543A61954E686000DAB15 /* LoginViewController.swift */; };
 		5F762F4019D86E9000CD55F7 /* Pods-acknowledgements.markdown in Sources */ = {isa = PBXBuildFile; fileRef = 5F762F3F19D86E9000CD55F7 /* Pods-acknowledgements.markdown */; };
 		5F762F4119D8701D00CD55F7 /* Pods-acknowledgements.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 5F762F3F19D86E9000CD55F7 /* Pods-acknowledgements.markdown */; };
 		5F7DB9BE190C55790077F648 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9BD190C55790077F648 /* QuartzCore.framework */; };
 		5F7DB9C2190C558C0077F648 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */; };
-		5F7F9EA81955A82F0027AF5D /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */; };
 		5FA9D1521958797100ED5D1A /* FestifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA9D1511958797100ED5D1A /* FestifyViewController.swift */; };
 		5FADE2F819119B47006F96A5 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2079A1190C1DB700AAE15A /* MessageUI.framework */; };
 		5FBAF29F1956253D00C63031 /* FestifyButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBAF29E1956253D00C63031 /* FestifyButtonViewController.swift */; };
@@ -55,8 +55,6 @@
 
 /* Begin PBXFileReference section */
 		15CEA90CA33A460DB3A7DAF3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		5F089B5D18FD169B002476CB /* SMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMSettingsViewController.h; sourceTree = "<group>"; };
-		5F089B5E18FD169B002476CB /* SMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSettingsViewController.m; sourceTree = "<group>"; };
 		5F089B6018FD2B5F002476CB /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		5F089B6518FD56A3002476CB /* SMTrackProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackProvider.h; sourceTree = "<group>"; };
 		5F089B6618FD56A3002476CB /* SMTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackProvider.m; sourceTree = "<group>"; };
@@ -66,6 +64,7 @@
 		5F1F9BD618FC31B70030A64B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		5F20799F190C1DB000AAE15A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		5F2079A1190C1DB700AAE15A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		5F27259419D88EC5006721D6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		5F28F7621901288D00A0468A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		5F32975A1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPTPlaylistSnapshot+AllTracks.h"; sourceTree = "<group>"; };
 		5F32975B1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SPTPlaylistSnapshot+AllTracks.m"; sourceTree = "<group>"; };
@@ -90,6 +89,7 @@
 		5F5A162118FC535100E408DC /* SMDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMDiscoveryManager.h; sourceTree = "<group>"; };
 		5F5A162218FC535100E408DC /* SMDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		5F60F57B19D9AD9800DCD0BC /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		5F6543A61954E686000DAB15 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		5F762F3F19D86E9000CD55F7 /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = "Pods-acknowledgements.markdown"; path = "../Pods/Target Support Files/Pods/Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
 		5F7DB9B5190C55530077F648 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -99,8 +99,6 @@
 		5F7DB9BD190C55790077F648 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5F7DB9C1190C558C0077F648 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		5F7DB9C3190C55BB0077F648 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
-		5F89FD5B1906339A00752072 /* SMUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUserDefaults.h; sourceTree = "<group>"; };
 		5FA9D1511958797100ED5D1A /* FestifyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FestifyViewController.swift; sourceTree = "<group>"; };
 		5FBAF29E1956253D00C63031 /* FestifyButtonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FestifyButtonViewController.swift; sourceTree = "<group>"; };
 		5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerBarViewController.swift; sourceTree = "<group>"; };
@@ -159,11 +157,9 @@
 				5F6543A61954E686000DAB15 /* LoginViewController.swift */,
 				5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */,
 				5FBAF2A21956397C00C63031 /* PlayerViewController.swift */,
-				5F7F9EA71955A82F0027AF5D /* PlaylistViewController.swift */,
+				5F27259419D88EC5006721D6 /* SettingsViewController.swift */,
 				5F15E0B719124BC8006CDDBF /* SMSettingSelectionViewController.h */,
 				5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */,
-				5F089B5D18FD169B002476CB /* SMSettingsViewController.h */,
-				5F089B5E18FD169B002476CB /* SMSettingsViewController.m */,
 				5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */,
 				5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */,
 			);
@@ -228,9 +224,9 @@
 				5F5A162218FC535100E408DC /* SMDiscoveryManager.m */,
 				5F089B6518FD56A3002476CB /* SMTrackProvider.h */,
 				5F089B6618FD56A3002476CB /* SMTrackProvider.m */,
-				5F89FD5B1906339A00752072 /* SMUserDefaults.h */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
+				5F60F57B19D9AD9800DCD0BC /* UserDefaults.swift */,
 				5F1E97B31902E5A20009B675 /* View Controller */,
 			);
 			path = Festify;
@@ -436,11 +432,11 @@
 				5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */,
 				5FA9D1521958797100ED5D1A /* FestifyViewController.swift in Sources */,
 				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
+				5F60F57C19D9AD9800DCD0BC /* UserDefaults.swift in Sources */,
 				5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */,
 				5FBAF29F1956253D00C63031 /* FestifyButtonViewController.swift in Sources */,
 				5FBAF2A119562E6100C63031 /* PlayerBarViewController.swift in Sources */,
-				5F089B5F18FD169B002476CB /* SMSettingsViewController.m in Sources */,
-				5F7F9EA81955A82F0027AF5D /* PlaylistViewController.swift in Sources */,
+				5F27259519D88EC5006721D6 /* SettingsViewController.swift in Sources */,
 				5F762F4019D86E9000CD55F7 /* Pods-acknowledgements.markdown in Sources */,
 				5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */,
 				5F33D7301954C2D600FE67F0 /* AppDelegate.swift in Sources */,

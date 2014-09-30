@@ -7,3 +7,10 @@
 //
 
 import Foundation
+
+enum UserDefaultsKey: String {
+    case SpotifySession = "SMUserDefaultsSpotifySessionKey"
+    case AdvertisementState = "SMUserDefaultsAdvertisementStateKey"
+    case AdvertisedPlaylists = "SMUserDefaultsAdvertisedPlaylistsKey"
+    case UserTimeout = "SMUserDefaultsUserTimeoutKey"
+}

@@ -7,12 +7,15 @@
 //
 
 import UIKit
+import MediaPlayer
 
 class PlayerBarViewController: UIViewController {
     @IBOutlet var trackLabel: UILabel!
     @IBOutlet var coverArtImageView: UIImageView!
     @IBOutlet var artistLabel: UILabel!
     @IBOutlet var playButton: UIButton!
+    
+    var nowPlayingCenterTrackInfo = Dictionary<String, AnyObject>()
     
     deinit {
         // cleanup all observations
@@ -39,7 +42,6 @@ class PlayerBarViewController: UIViewController {
             
             // initialy setup UI correctly
             self.updateTrackInfo(streamingController.currentTrackMetadata)
-            // TODO: self.updateCoverArt(trackPlayer.coverArtOfCurrentTrack)
             self.updatePlayButton(streamingController.isPlaying)
         }
     }
@@ -59,7 +61,10 @@ class PlayerBarViewController: UIViewController {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if segue.identifier == "showTrackPlayer" {
-            ((segue.destinationViewController as UINavigationController).viewControllers[0] as PlayerViewController).streamingController = self.streamingController
+            let viewController = ((segue.destinationViewController as UINavigationController).viewControllers[0] as PlayerViewController)
+            
+            viewController.streamingController = self.streamingController
+            viewController.coverArt = self.coverArtImageView.image
         }
     }
     
@@ -68,6 +73,11 @@ class PlayerBarViewController: UIViewController {
     }
     
     func updatePlayButton(playing: Bool) {
+        // update playback position and rate to avoid apple tv and lockscreen glitches
+        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyPlaybackRate] = playing ? 1.0 : 0.0
+        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.streamingController.currentPlaybackPosition
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingCenterTrackInfo
+        
         dispatch_async(dispatch_get_main_queue()) {
             if playing {
                 self.playButton.setImage(UIImage(named: "Pause"), forState: .Normal)
@@ -79,17 +89,26 @@ class PlayerBarViewController: UIViewController {
     }
     
     func updateTrackInfo(trackMetadata: [NSObject: AnyObject]?) {
-        if let trackMetadata = trackMetadata {
+        if let trackMetadata = trackMetadata {        // update track info dictionary and NowPlayingCenter
             dispatch_async(dispatch_get_main_queue()) {
                 self.trackLabel.text = trackMetadata[SPTAudioStreamingMetadataTrackName]! as? String
                 self.artistLabel.text = trackMetadata[SPTAudioStreamingMetadataArtistName]! as? String
             }
             
+            // update now playing center with track info
+            self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = 0.0
+            self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
+            self.nowPlayingCenterTrackInfo[MPMediaItemPropertyTitle] = trackMetadata[SPTAudioStreamingMetadataTrackName]
+            self.nowPlayingCenterTrackInfo[MPMediaItemPropertyAlbumTitle] = trackMetadata[SPTAudioStreamingMetadataAlbumName]
+            self.nowPlayingCenterTrackInfo[MPMediaItemPropertyArtist] = trackMetadata[SPTAudioStreamingMetadataArtistName]
+            self.nowPlayingCenterTrackInfo[MPMediaItemPropertyPlaybackDuration] = trackMetadata[SPTAudioStreamingMetadataTrackDuration]
+            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingCenterTrackInfo
+            
             // download image album cover for current track
             SPTAlbum.albumWithURI(NSURL(string: (trackMetadata[SPTAudioStreamingMetadataAlbumURI]! as String)), session: nil) {
                 (error: NSError?, object: AnyObject?) in
                 if let album = object as? SPTAlbum {
-                    NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: album.smallestCover.imageURL), completionHandler: {
+                    NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: album.largestCover.imageURL), completionHandler: {
                         (data: NSData?, response: NSURLResponse!, errror: NSError?) in
                         dispatch_async(dispatch_get_main_queue()) {
                             if let data = data {
@@ -98,6 +117,9 @@ class PlayerBarViewController: UIViewController {
                             else {
                                 self.coverArtImageView.image = UIImage(named: "DefaultCoverArt")
                             }
+
+                            self.nowPlayingCenterTrackInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: self.coverArtImageView.image)
+                            MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingCenterTrackInfo
                         }
                     }).resume()
                 }

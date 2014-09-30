@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import MediaPlayer
 
-class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAudioStreamingPlaybackDelegate, SMTrackProviderDelegate, LoginViewDelegate, SMSettingsViewDelegate {
+class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate, SMTrackProviderDelegate, LoginViewDelegate, SettingsViewDelegate {
     @IBOutlet var trackPlayerBarPosition: NSLayoutConstraint!
     @IBOutlet var usersButton: UIBarButtonItem!
     
@@ -17,7 +16,6 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
     let trackProvider = SMTrackProvider()
     var trackPlayerBar: PlayerBarViewController!
     var progressHUD: MBProgressHUD?
-    var nowPlayingCenterTrackInfo = Dictionary<String, AnyObject>()
     
     // make sure all user relevant stored properties are stored correctly
     // in NSUserDefaults database
@@ -26,11 +24,11 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         if let session = self.session {
             NSUserDefaults.standardUserDefaults().setValue(
                 NSKeyedArchiver.archivedDataWithRootObject(session),
-                forKey: "SMUserDefaultsSpotifySessionKey")
+                forKey: UserDefaultsKey.SpotifySession.toRaw())
         }
         else {
             NSUserDefaults.standardUserDefaults().setValue(nil,
-                forKey: "SMUserDefaultsSpotifySessionKey")
+                forKey: UserDefaultsKey.SpotifySession.toRaw())
         }
     }
     }
@@ -38,7 +36,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
     var advertisedPlaylists: [String] = [String]() {
     didSet {
         NSUserDefaults.standardUserDefaults().setValue(self.advertisedPlaylists,
-            forKey: "SMUserDefaultsAdvertisedPlaylistsKey")
+            forKey: UserDefaultsKey.AdvertisedPlaylists.toRaw())
     }
     }
 
@@ -58,13 +56,13 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
             SMDiscoveryManager.sharedInstance().stopAdvertising()
         }
         
-        NSUserDefaults.standardUserDefaults().setValue(newValue, forKey: "SMUserDefaultsAdvertisementStateKey")
+        NSUserDefaults.standardUserDefaults().setValue(newValue, forKey: UserDefaultsKey.AdvertisementState.toRaw())
     }
     }
     
     var usersTimeout: Int = 120 {
     didSet {
-        NSUserDefaults.standardUserDefaults().setValue(self.usersTimeout, forKey: "SMUserDefaultsUserTimeoutKey")
+        NSUserDefaults.standardUserDefaults().setValue(self.usersTimeout, forKey: UserDefaultsKey.UserTimeout.toRaw())
         
         // update timeout value for all users in track provider
         for username in self.trackProvider.users.allKeys as [String] {
@@ -86,12 +84,17 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
 
         // init delegations and track player bar
         SMDiscoveryManager.sharedInstance().delegate = self
+        
+        self.streamingController.repeat = true
+        self.streamingController.shuffle = true
         self.streamingController.playbackDelegate = self
+        self.streamingController.delegate = self
+        
         self.trackPlayerBar.streamingController = self.streamingController
         self.trackProvider.delegate = self
 
         // load spotify session from user defaults
-        if let sessionData = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsSpotifySessionKey") as? NSData {
+        if let sessionData = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.SpotifySession.toRaw()) as? NSData {
             self.session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionData) as? SPTSession
         }
         
@@ -108,14 +111,8 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
                 self.progressHUD?.hide(true)
                 self.progressHUD = nil
                 
-                if let error = error {
-                    self.logoutOfSpotify()
-                }
-                else {
-                    // load users defaults
-                    self.advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisedPlaylistsKey") as [String]
-                    self.usersTimeout = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsUserTimeoutKey") as Int
-                    self.advertisementState = NSUserDefaults.standardUserDefaults().valueForKey("SMUserDefaultsAdvertisementStateKey") as Bool
+                if error != nil {
+                    self.audioStreaming(self.streamingController, didEncounterError: error)
                 }
             }
         }
@@ -133,7 +130,10 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
             loginView.modalTransitionStyle = .CrossDissolve
         }
         else if segue.identifier == "showSettings" {
-            let settingsView = (segue.destinationViewController as UINavigationController).viewControllers[0] as SMSettingsViewController
+            let settingsView = (segue.destinationViewController as UINavigationController).viewControllers[0] as SettingsViewController
+            
+            settingsView.advertisedPlaylists = self.advertisedPlaylists
+            settingsView.usersTimeout = self.usersTimeout
             settingsView.session = self.session
             settingsView.delegate = self
         }
@@ -203,31 +203,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
             self.streamingController.setIsPlaying(false, callback: nil)
             self.dismissViewControllerAnimated(true, completion: nil)
             self.navigationController?.popToRootViewControllerAnimated(true)
-        }
-
-        // update UI
-        dispatch_async(dispatch_get_main_queue()) {
-            self.usersButton.enabled = self.trackProvider.users.count != 0
-        }
-    }
-    
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
-        // update playback position and rate to avoid apple tv and lockscreen glitches
-        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyPlaybackRate] = isPlaying ? 1.0 : 0.0
-        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.streamingController.currentPlaybackPosition
-        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingCenterTrackInfo
-
-        // update track player bar accodingly
-        if isPlaying && self.trackPlayerBarPosition.constant != 0.0 {
-            // show track player bar
-            dispatch_async(dispatch_get_main_queue()) {
-                self.trackPlayerBarPosition.constant = 0.0
-                UIView.animateWithDuration(0.4) {
-                    self.view.layoutIfNeeded()
-                }
-            }
-        }
-        else if !isPlaying && self.trackProvider.tracksForPlayback().count == 0 {
+            
             // hide track player bar
             dispatch_async(dispatch_get_main_queue()) {
                 self.trackPlayerBarPosition.constant = -44.0
@@ -236,34 +212,81 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
                 }
             }
         }
-    }
 
-    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangeToTrack trackMetadata: [NSObject : AnyObject]!) {
-        // update track info dictionary and NowPlayingCenter
-        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = 0.0
-        self.nowPlayingCenterTrackInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
-        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyTitle] = trackMetadata[SPTAudioStreamingMetadataTrackName]
-        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyAlbumTitle] = trackMetadata[SPTAudioStreamingMetadataAlbumName]
-        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyArtist] = trackMetadata[SPTAudioStreamingMetadataArtistName]
-        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyPlaybackDuration] = trackMetadata[SPTAudioStreamingMetadataTrackDuration]
-        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingCenterTrackInfo
-        
-        // download image album cover for current track
-        SPTAlbum.albumWithURI(NSURL(string: (trackMetadata[SPTAudioStreamingMetadataAlbumURI]! as String)), session: self.session!) {
-            (error: NSError?, object: AnyObject?) in
-            if let album = object as? SPTAlbum {
-                NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: album.largestCover.imageURL), completionHandler: {
-                    (data: NSData?, response: NSURLResponse!, errror: NSError?) in
-                    if let data = data {
-                        self.nowPlayingCenterTrackInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: UIImage(data: data))
-                        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = self.nowPlayingCenterTrackInfo
-                    }
-                    
-                }).resume()
+        // update UI
+        dispatch_async(dispatch_get_main_queue()) {
+            self.usersButton.enabled = self.trackProvider.users.count != 0
+        }
+    }
+    
+    func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
+        // load user settingds from UserDefaults or init values with default
+        if let advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.AdvertisedPlaylists.toRaw()) as? [String] {
+            self.advertisedPlaylists = advertisedPlaylists
+            
+            if let usersTimeout = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.UserTimeout.toRaw()) as? Int {
+                self.usersTimeout = usersTimeout
+            }
+            else {
+                self.usersTimeout = 120
+            }
+            
+            if let advertisementState = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.AdvertisementState.toRaw()) as? Bool {
+                self.advertisementState = advertisementState
+            }
+            else {
+                self.advertisementState = true
+            }
+        }
+        else {
+            // initialize default values for user settings
+            SPTRequest.playlistsForUserInSession(self.session) {
+                (error: NSError?, object: AnyObject?) in
+                // request all playlists for the user and advertise them
+                self.advertisedPlaylists = ((object as SPTPlaylistList).items as [SPTPartialPlaylist]).map({ $0.uri.absoluteString! })
+                self.usersTimeout = 120
+                self.advertisementState = true
             }
         }
     }
     
+    func audioStreamingDidLogout(audioStreaming: SPTAudioStreamingController!) {
+        // stop advertisiement and discovery and clear all settings
+        SMDiscoveryManager.sharedInstance().stopDiscovering()
+        SMDiscoveryManager.sharedInstance().stopAdvertising()
+        NSUserDefaults.standardUserDefaults().removePersistentDomainForName(NSBundle.mainBundle().bundleIdentifier!)
+        
+        // cleanup spotify objects
+        self.session = nil
+        self.trackProvider.clear()
+        
+        self.performSegueWithIdentifier("showLogin", sender: self)
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didEncounterError error: NSError!) {
+        // present error to user
+        let alert = UIAlertController(title: "Error!", message: error.localizedDescription, preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: {
+            (action: UIAlertAction!) in
+            // cleanup app and logout
+            self.audioStreamingDidLogout(audioStreaming)
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func audioStreaming(audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
+        // show track player bar
+        if isPlaying && self.trackPlayerBarPosition.constant != 0.0 {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.trackPlayerBarPosition.constant = 0.0
+                UIView.animateWithDuration(0.4) {
+                    self.view.layoutIfNeeded()
+                }
+            }
+        }
+    }
+
     func loginViewDidReturnFromExternalSignUp(loginView: LoginViewController) {
         // hide login view and block UI with progress hud
         loginView.dismissViewControllerAnimated(false, completion: nil)
@@ -275,30 +298,17 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         // store new session to user defaults
         self.session = session
         
-        // initialize default values for user settings
-        SPTRequest.playlistsForUserInSession(self.session) {
-            (error: NSError?, object: AnyObject?) in
-            // request all playlists for the user and advertise them
-            self.advertisedPlaylists = ((object as SPTPlaylistList).items as [SPTPartialPlaylist]).map({ $0.uri.absoluteString! })
-            self.usersTimeout = 120
-            self.advertisementState = true
-        }
-        
         // try to enable playback, an error should only occure,
         // when user does not have a premium subscribtion
         self.streamingController.loginWithSession(self.session!) {
             (error: NSError?) in
+            // when playback is successfully enabled unlock the UI by hiding the
+            // progress hud
+            self.progressHUD?.hide(true)
+            self.progressHUD = nil
+            
             if error != nil {
-                let alert = UIAlertController(title: "No Spotify Premuim subscription detected!",
-                    message: "You will be able to use all features of Festify, except playing music.", preferredStyle: .Alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
-            }
-            else {
-                // when playback is successfully enabled unlock the UI by hiding the
-                // progress hud
-                self.progressHUD?.hide(true)
-                self.progressHUD = nil
+                self.audioStreaming(self.streamingController, didEncounterError: error)
             }
         }
     }
@@ -316,36 +326,22 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    func settingsView(settingsView: SMSettingsViewController!, didChangeAdvertisedPlaylistSelection selectedPlaylists: [AnyObject]!) {
-        self.advertisedPlaylists = selectedPlaylists as [String]
+    func settingsView(settingsView: SettingsViewController, didChangeAdvertisedPlaylistSelection selectedPlaylists: [String]) {
+        self.advertisedPlaylists = selectedPlaylists
     
         // reset advertisement state to update advertised playlist selection
         self.advertisementState = SMDiscoveryManager.sharedInstance().advertising
     }
     
-    func settingsView(settingsView: SMSettingsViewController!, didChangeAdvertisementState advertising: Bool) {
+    func settingsView(settingsView: SettingsViewController, didChangeAdvertisementState advertising: Bool) {
         self.advertisementState = advertising
     }
     
-    func settingsView(settingsView: SMSettingsViewController!, didChangeUsersTimeout usersTimeout: Int) {
+    func settingsView(settingsView: SettingsViewController, didChangeUsersTimeout usersTimeout: Int) {
         self.usersTimeout = usersTimeout
     }
     
-    func settingsViewDidRequestLogout(settingsView: SMSettingsViewController!) {
-        self.logoutOfSpotify()
-    }
-    
-    func logoutOfSpotify() {
-        // stop advertisiement and discovery and clear all settings
-        SMDiscoveryManager.sharedInstance().stopDiscovering()
-        SMDiscoveryManager.sharedInstance().stopAdvertising()
-        NSUserDefaults.standardUserDefaults().removePersistentDomainForName(NSBundle.mainBundle().bundleIdentifier!)
-        
-        // cleanup spotify objects
-        self.session = nil
-        self.trackProvider.clear()
+    func settingsViewDidRequestLogout(settingsView: SettingsViewController) {
         self.streamingController.logout(nil)
-        
-        self.performSegueWithIdentifier("showLogin", sender: self)
     }
 }

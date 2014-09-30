@@ -5,8 +5,6 @@
 #import <Spotify/Spotify.h>
 #import "SMTrackProvider.h"
 #import "SMDiscoveryManager.h"
-#import "SMUserDefaults.h"
-#import "SMSettingsViewController.h"
 #import "SMUsersViewController.h"
 #import "Appirater.h"
 #import "BlurryModalSegue.h"
