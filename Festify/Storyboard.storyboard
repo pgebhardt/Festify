@@ -613,7 +613,7 @@
         <!--Discovered Users-->
         <scene sceneID="6VK-Ps-1J6">
             <objects>
-                <tableViewController id="GbN-8d-cNT" customClass="SMUsersViewController" sceneMemberID="viewController">
+                <tableViewController id="GbN-8d-cNT" customClass="UsersViewController" customModule="Festify" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="1" id="1I0-Cs-2k5">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

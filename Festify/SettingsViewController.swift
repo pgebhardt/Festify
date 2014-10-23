@@ -54,8 +54,8 @@ class SettingsViewController: UITableViewController, MFMailComposeViewController
         }
         
         // update UI
-        let version = NSBundle.mainBundle().infoDictionary["CFBundleShortVersionString"]! as String
-        let build = NSBundle.mainBundle().infoDictionary[kCFBundleVersionKey]! as String
+        let version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]! as String
+        let build = NSBundle.mainBundle().infoDictionary![kCFBundleVersionKey]! as String
         
         self.timeoutLabel.text = self.timeoutToString(self.usersTimeout!)
         self.logoutLabel.text = "Log Out \(self.session.canonicalUsername)"
@@ -95,7 +95,7 @@ class SettingsViewController: UITableViewController, MFMailComposeViewController
         }
     }
     
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+    override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool {
         if identifier == "showVisiblePlaylists" && self.playlistActivityIndicator.isAnimating() {
             return false
         }
@@ -150,8 +150,8 @@ class SettingsViewController: UITableViewController, MFMailComposeViewController
             else if identifier == "contactCell" {
                 // add some basic debug information to default message
                 let appName = NSBundle.mainBundle().bundleIdentifier!
-                let appVersion = NSBundle.mainBundle().infoDictionary["CFBundleShortVersionString"]! as String
-                let appBuild = NSBundle.mainBundle().infoDictionary[kCFBundleVersionKey]! as String
+                let appVersion = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]! as String
+                let appBuild = NSBundle.mainBundle().infoDictionary![kCFBundleVersionKey]! as String
                 let deviceName = self.deviceString()
                 let osVersion = UIDevice.currentDevice().systemVersion
                 

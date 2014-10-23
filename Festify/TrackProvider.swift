@@ -29,7 +29,7 @@ class TrackProvider: NSObject, SPTTrackProvider {
                     timer.fireDate = NSDate(timeInterval: Double(self.timeout - 1) * 60.0, sinceDate: self.lastUpdated)
                 }
                 else {
-                    self.timer = NSTimer(timeInterval: Double(self.timeout - 1) * 60.0, target: self, selector: "timerHasExpired", userInfo: nil, repeats: false)
+                    self.timer = NSTimer.scheduledTimerWithTimeInterval(Double(self.timeout - 1) * 60.0, target: self, selector: "timerHasExpired", userInfo: nil, repeats: false)
                 }
             }
         }
@@ -57,12 +57,15 @@ class TrackProvider: NSObject, SPTTrackProvider {
     }
     
     var users = Dictionary<String, UserInfo>()
-    dynamic var tracks = [SPTTrack]()
+    dynamic var tracks = NSMutableArray()
     var delegate: TrackProviderDelegate?
     
     override init() {
         super.init()
         
+        // init random number generator
+        srandom(UInt32(time(nil)))
+            
         // register to enter foreground notification to check and restart all timers
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "restoreTimersAfterSuspension:", name: UIApplicationDidBecomeActiveNotification, object: nil)
     }
@@ -129,7 +132,7 @@ class TrackProvider: NSObject, SPTTrackProvider {
             user.timer?.invalidate()
         }
         
-        self.tracks.removeAll(keepCapacity: false)
+        self.tracks.removeAllObjects()
         self.users.removeAll(keepCapacity: false)
     }
     
@@ -141,7 +144,17 @@ class TrackProvider: NSObject, SPTTrackProvider {
             }
         }
         
-        self.tracks = tracks
+        self.tracks.removeAllObjects()
+        self.tracks.addObjectsFromArray(tracks)
+        
+        // shuffle tracks array
+        for var i = 0; i < self.tracks.count; ++i {
+            let elements = self.tracks.count - i
+            let n = (random() % elements) + i
+            self.tracks.exchangeObjectAtIndex(i, withObjectAtIndex: n)
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("SMTrackProviderDidUpdateTracksArray", object: self)
     }
     
     func restoreTimersAfterSuspension(notification: NSNotification!) {
@@ -154,7 +167,7 @@ class TrackProvider: NSObject, SPTTrackProvider {
                     user.timerHasExpired()
                 }
                 else {
-                    user.timer = NSTimer(timeInterval: timeInterval, target: user, selector: "timerHasExpired", userInfo: nil, repeats: false)
+                    user.timer = NSTimer.scheduledTimerWithTimeInterval(timeInterval, target: user, selector: "timerHasExpired", userInfo: nil, repeats: false)
                 }
             }
         }

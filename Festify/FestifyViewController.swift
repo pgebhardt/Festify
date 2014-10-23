@@ -24,11 +24,11 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         if let session = self.session {
             NSUserDefaults.standardUserDefaults().setValue(
                 NSKeyedArchiver.archivedDataWithRootObject(session),
-                forKey: UserDefaultsKey.SpotifySession.toRaw())
+                forKey: UserDefaultsKey.SpotifySession.rawValue)
         }
         else {
             NSUserDefaults.standardUserDefaults().setValue(nil,
-                forKey: UserDefaultsKey.SpotifySession.toRaw())
+                forKey: UserDefaultsKey.SpotifySession.rawValue)
         }
     }
     }
@@ -36,7 +36,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
     var advertisedPlaylists: [String] = [String]() {
     didSet {
         NSUserDefaults.standardUserDefaults().setValue(self.advertisedPlaylists,
-            forKey: UserDefaultsKey.AdvertisedPlaylists.toRaw())
+            forKey: UserDefaultsKey.AdvertisedPlaylists.rawValue)
     }
     }
 
@@ -56,13 +56,13 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
             SMDiscoveryManager.sharedInstance().stopAdvertising()
         }
         
-        NSUserDefaults.standardUserDefaults().setValue(newValue, forKey: UserDefaultsKey.AdvertisementState.toRaw())
+        NSUserDefaults.standardUserDefaults().setValue(newValue, forKey: UserDefaultsKey.AdvertisementState.rawValue)
     }
     }
     
     var usersTimeout: Int = 120 {
     didSet {
-        NSUserDefaults.standardUserDefaults().setValue(self.usersTimeout, forKey: UserDefaultsKey.UserTimeout.toRaw())
+        NSUserDefaults.standardUserDefaults().setValue(self.usersTimeout, forKey: UserDefaultsKey.UserTimeout.rawValue)
         
         // update timeout value for all users in track provider
         for user in self.trackProvider.users.values {
@@ -79,7 +79,8 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
             name: "SMDiscoveryManagerDidUpdateAdvertisementState", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "discoveryManagerDidUpdateState:",
             name: "SMDiscoveryManagerDidUpdateDiscoveryState", object: nil)
-        self.trackProvider.addObserver(self, forKeyPath: "tracks", options: nil, context: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "trackProviderDidUpdateTracks:",
+            name: "SMTrackProviderDidUpdateTracksArray", object: nil)
         
         // init delegations and track player bar
         SMDiscoveryManager.sharedInstance().delegate = self
@@ -91,7 +92,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         self.trackProvider.delegate = self
 
         // load spotify session from user defaults
-        if let sessionData = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.SpotifySession.toRaw()) as? NSData {
+        if let sessionData = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.SpotifySession.rawValue) as? NSData {
             self.session = NSKeyedUnarchiver.unarchiveObjectWithData(sessionData) as? SPTSession
         }
         
@@ -135,30 +136,21 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
             settingsView.delegate = self
         }
         else if segue.identifier == "showUsers" {
-            let usersView = (segue.destinationViewController as UINavigationController).viewControllers[0] as SMUsersViewController
-            // usersView.trackProvider = self.trackProvider
+            let usersView = (segue.destinationViewController as UINavigationController).viewControllers[0] as UsersViewController
+            usersView.trackProvider = self.trackProvider
         }
         else if segue.identifier == "loadPlayerBar" {
             self.trackPlayerBar = segue.destinationViewController as PlayerBarViewController
         }
     }
     
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
-        if keyPath == "tracks" {
-            self.trackProviderDidUpdateTracks(nil)
-        }
-        else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
-    }
-    
     @IBAction func spotifyButton(sender: AnyObject?) {
         // open either spotify website or app, if available
         if SPTAuth.defaultInstance().spotifyApplicationIsInstalled() {
-            UIApplication.sharedApplication().openURL(NSURL(string:"spotify//open"))
+            UIApplication.sharedApplication().openURL(NSURL(string:"spotify//open")!)
         }
         else {
-            UIApplication.sharedApplication().openURL(NSURL(string:"http://www.spotify.com"))
+            UIApplication.sharedApplication().openURL(NSURL(string:"http://www.spotify.com")!)
         }
     }
     
@@ -169,7 +161,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
             let username = advertisedData["username"] as? String
             
             // request all playlists and add them to the track provider
-            SPTPlaylistSnapshot.playlistsWithURIs(playlists?.map({ NSURL(string:  $0)}), session: self.session!) {
+            SPTPlaylistSnapshot.playlistsWithURIs(playlists!.map({ NSURL(string:  $0)! }), session: self.session) {
                 (error: NSError?, object: AnyObject!) in
                 if error == nil {
                     self.trackProvider.setPlaylists(object as [SPTPlaylistSnapshot], forUser: username!, withTimeout: self.usersTimeout)
@@ -182,7 +174,7 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
         // add all currently advertised songs, if festify and advertisement modes are active
         if SMDiscoveryManager.sharedInstance().discovering &&
             SMDiscoveryManager.sharedInstance().advertising {
-                SPTPlaylistSnapshot.playlistsWithURIs(self.advertisedPlaylists.map({ NSURL(string:  $0)}), session: self.session!) {
+                SPTPlaylistSnapshot.playlistsWithURIs(self.advertisedPlaylists.map({ NSURL(string:  $0)! }), session: self.session!) {
                     (error: NSError?, object: AnyObject!) in
                     if error == nil {
                         self.trackProvider.setPlaylists(object as [SPTPlaylistSnapshot], forUser: self.session!.canonicalUsername, withTimeout: self.usersTimeout)
@@ -201,12 +193,18 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
     
     func trackProviderDidUpdateTracks(notification: AnyObject?) {
         // initialize track player to play tracks from track provider
-        if self.trackProvider.tracksForPlayback().count != 0 {
+        if self.trackProvider.users.count != 0 {
             if self.trackPlayerBarPosition.constant < 0.0 {
                 self.streamingController.playTrackProvider(self.trackProvider) {
                     (error: NSError?) in
                     self.streamingController.repeat = true
-                    self.streamingController.shuffle = true
+                    // self.streamingController.shuffle = true
+                }
+            }
+            else {
+                self.streamingController.queueTrackProvider(self.trackProvider, clearQueue: true) {
+                    (error: NSError?) in
+                    NSLog("\(error)")
                 }
             }
         }
@@ -229,24 +227,23 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
 
         // update UI
         dispatch_async(dispatch_get_main_queue()) {
-            // TODO: disabled during rewriting of TrackProver class
-            // self.usersButton.enabled = self.trackProvider.users.count != 0
+            self.usersButton.enabled = self.trackProvider.users.count != 0
         }
     }
     
     func audioStreamingDidLogin(audioStreaming: SPTAudioStreamingController!) {
         // load user settingds from UserDefaults or init values with default
-        if let advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.AdvertisedPlaylists.toRaw()) as? [String] {
+        if let advertisedPlaylists = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.AdvertisedPlaylists.rawValue) as? [String] {
             self.advertisedPlaylists = advertisedPlaylists
             
-            if let usersTimeout = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.UserTimeout.toRaw()) as? Int {
+            if let usersTimeout = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.UserTimeout.rawValue) as? Int {
                 self.usersTimeout = usersTimeout
             }
             else {
                 self.usersTimeout = 120
             }
             
-            if let advertisementState = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.AdvertisementState.toRaw()) as? Bool {
+            if let advertisementState = NSUserDefaults.standardUserDefaults().valueForKey(UserDefaultsKey.AdvertisementState.rawValue) as? Bool {
                 self.advertisementState = advertisementState
             }
             else {
@@ -279,6 +276,8 @@ class FestifyViewController: UIViewController, SMDiscoveryManagerDelegate, SPTAu
     }
     
     func audioStreaming(audioStreaming: SPTAudioStreamingController!, didEncounterError error: NSError!) {
+        NSLog("\(error)")
+        
         // present error to user
         let alert = UIAlertController(title: "Error!", message: error.localizedDescription, preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: {

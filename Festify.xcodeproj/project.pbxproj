@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F089B6618FD56A3002476CB /* SMTrackProvider.m */; };
 		5F12D32A1902774E00B49FCA /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F12D3291902774E00B49FCA /* MediaPlayer.framework */; };
 		5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */; };
 		5F1F9BD718FC31B70030A64B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F1F9BD618FC31B70030A64B /* AVFoundation.framework */; };
@@ -25,7 +24,6 @@
 		5F423A8418FC115200C3ED75 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8218FC115200C3ED75 /* InfoPlist.strings */; };
 		5F423A8618FC115200C3ED75 /* FestifyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F423A8518FC115200C3ED75 /* FestifyTests.m */; };
 		5F423A9018FC118B00C3ED75 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */; };
-		5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */; };
 		5F5A162318FC535100E408DC /* SMDiscoveryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A162218FC535100E408DC /* SMDiscoveryManager.m */; };
 		5F5A162518FC53DA00E408DC /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */; };
 		5F5D07A319DAFC0300AE450F /* TrackProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D07A219DAFC0300AE450F /* TrackProvider.swift */; };
@@ -40,6 +38,7 @@
 		5FBAF29F1956253D00C63031 /* FestifyButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBAF29E1956253D00C63031 /* FestifyButtonViewController.swift */; };
 		5FBAF2A119562E6100C63031 /* PlayerBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */; };
 		5FBAF2A31956397C00C63031 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBAF2A21956397C00C63031 /* PlayerViewController.swift */; };
+		5FC173B219DB2C1A00DB5378 /* UsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC173B119DB2C1A00DB5378 /* UsersViewController.swift */; };
 		5FF1F01A19D04A83006AFDDB /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FF1F01919D04A83006AFDDB /* Spotify.framework */; };
 		A384BE757DB84CC6A27976C5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CEA90CA33A460DB3A7DAF3 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -57,8 +56,6 @@
 /* Begin PBXFileReference section */
 		15CEA90CA33A460DB3A7DAF3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F089B6018FD2B5F002476CB /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
-		5F089B6518FD56A3002476CB /* SMTrackProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTrackProvider.h; sourceTree = "<group>"; };
-		5F089B6618FD56A3002476CB /* SMTrackProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTrackProvider.m; sourceTree = "<group>"; };
 		5F12D3291902774E00B49FCA /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		5F15E0B719124BC8006CDDBF /* SMSettingSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMSettingSelectionViewController.h; sourceTree = "<group>"; };
 		5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMSettingSelectionViewController.m; sourceTree = "<group>"; };
@@ -85,8 +82,6 @@
 		5F423A8318FC115200C3ED75 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5F423A8518FC115200C3ED75 /* FestifyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FestifyTests.m; sourceTree = "<group>"; };
 		5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
-		5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUsersViewController.h; sourceTree = "<group>"; };
-		5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMUsersViewController.m; sourceTree = "<group>"; };
 		5F5A162118FC535100E408DC /* SMDiscoveryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMDiscoveryManager.h; sourceTree = "<group>"; };
 		5F5A162218FC535100E408DC /* SMDiscoveryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMDiscoveryManager.m; sourceTree = "<group>"; };
 		5F5A162418FC53DA00E408DC /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -105,6 +100,7 @@
 		5FBAF29E1956253D00C63031 /* FestifyButtonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FestifyButtonViewController.swift; sourceTree = "<group>"; };
 		5FBAF2A019562E6100C63031 /* PlayerBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerBarViewController.swift; sourceTree = "<group>"; };
 		5FBAF2A21956397C00C63031 /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		5FC173B119DB2C1A00DB5378 /* UsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersViewController.swift; sourceTree = "<group>"; };
 		5FF1F01919D04A83006AFDDB /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
 		85EC8407BEA9976A07FB20EC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D2EDF0B9A5175D7B1CAAADB7 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -162,8 +158,7 @@
 				5F27259419D88EC5006721D6 /* SettingsViewController.swift */,
 				5F15E0B719124BC8006CDDBF /* SMSettingSelectionViewController.h */,
 				5F15E0B819124BC8006CDDBF /* SMSettingSelectionViewController.m */,
-				5F521D50191C0DDB00E525A2 /* SMUsersViewController.h */,
-				5F521D51191C0DDB00E525A2 /* SMUsersViewController.m */,
+				5FC173B119DB2C1A00DB5378 /* UsersViewController.swift */,
 			);
 			name = "View Controller";
 			sourceTree = "<group>";
@@ -224,8 +219,6 @@
 				5F423A7218FC115200C3ED75 /* Images.xcassets */,
 				5F5A162118FC535100E408DC /* SMDiscoveryManager.h */,
 				5F5A162218FC535100E408DC /* SMDiscoveryManager.m */,
-				5F089B6518FD56A3002476CB /* SMTrackProvider.h */,
-				5F089B6618FD56A3002476CB /* SMTrackProvider.m */,
 				5F423A8F18FC118B00C3ED75 /* Storyboard.storyboard */,
 				5F423A6718FC115200C3ED75 /* Supporting Files */,
 				5F5D07A219DAFC0300AE450F /* TrackProvider.swift */,
@@ -432,10 +425,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F32975C1952CF14007D8999 /* SPTPlaylistSnapshot+AllTracks.m in Sources */,
-				5F521D52191C0DDB00E525A2 /* SMUsersViewController.m in Sources */,
 				5FA9D1521958797100ED5D1A /* FestifyViewController.swift in Sources */,
-				5F089B6718FD56A3002476CB /* SMTrackProvider.m in Sources */,
 				5F60F57C19D9AD9800DCD0BC /* UserDefaults.swift in Sources */,
+				5FC173B219DB2C1A00DB5378 /* UsersViewController.swift in Sources */,
 				5F15E0B919124BC8006CDDBF /* SMSettingSelectionViewController.m in Sources */,
 				5FBAF29F1956253D00C63031 /* FestifyButtonViewController.swift in Sources */,
 				5FBAF2A119562E6100C63031 /* PlayerBarViewController.swift in Sources */,

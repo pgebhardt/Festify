@@ -50,7 +50,7 @@ class PlayerViewController: UIViewController {
         self.streamingController.removeObserver(self, forKeyPath: "currentTrackMetadata")
     }
     
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<()>) {
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<()>) {
         if keyPath == "isPlaying" {
             self.updatePlayButton(self.streamingController.isPlaying)
         }
@@ -84,7 +84,7 @@ class PlayerViewController: UIViewController {
             let url = NSURL(string: "spotify://" + (self.streamingController.currentTrackMetadata![SPTAudioStreamingMetadataTrackURI]! as String))
             
             self.streamingController.setIsPlaying(false, callback: nil)
-            UIApplication.sharedApplication().openURL(url)
+            UIApplication.sharedApplication().openURL(url!)
         }
     }
     
